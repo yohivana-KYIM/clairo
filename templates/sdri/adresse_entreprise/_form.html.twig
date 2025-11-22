@@ -1,0 +1,58 @@
+<link rel="stylesheet" href="{{ asset('css/mainform.css') }}">
+<link rel="stylesheet" href="{{ asset('css/main.css') }}">
+
+<body id="bg-pattern">
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;" >
+        <div class="container" style="background: #f9f9f9; box-shadow: 0px 15px 20px rgba(0,0,0,0.1);">
+            {{ form_start(form) }}
+            <div class="rounded row border border-dark-subtle info-form">
+                <div class="col-12 bg-cleo rounded-top mb-0 h5 reset2" >
+                    <p class="pt-3">Adresse et coordonnées (entreprise)</p>
+                </div>
+                <div class="col-lg-4 col-md-6" id="sepa">
+                    <div class="p-3 row">
+                        <label for="exampleSelect" class="h5">N° et voie :<span style="color: red;">*</span></label>
+                        {{ form_widget(form.numVoie, {'attr': {'class': 'form-control is-invalid formvalidate'}}) }}
+                    </div>
+                    <div class="p-3 row">
+                        <label for="" class="h5">Tour, etc... :</label>
+                        {{ form_widget(form.tourEtc, {'attr': {'class': 'form-control is-invalid formvalidate'}}) }}
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="p-3 row">
+                        <label for="" class="h5">Distribution :</label>
+                        {{ form_widget(form.distribution, {'attr': {'class': 'form-control is-invalid formvalidate'}}) }}
+                    </div>
+                    <div class="p-3 row">
+                        <label for="" class="h5">Code postal :<span style="color: red;">*</span></label>
+                        {{ form_widget(form.cp, {'attr': {'class': 'form-control is-invalid formvalidate'}}) }}
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="p-3 row">
+                        <label for="" class="h5">Ville :<span style="color: red;">*</span></label>
+                        {{ form_widget(form.ville, {'attr': {'class': 'form-control is-invalid formvalidate'}}) }}
+                    </div>
+                    <div class="p-3 row">
+                        <label for="" class="h5">N° téléphone :</label>
+                        {{ form_widget(form.numTelephone, {'attr': {'class': 'form-control is-invalid formvalidate'}}) }}
+                    </div>
+                </div>
+                <div class="row mt-4 mb-3">
+                    <div class="col-12 p-0 dcenter d-flex justify-content-around margin-bottom-spacing">
+                        <button class="button back-button" onclick="history.back()">Back</button>
+                        <button class="btn btn-success btn-lg me-3">
+                            {{ button_label|default('Suivant') }}
+                            <img src="{{ asset('css/icons/arrow-right-short.svg') }}" width="32" height="32">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</body>
+
+<script src="{{ asset('/js/formconfirmation.js') }}"></script>
+
+

@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Etat Civil | Fluxel{% endblock %}
+
+{% block body %}
+
+    {{ include('etat_civil/_form.html.twig') }}
+
+    {# <a href="{{ path('app_intervention_edit', { 'id': intervention.id }) }}">back to list</a> #}
+{% endblock %}

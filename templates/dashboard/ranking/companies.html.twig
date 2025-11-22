@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+{% block container %}
+<div class="container-title">Demandes par entreprise</div>
+<canvas id="rankingChart"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const labels = {{ ranking|map(r => r.companyName)|json_encode|raw }};
+    const data = {{ ranking|map(r => r.totalRequests)|json_encode|raw }};
+
+    new Chart(document.getElementById('rankingChart'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Demandes par entreprise',
+                data: data,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>
+{% endblock %}

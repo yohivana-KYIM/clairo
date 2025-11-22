@@ -1,0 +1,14 @@
+{% import '_macros/breadcrumb_macros.html.twig' as breadcrumb_macros %}
+{% macro breadcrumbs(items) %}
+    <nav>
+        <ul class="breadcrumb">
+            {% for label, path in items %}
+                {% if loop.last %}
+                    <li class="active">{{ label }}</li>
+                {% else %}
+                    <li><a href="{{ path }}">{{ label }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+{% endmacro %}

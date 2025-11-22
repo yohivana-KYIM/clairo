@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="container-title">Message de {{ message.sender.email }}</div>
+        <p><strong>le:</strong> {{ message.createdAt|date('d/m/Y') }}</p>
+        <p><strong>Message:</strong></p>
+        <p>{{ message.content }}</p>
+
+        <a class="btn btn-cleo" href="{{ path('messages_list') }}">Liste des messages</a>
+    </div>
+{% endblock %}

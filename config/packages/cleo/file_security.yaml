@@ -1,0 +1,7 @@
+parameters:
+  file_security.max_file_size: 10485760 # 10MB in bytes
+  file_security.allowed_types:
+    - 'application/pdf'
+    - 'image/jpeg'
+    - 'image/png'
+    - 'text/plain'

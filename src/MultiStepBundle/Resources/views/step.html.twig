@@ -1,0 +1,295 @@
+{% extends '@MultiStepBundle/base.html.twig' %}
+
+{% block title %}Fluxel: {{ current_step }}{% endblock %}
+{% block header %}
+    <div class="step-trail">
+    {{ step_trail|raw }}
+    </div>
+    <div class="clearfix"></div>
+{% endblock %}
+{% block other_stylesheets %}
+    <style>
+        .container {
+            margin-top: 60px;
+        }
+    </style>
+{% endblock %}
+{% block container %}
+    <div class="container-title">Demande de titre de circulation pour {{ step_entity }}</div>
+    <h1>
+        {{ current_step }}
+    </h1>
+    <small class="text-khaki">Tous les champs avec * sont obligatoires, les champs microcésame sont indiqué par "m"</small>
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <div class="form-actions">
+            {% for button in buttons %}
+                {% if (button.type == 'inline_form_confirm') %}
+                    <div id="namePrompt" style="display:none;">
+                        <input type="hidden" name="finalName" id="finalName" required>
+                        <input type="hidden" name="confirmOverwrite" id="confirmOverwrite" value="0" required>
+                        <label for="nameInput">Nom de la sauvegarde :</label>
+                        <input type="text" id="nameInput" class="autocomplete-input" value="{{ step_number }}">
+                        <div id="nameSuggestions" class="autocomplete-suggestions"></div>
+                        <p>&nbsp;</p>
+                        <button type="submit" name="action" formaction="{{ button.route }}" class="btn-action {{ button.class }}" id="confirmSaveBtn">Valider</button>
+                    </div>
+                    <button type="button" name="action" id="terminateBtn" class="btn-action {{ button.class }}" {% if button.attr is defined %} {{ button.attr }} {% endif %}>{{ button.label }}</button>
+                {% else %}
+                    <button type="submit" name="action" formaction="{{ button.route }}" class="btn-action {{ button.class }}" {% if button.attr is defined %} {{ button.attr }} {% endif %}>{{ button.label }}</button>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {{ form_end(form) }}
+    <div class="clearfix"></div>
+    <textarea id="step_values" readonly style="display: none">
+        {
+            {% for key, value in data %}
+                "{{ key|e('js') }}":
+                {%- if value is date -%}
+                    "{{ value|date('Y-m-d')|e('js') }}"
+                {%- elseif value is iterable -%}
+                    {{ value|json_encode|raw }}
+                {%- else -%}
+                    "{{ value|e('js') }}"
+                {%- endif -%}
+                {%- if not loop.last %},{% endif %}
+            {% endfor %}
+        };
+    </textarea>
+{% endblock %}
+{% block other_initscripts %}
+    <script>
+        var stepValues = {
+            {% for key, value in data %}
+            "{{ key|e('js') }}":
+                    {%- if value is date -%}
+                "{{ value|date('Y-m-d')|e('js') }}"
+            {%- elseif value is iterable -%}
+            {{ value|json_encode|raw }}
+            {%- else -%}
+            "{{ value|e('js') }}"
+            {%- endif -%}
+            {%- if not loop.last %},{% endif %}
+            {% endfor %}
+        };
+    </script>
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/read_only.js') }}"></script>
+    <script src="{{asset(step_asset)}}" ></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const existingNames = {{ existingNames|json_encode|raw }};
+
+            if (!existingNames || !Array.isArray(existingNames)) {
+                console.warn('existingNames is missing or not an array.');
+                return;
+            }
+
+            /**
+             * @param {string} id
+             * @returns {Element|null}
+             */
+            function safeById(id) {
+                const el = document.getElementById(id);
+                // if (!el) console.warn(`Element with ID "${id}" not found.`);
+                return el;
+            }
+
+            /**
+             * Attache un listener de manière sûre
+             * @param {HTMLElement | HTMLInputElement | HTMLButtonElement | null} el
+             * @param {string} event
+             * @param {Function} handler
+             */
+            function withSafeListener(el, event, handler) {
+                if (el) el.addEventListener(event, handler);
+            }
+
+            /** @type {HTMLElement|null} */ const namePrompt = safeById('namePrompt');
+            /** @type {HTMLInputElement|null} */ const nameInput = /** @type {HTMLInputElement} */ (safeById('nameInput'));
+            /** @type {HTMLInputElement|null} */ const finalName = /** @type {HTMLInputElement} */ (safeById('finalName'));
+            /** @type {HTMLInputElement|null} */ const confirmOverwrite = /** @type {HTMLInputElement} */ (safeById('confirmOverwrite'));
+            /** @type {HTMLButtonElement|null} */ const terminateBtn = /** @type {HTMLButtonElement} */ (safeById('terminateBtn'));
+            /** @type {HTMLButtonElement|null} */ const confirmSaveBtn = /** @type {HTMLButtonElement} */ (safeById('confirmSaveBtn'));
+            const form = document.querySelector('form');
+
+            let selectedNameExists = false;
+
+            withSafeListener(nameInput, 'input', function () {
+                if (!nameInput) return;
+                const value = nameInput.value.trim().toLowerCase();
+                selectedNameExists = existingNames.includes(value);
+            });
+
+            withSafeListener(terminateBtn, 'click', function (e) {
+                e.preventDefault();
+                if (namePrompt) namePrompt.style.display = 'block';
+            });
+
+            withSafeListener(confirmSaveBtn, 'click', function (e) {
+                if (!nameInput || !finalName || !form) {
+                    console.warn('Missing essential form elements.');
+                    e.preventDefault();
+                    return;
+                }
+
+                const inputValue = nameInput.value.trim();
+                if (!inputValue) {
+                    alert("Veuillez entrer un nom.");
+                    e.preventDefault();
+                    return;
+                }
+
+                if (existingNames.includes(inputValue.toLowerCase())) {
+                    const confirmed = confirm("Ce nom existe déjà. Voulez-vous vraiment l’écraser ?");
+                    if (!confirmed) {
+                        e.preventDefault();
+                        return;
+                    }
+                    if (confirmOverwrite) confirmOverwrite.value = '1';
+                }
+
+                finalName.value = inputValue;
+
+                const action = confirmSaveBtn.getAttribute('formaction');
+                if (action) {
+                    form.setAttribute('action', action);
+                    form.submit();
+                } else {
+                    console.warn('formaction is missing on confirmSaveBtn.');
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+    <script>
+        const isReadonly = {{ (readonly_mode|default(false)) ? 'true' : 'false' }};
+
+        if (isReadonly) {
+            const markProcessed = (el) => {
+                if (!el.dataset.readonlyApplied) {
+                    el.dataset.readonlyApplied = 'true';
+                    return true;
+                }
+                return false;
+            };
+
+            // Disable standard input types
+            document.querySelectorAll('input').forEach(el => {
+                if (!markProcessed(el)) return;
+                const type = el.type.toLowerCase();
+
+                // Text-like inputs
+                if (['text', 'email', 'number', 'password', 'search', 'tel', 'url', 'date', 'time', 'datetime-local'].includes(type)) {
+                    el.readOnly = true;
+                } else {
+                    // Checkbox, radio, file, etc.
+                    el.disabled = true;
+                }
+            });
+
+            // Disable textareas
+            document.querySelectorAll('textarea').forEach(el => {
+                if (markProcessed(el)) {
+                    el.readOnly = true;
+                }
+            });
+
+            // Disable select elements
+            document.querySelectorAll('select').forEach(el => {
+                if (markProcessed(el)) {
+                    el.disabled = true;
+                }
+            });
+
+            // Disable buttons
+            document.querySelectorAll('button').forEach(el => {
+                if (markProcessed(el)) {
+                    el.disabled = true;
+                }
+            });
+
+            // Handle Trumbowyg editors
+            document.querySelectorAll('.trumbowyg-box').forEach(editorBox => {
+                const editorArea = editorBox.querySelector('.trumbowyg-editor');
+                if (editorArea && editorArea.contentEditable === "true") {
+                    editorArea.setAttribute('contenteditable', 'false');
+                    editorArea.dataset.readonlyApplied = 'true';
+                    editorBox.classList.add('readonly'); // optional: add a style hook
+                }
+            });
+
+            // Disable other contenteditable elements
+            document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+                if (markProcessed(el)) {
+                    el.setAttribute('contenteditable', 'false');
+                }
+            });
+        }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Types MIME autorisés (whitelist stricte, sans SVG ni formats exotiques)
+            const ALLOWED_MIME = new Set([
+                "application/pdf",
+                "image/jpeg","image/png","image/gif","image/bmp","image/webp"
+            ]);
+
+            // Extensions autorisées (fallback si MIME vide ou incohérent)
+            const ALLOWED_EXT = new Set([
+                "pdf","jpg","jpeg","jpe","png","gif","bmp","webp"
+            ]);
+
+            // Taille max par fichier (5 Mo ici)
+            const MAX_BYTES = 5 * 1024 * 1024;
+
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+
+            fileInputs.forEach(input => {
+                // UX : restreint la boîte de dialogue
+                input.setAttribute("accept", "application/pdf,image/*");
+
+                input.addEventListener("change", function () {
+                    const files = Array.from(this.files || []);
+                    const errors = [];
+
+                    files.forEach(file => {
+                        if (!isAllowed(file)) {
+                            errors.push(`• ${sanitize(file.name)} : format interdit (${file.type || "inconnu"})`);
+                        } else if (file.size > MAX_BYTES) {
+                            errors.push(`• ${sanitize(file.name)} : trop volumineux (> 5 Mo)`);
+                        }
+                    });
+
+                    if (errors.length) {
+                        alert(
+                            "⚠️ Upload refusé :\n" + errors.join("\n") +
+                            "\n\n👉 Formats autorisés : ." + Array.from(ALLOWED_EXT).join(", .")
+                        );
+                        this.value = ""; // reset input
+                    }
+                });
+            });
+
+            // Vérifie l’autorisation
+            function isAllowed(file) {
+                const mime = (file.type || "").toLowerCase();
+                if (mime && ALLOWED_MIME.has(mime)) return true;
+
+                const ext = ((file.name || "").split(".").pop() || "").toLowerCase();
+                if (ALLOWED_EXT.has(ext)) return true;
+
+                return false;
+            }
+
+            // ⚠️ Sanitizer simple (empêche injection dans l’alert)
+            function sanitize(str) {
+                return str.replace(/[<>&"'`]/g, c => ({
+                    '<':'&lt;', '>':'&gt;', '&':'&amp;', '"':'&quot;', "'":'&#39;', '`':'&#96;'
+                }[c]));
+            }
+        });
+    </script>
+    <script src="{{ asset('js/bootstrap5.3.js') }}"></script>
+{% endblock %}

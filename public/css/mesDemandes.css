@@ -1,0 +1,5 @@
+#linkBlocked {
+    pointer-events: none; /* Empêche les clics sur le lien */
+    color: gray; /* Change la couleur pour indiquer qu'il est désactivé */
+    text-decoration: none; /* Supprime le soulignement du lien */
+}

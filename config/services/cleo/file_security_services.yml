@@ -1,0 +1,8 @@
+# config/services/file_security_services.yaml
+
+services:
+  App\Security\FileSecurity\Classes\DefaultFileSecurityConfig:
+    arguments:
+      $maxFileSize: '%file_security.max_file_size%'
+      $allowedTypes: '%file_security.allowed_types%'
+      $virusScanner: '@App\Security\FileSecurity\Classes\NoScriptVirusScanner'

@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}DemandeTitreVehicule{% endblock %}
+
+{% block body %}
+    <h1>DemandeTitreVehicule</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ demande_titre_vehicule.id }}</td>
+            </tr>
+            <tr>
+                <th>Intervention</th>
+                <td>{{ demande_titre_vehicule.intervention.id }}</td>
+                <td>{{ demande_titre_vehicule.intervention.motif }}</td>
+            </tr>
+            <tr>
+                <th>Utilisateur</th>
+                <td>{{ demande_titre_vehicule.user.email }}</td>
+            </tr>
+            <tr>
+                <th>Created_at</th>
+                <td>{{ demande_titre_vehicule.createdAt ? demande_titre_vehicule.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Validated_at</th>
+                <td>{{ demande_titre_vehicule.validatedAt ? demande_titre_vehicule.validatedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Ip</th>
+                <td>{{ demande_titre_vehicule.ip }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_demande_titre_vehicule_index') }}">back to list</a>
+
+    <a href="{{ path('app_demande_titre_vehicule_edit', {'id': demande_titre_vehicule.id}) }}">edit</a>
+
+    {{ include('demande_titre_vehicule/_delete_form.html.twig') }}
+{% endblock %}

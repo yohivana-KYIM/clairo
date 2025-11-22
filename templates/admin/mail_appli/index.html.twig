@@ -1,0 +1,48 @@
+{% import '_macros/table_macros.html.twig' as table_macros %}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}MailAppli index{% endblock %}
+
+
+{% block body %}
+<link rel="stylesheet" href="{{ asset('css/bootstrapTable.css') }}">
+<link rel="stylesheet" href="{{ asset('css/customContainer.css') }}">
+<link rel="stylesheet" href="{{ asset('css/tablefiltercontrol.css') }}">
+<link rel="stylesheet" href="{{ asset('css/customNav.css') }}">
+<div class="container-fluid" style="min-width: 90vh;">
+    <h1 class="bg-cleo mt-4">MailAppli</h1>
+    <div class="col-12">
+        <a class="btn btn-cleo" href="{{ path('app_mail_appli_new') }}">Create new</a>
+        <table class="table table-hover" data-pagination="true" data-toggle="table" data-filter-control="true" data-click-to-select="true" data-auto-refresh="true">
+            <thead>
+                <tr>
+                    <th data-field="email" data-filter-control="input" data-sortable="true">Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for mail_appli in mail_applis %}
+                <tr>
+                    <td>{{ mail_appli.email }}</td>
+                    <td>
+                        <a class="btn btn-primary" href="{{ path('app_mail_appli_show', {'id': mail_appli.id}) }}">Voir</a>
+                        <a class="btn btn-cleo" href="{{ path('app_mail_appli_edit', {'id': mail_appli.id}) }}">Modifier</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="{{ asset('js/tableFiltreControl.js') }}"></script>
+<script src="{{ asset('js/bootstrap-table.min.js') }}"></script>
+<script src="{{ asset('js/bootstrap-table-filter-control.min.js') }}"></script>
+<script src="{{ asset('js/bootstrapTableFR.min.js') }}"></script>
+{% endblock %}
+

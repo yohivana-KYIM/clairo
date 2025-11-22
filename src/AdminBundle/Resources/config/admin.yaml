@@ -1,0 +1,6 @@
+admin_bundle:
+  entities:
+    - App\Entity\User
+    - App\Entity\Product
+  sorting_strategy: multi # Options: single, multi
+  rendering_strategy: twig_bootstrap

@@ -1,0 +1,561 @@
+{% extends 'base.html.twig' %}
+{% import '_macros/table_macros.html.twig' as table_macros %}
+{% import '_macros/flash_macros.html.twig' as flash_macros %}
+
+{% block title %}Les demandes SDRI | Fluxel{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ asset('css/bootstrapTable.css') }}">
+<link rel="stylesheet" href="{{ asset('css/customContainer.css') }}">
+<link rel="stylesheet" href="{{ asset('css/tablefiltercontrol.css') }}">
+<link rel="stylesheet" href="{{ asset('css/main.css') }}">
+<body id="bg-pattern">
+    {% for message in app.flashes('danger') %}
+        <div class="modal fade" id="maModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="alert alert-danger message auto-close-alert" role="alert">
+                            {{ message }}
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <button type="button" class="btn btn-lg btn-danger" data-bs-dismiss="modal">Retour</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    
+       
+    <form action="" method="post" id="myForm">
+        <div class="d-flex mt-4 mb-4 float-right mx-4">
+            <a class="btn btn-lg btn-danger me-5" href="{{ path('app_sdri') }}">Retour à l'accueil</a>
+            <button class="btn btn-lg btn-cleo me-5" type="button" id="submitButtonXML">Export XML</button>
+            <button class="btn btn-lg btn-cleo" type="button" id="submitButtonCSV">Export CSV</button>
+        </div>
+        <div class="clearfix"></div>
+    </form>
+    <div class="container-fluid">
+        <h2 class="flex-grow-1 bg-cleo">Mes demandes SDRI :</h2>
+        <div class="tab-content" id="myTabContent">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="circulation-tab" data-bs-toggle="tab" data-bs-target="#circulation-tab-pane" type="button" role="tab" aria-controls="circulation-tab-pane" aria-selected="true">Titre de circulation</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="alltitre-tab" data-bs-toggle="tab" data-bs-target="#alltitre-tab-pane" type="button" role="tab" aria-controls="alltitre-tab-pane" aria-selected="false">Toute les demandes</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="carte-tab" data-bs-toggle="tab" data-bs-target="#carte-tab-pane" type="button" role="tab" aria-controls="carte-tab-pane" aria-selected="false">Problème de carte</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="entreprise-tab" data-bs-toggle="tab" data-bs-target="#entreprise-tab-pane" type="button" role="tab" aria-controls="entreprise-tab-pane" aria-selected="false">Entreprise</button>
+                </li>
+            </ul>
+            <div class="tab-pane fade show active" id="circulation-tab-pane" role="tabpanel" aria-labelledby="circulation-tab" tabindex="0">
+                <div>
+                    <table id="titre" class="table table-hover " data-pagination="true" data-toggle="table" data-filter-control="true" data-click-to-select="true" data-sort-stable="true">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                {# <th data-field="id">Id</th> #}
+                                <th data-field="nom" data-filter-control="input" data-sortable="true">Nom</th>
+                                <th data-field="prenom" data-filter-control="input" data-sortable="true">Prénom</th>
+                                <th data-field="entreprise" data-filter-control="select" data-sortable="true">Entreprise</th>
+                                <th data-field="date" data-filter-control="select" data-sortable="true">Date de Demande</th>
+                                <th data-field="status" data-filter-control="select" data-sortable="true">Statut</th>
+                                <th data-field="exportation" data-filter-control="select" data-sortable="true">Exportation</th>
+                                <th>Commentaire</th>
+                                <th>Modification du Status ACTUELLE</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for demande in demandes %}
+                                {% if demande.getValidatedAt() is not null %}
+                                    <tr>
+                                        <td><label>
+                                                <input type="checkbox" name="selection[]" value="{{ demande.id }}" class="checkbox form-check-input border border-black">
+                                            </label></td>
+                                        {# <td>{{ demande.id }}</td> #}
+                                        <td>{{ demande.getEtatCivil().getNom() }}</td>
+                                        <td>{{ demande.getEtatCivil().getPrenom() }}</td>
+                                    {% if demande.getEntreprise() is not null %}
+                                        <td>{{ demande.getEntreprise().getNom() }}</td>
+                                    {% else %}
+                                        <td>Pas renseigné</td>
+                                    {% endif %}
+                                        <td>{{ demande.getCreatedAt().format('d/m/Y') }}</td>
+                                        {% if demande.getEntreprise().isGratuit() != false %}
+                                            <td>Gratuit</td>
+                                        {% else %}
+                                        <td>{{ demande.getStatus() }}</td>
+                                        {% endif %}
+                                        {% if demande.getNumExport() is not null %}
+                                            <td>Déja exporté</td>
+                                        {% else %}
+                                        <td>Pas encore exporté</td>
+                                        {% endif %}
+                                        {% if demande.getCommentaire() is not null %}
+                                            <td>{{ demande.getCommentaire() | raw }}</td>
+                                        {% else %}
+                                            <td>Pas renseigné</td>
+                                        {% endif %}
+                                        <td class="d-flex justify-content-evenly">
+                                        {% if demande.getStatus() != constant('App\\Entity\\DemandeTitreCirculation::STATUS_CARD_DELIVERED') %}
+                                            {% set instruction = 'instruction' %}
+                                                {% if demande.getStatus() == constant('App\\Entity\\DemandeTitreCirculation::STATUS_PENDING') %}
+                                                    <a class="btn btn-primary btn me-3 d-flex justify-content-center align-items-center disabled" href="{{ path('app_demande_sdri_status_titre', {'id': demande.id, 'parametre': instruction}, true) }}">{{ constant('App\\Entity\\DemandeTitreCirculation::STATUS_PENDING') }}</a>
+                                                {% else %}
+                                                    <a class="btn btn-primary btn me-3 d-flex justify-content-center align-items-center" href="{{ path('app_demande_sdri_status_titre', {'id': demande.id, 'parametre': instruction}, true) }}">{{ constant('App\\Entity\\DemandeTitreCirculation::STATUS_PENDING') }}</a>
+                                                {% endif %}
+                                                {% if demande.getStatus() == constant('App\\Entity\\DemandeTitreCirculation::STATUS_AWAITING') %}
+                                                    <button type="button" class="btn btn-cleo me-3 disabled" data-bs-toggle="modal" data-bs-target="#createModal{{ demande.id }}">Attente information complémentaire</button>
+                                                {% else %}
+                                                    <button type="button" class="btn btn-cleo me-3" data-bs-toggle="modal" data-bs-target="#createModal{{ demande.id }}">Attente information complémentaire</button>
+                                                    <div class="modal fade" id="createModal{{ demande.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5 fw-bold mb-2" id="exampleModalLabel">Demande d'information complémentaire</h1>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    {% set infocomplementaire = 'infocomplementaire' %}
+                                                                    <form method="post" action="{{ path('app_demande_sdri_status_titre', {'id': demande.id, 'parametre': infocomplementaire}, true) }}">
+                                                                        <div class="form-floating">
+                                                                            <textarea class="form-control" placeholder="ici" id="message" name="message" style="height: 170px" required></textarea>
+                                                                            <label for="message">Veuillez renseigner les informations manquantes</label>
+                                                                        </div>
+                                                                        <div class="modal-footer col-12 d-flex justify-content-around">
+                                                                            <button type="button" class="btn btn-danger btn-lg" data-bs-dismiss="modal">Fermer</button>
+                                                                            <button type="submit" class="btn btn-cleo btn-lg">Envoyer</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% set refus = 'refus' %}
+                                                {% if demande.getStatus() == 'Refusé' %}
+                                                    <a data-bs-title="Refuser" class="btn btn-danger btn me-3 d-flex justify-content-center align-items-center disabled" href="{{ path('app_demande_sdri_status_titre', {'id': demande.id, 'parametre': refus}, true) }}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                                                        </svg>
+                                                    </a>
+                                                {% else %}
+                                                        <a id="myButton2" data-bs-title="Refuser" class="btn btn-danger btn me-3 d-flex justify-content-center align-items-center" href="{{ path('app_demande_sdri_status_titre', {'id': demande.id, 'parametre': refus}, true) }}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                                                        </svg>
+                                                    </a>
+                                                {% endif %}
+                                            {% set accord = 'accord' %}
+                                                {% if demande.getStatus() == constant('App\\Entity\\DemandeTitreCirculation::STATUS_GRANTED') or demande.getStatus() == constant('App\\Entity\\DemandeTitreCirculation::STATUS_PROVISIONED') %}
+                                                    <a data-bs-title="Valider"  class="btn btn-cleo btn me-3 d-flex justify-content-center align-items-center disabled" href="{{ path('app_demande_sdri_status_titre', {'id': demande.id, 'parametre': accord}, true) }}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                                                            <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                                                        </svg>
+                                                    </a>
+                                                {% else %}
+                                                    <a id="myButton" data-bs-title="Valider"  class="btn btn-cleo btn me-3 d-flex justify-content-center align-items-center" href="{{ path('app_demande_sdri_status_titre', {'id': demande.id, 'parametre': accord}, true) }}">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                                                            <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                                                        </svg>
+                                                    </a>
+                                                {% endif %}
+                                            {% set edition = 'edition' %}
+                                                {% if demande.getStatus() == constant('App\\Entity\\DemandeTitreCirculation::STATUS_CARD_EDITED') %}
+                                                    <a data-bs-title="Valider"  class="btn btn-cleo btn me-3 d-flex justify-content-center align-items-center disabled" href="{{ path('app_demande_sdri_status_titre', {'id': demande.id, 'parametre': edition}, true) }}">
+                                                        Edition de la carte
+                                                    </a>
+                                                {% elseif demande.getStatus() != constant('App\\Entity\\DemandeTitreCirculation::STATUS_PAID')  %}
+                                                    <button type="button" class="btn btn-cleo me-3" data-bs-toggle="modal" data-bs-target="#createModal5{{ demande.id }}">Edition de la carte</button>
+                                                    <div class="modal fade" id="createModal5{{ demande.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h1 class="modal-title fs-5 fw-bold mb-2" id="exampleModalLabel">Êtes-vous sûr ?</h1>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <h5 class="text-center mb-4">Attention, une fois l’édition de la carte validée, le payement ne sera plus possible.</h5>
+                                                                    <div class="col-12 d-flex justify-content-around">
+                                                                        <button type="button" class="btn btn-lg btn-danger" data-bs-dismiss="modal">Abandonner</button>
+                                                                        <a data-bs-title="Valider"  class="btn btn-lg btn-cleo" href="{{ path('app_demande_sdri_status_titre', {'id': demande.id, 'parametre': edition}, true) }}">
+                                                                            Valider
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% else %}
+                                                    <a data-bs-title="Valider"  class="btn btn-cleo btn me-3 d-flex justify-content-center align-items-center" href="{{ path('app_demande_sdri_status_titre', {'id': demande.id, 'parametre': edition}, true) }}">
+                                                        Edition de la carte
+                                                    </a>
+                                                {% endif %}
+                                            {% set delivrer = 'delivrer' %}
+                                                <button type="button" class="btn btn-cleo me-3" data-bs-toggle="modal" data-bs-target="#createModal1{{ demande.id }}">Délivrer la carte</button>
+                                                <div class="modal fade" id="createModal1{{ demande.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h1 class="modal-title fs-5 fw-bold mb-2" id="exampleModalLabel">Mettre un commentaire</h1>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form method="post" action="{{ path('app_gardien_commentaire', {'id': demande.id, 'parametre': delivrer}, true) }}" class="pt-4 pb-3 ps-3 pe-3">
+                                                                    <div class="form-floating">
+                                                                        <textarea name="commentaireDeliveryCarte" class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 200px" required></textarea>
+                                                                        <label for="commentaireDeliveryCarte">Commentaire</label>
+                                                                    </div>
+                                                                    <div class="col-12 d-flex justify-content-around mt-4">
+                                                                        <button type="button" class="btn btn-danger btn-lg" data-bs-dismiss="modal">
+                                                                            Fermer
+                                                                        </button>
+                                                                        <button type="submit" class="btn btn-lg btn-cleo border border-dark-subtle">
+                                                                            Délivrer la carte
+                                                                        </button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        {% else %}
+                                            <a class="btn btn-primary btn me-3 d-flex justify-content-center align-items-center disabled">{{ constant('App\\Entity\\DemandeTitreCirculation::STATUS_PENDING') }}</a>
+                                            <button type="button" class="btn btn-cleo me-3 disabled">Attente information complémentaire</button>
+                                            <a class="btn btn-danger btn me-3 d-flex justify-content-center align-items-center disabled">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                                    <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                                                </svg>
+                                            </a>
+                                            <a class="btn btn-cleo btn me-3 d-flex justify-content-center align-items-center disabled">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                                                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                                                </svg>
+                                            </a>
+                                            <a class="btn btn-cleo btn me-3 d-flex justify-content-center align-items-center disabled" >
+                                                Edition de la carte
+                                            </a>
+                                            {% set delivrer = 'delivrer' %}
+                                                <button type="button" class="btn btn-cleo me-3" data-bs-toggle="modal" data-bs-target="#createModal2{{ demande.id }}">Mettre un commentaire</button>
+                                                <div class="modal fade" id="createModal2{{ demande.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h1 class="modal-title fs-5 fw-bold mb-2" id="exampleModalLabel">Remplacer le commentaire</h1>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form method="post" action="{{ path('app_gardien_commentaire', {'id': demande.id, 'parametre': delivrer}, true) }}" class="pt-4 pb-3 ps-3 pe-3">
+                                                                    <div class="form-floating">
+                                                                        <label for="floatingTextarea2"></label><textarea name="commentaireDeliveryCarte" class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 200px" required></textarea>
+                                                                        <label for="commentaireDeliveryCarte">Commentaire</label>
+                                                                    </div>
+                                                                    <div class="col-12 d-flex mt-4 justify-content-around">
+                                                                    {% if demande.getStatus() == constant('App\\Entity\\DemandeTitreCirculation::STATUS_CARD_DELIVERED') %}
+                                                                        <button type="button" class="btn btn-danger btn-lg" data-bs-dismiss="modal">
+                                                                            Fermer
+                                                                        </button>
+                                                                        <button type="submit" class="btn btn-lg btn-cleo border border-dark-subtle">
+                                                                            Mettre un commentaire
+                                                                        </button>
+                                                                    {% else %}
+                                                                        <button type="button" class="btn btn-danger btn-lg" data-bs-dismiss="modal">
+                                                                            Fermer
+                                                                        </button>
+                                                                        <button type="submit" class="btn btn-lg btn-cleo border border-dark-subtle">
+                                                                            Délivrer la carte
+                                                                        </button>
+                                                                    {% endif %}
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="d-flex justify-content-evenly">
+                                                <a id="myButton3" data-bs-title="Visualiser" href="{{ path('app_recap_show', {'id': demande.id}) }}" class="btn btn-primary btn me-3">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                                        <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                                                        <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                                                    </svg>
+                                                </a>
+                                                <form method="post" action="{{ path('app_demande_titre_circulation_delete', {'id': demande.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette demande ?');">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ demande.id) }}">
+                                                    <button class="btn btn btn-danger">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                                                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade show" id="alltitre-tab-pane" role="tabpanel" aria-labelledby="alltitre-tab" tabindex="0">
+                <div>
+                    <table id="alltitre" class="table table-hover" data-pagination="true" data-toggle="table" data-filter-control="true" data-click-to-select="true" data-auto-refresh="true">
+                        <thead>
+                            <tr>
+                                <th data-field="email" data-filter-control="input" data-sortable="true">Email</th>
+                                <th data-field="nom" data-filter-control="input" data-sortable="true">Nom</th>
+                                <th data-field="prenom" data-filter-control="input" data-sortable="true">Prénom</th>
+                                <th data-field="entreprise" data-filter-control="select" data-sortable="true">Entreprise</th>
+                                <th data-field="date" data-filter-control="select" data-sortable="true">Date de Demande</th>
+                                <th data-field="status" data-filter-control="select" data-sortable="true">Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for Alldemande in demandeRepository %}
+                                    <tr>
+                                        <td>
+                                        {{ Alldemande.getUser().getEmail() }}
+                                        </td>
+                                    {% if Alldemande.getEtatCivil().getNom() is defined and Alldemande.getEtatCivil().getNom() is not null %}
+                                        <td>{{ Alldemande.getEtatCivil().getNom() }}</td>
+                                    {% else %}
+                                        <td>Pas renseigné</td>
+                                    {% endif %}
+                                    {% if Alldemande.getEtatCivil().getPrenom() is defined and Alldemande.getEtatCivil().getPrenom() is not null %}
+                                        <td>{{ Alldemande.getEtatCivil().getPrenom() }}</td>
+                                    {% else %}
+                                        <td>Pas renseigné</td>
+                                    {% endif %}
+                                    {% if Alldemande.getEntreprise() is not null %}
+                                        <td>{{ Alldemande.getEntreprise().getNom() }}</td>
+                                    {% else %}
+                                        <td>Pas renseigné</td>
+                                    {% endif %}
+                                        <td>{{ Alldemande.getCreatedAt().format('d/m/Y') }}</td>
+                                    {% if Alldemande.getStatus() is not null %}
+                                        <td>{{ Alldemande.getStatus() }}</td>
+                                    {% else %}
+                                        <td>En cours de création</td>
+                                    {% endif %}
+                                    <td>
+                                        <div class="d-flex justify-content-evenly">
+                                            {% if Alldemande.getValidatedAt() is not null %}
+                                                <a data-bs-title="Visualiser" href="{{ path('app_recap_show', {'id': Alldemande.id}) }}" class="btn btn-primary btn me-3">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                                        <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                                                        <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                                                    </svg>
+                                                </a>
+                                            {% endif %}
+                                            <form method="post" action="{{ path('app_demande_titre_circulation_delete', {'id': Alldemande.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette demande ?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ Alldemande.id) }}">
+                                                <button class="btn btn btn-danger">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                                                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="carte-tab-pane" role="tabpanel" aria-labelledby="carte-tab" tabindex="0">
+                <table id="probleme" class="table" data-pagination="true" data-toggle="table" data-filter-control="true" data-click-to-select="true">
+                    <thead>
+                        <tr>
+                            {# <th>Id</th> #}
+                            <th data-field="nom" data-filter-control="input" data-sortable="true">Nom</th>
+                            <th data-field="prenom" data-filter-control="input" data-sortable="true">Prénom</th>
+                            <th data-field="date" data-filter-control="select" data-sortable="true">Date de Demande</th>
+                            <th data-field="status" data-filter-control="select" data-sortable="true">Statut</th>
+                            <th>Modification du Status ACTUELLE</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for probleme in problemeCarte %}
+                            <tr>
+                                {# <td>{{ probleme.id }}</td> #}
+                                <td>{{ probleme.nom }}</td>
+                                <td>{{ probleme.prenom }}</td>
+                                <td>{{ probleme.getCreatedAt().format('d/m/Y') }}</td>
+                                <td>{{ probleme.getStatus() }}</td>
+                                <td class="d-flex justify-content-start">
+                                    {% set reedition = 'reedition' %}
+                                        {% if probleme.getStatus() == 'Réédition de carte' %}
+                                            <a class="btn btn-primary btn me-3 d-flex justify-content-center align-items-center disabled" href="{{ path('app_demande_sdri_status_carte', {'id': probleme.id, 'parametre': reedition}, true) }}">Réédition</a>
+                                        {% else %}
+                                            <a class="btn btn-primary btn me-3 d-flex justify-content-center align-items-center" href="{{ path('app_demande_sdri_status_carte', {'id': probleme.id, 'parametre': reedition}, true) }}">Réédition</a>
+                                        {% endif %}
+                                    {% set pret = 'pret' %}
+                                        {% if probleme.getStatus() == 'Carte prête' %}
+                                            <a class="btn btn-cleo btn me-3 d-flex justify-content-center align-items-center disabled" href="{{ path('app_demande_sdri_status_carte', {'id': probleme.id, 'parametre': pret}, true) }}">
+                                                Carte Prête
+                                            </a>
+                                        {% else %}
+                                            <a class="btn btn-cleo btn me-3 d-flex justify-content-center align-items-center" href="{{ path('app_demande_sdri_status_carte', {'id': probleme.id, 'parametre': pret}, true) }}">
+                                                Carte Prête
+                                            </a>
+                                        {% endif %}
+                                    {% set supprimer = 'supprimer' %}
+                                        {% if probleme.getStatus() == 'Carte supprimer' %}
+                                            <a class="btn btn-danger btn me-3 d-flex justify-content-center align-items-center disabled" href="{{ path('app_demande_sdri_status_carte', {'id': probleme.id, 'parametre': supprimer}, true) }}">
+                                                Carte Supprimée
+                                            </a>
+                                        {% else %}
+                                            <a class="btn btn-danger btn me-3 d-flex justify-content-center align-items-center" href="{{ path('app_demande_sdri_status_carte', {'id': probleme.id, 'parametre': supprimer}, true) }}">
+                                                Carte Supprimée
+                                            </a>
+                                        {% endif %}
+                                    {% set refus = 'refus' %}
+                                        {% if probleme.getStatus() == 'Refusé' %}
+                                            <a class="btn btn-danger btn me-3 d-flex justify-content-center align-items-center disabled" href="{{ path('app_demande_sdri_status_carte', {'id': probleme.id, 'parametre': refus}, true) }}">
+                                                Refusée
+                                            </a>
+                                        {% else %}
+                                            <a class="btn btn-danger btn me-3 d-flex justify-content-center align-items-center" href="{{ path('app_demande_sdri_status_carte', {'id': probleme.id, 'parametre': refus}, true) }}">
+                                                Refusée
+                                            </a>
+                                        {% endif %}
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-evenly">
+                                        <a href="{{ path('app_probleme_carte_show', {'id': probleme.id}) }}" class="btn btn-primary btn me-3">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                                                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                                            </svg>
+                                        </a>
+                                        <form method="post" action="{{ path('app_probleme_carte_delete', {'id': probleme.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette demande ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ probleme.id) }}">
+                                            <button class="btn btn btn-danger">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                                                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane fade" id="entreprise-tab-pane" role="tabpanel" aria-labelledby="#entreprise-tab" tabindex="0">
+                <table id="entreprise" class="table"  data-pagination="true" data-toggle="table" data-filter-control="true" data-click-to-select="true">
+                    <thead>
+                        <tr>
+                            {# <th data-field="id" data-filter-control="input" data-sortable="true">Id</th> #}
+                            <th data-field="nom" data-filter-control="input" data-sortable="true">Nom</th>
+                            <th data-field="numsiret" data-filter-control="input" data-sortable="true">N° Siret</th>
+                            <th data-field="emailreferent" data-filter-control="input" data-sortable="true">Email Referent</th>
+                            <th data-field="numtelephone" data-filter-control="input" data-sortable="true">N° Téléphone</th>
+                            <th data-field="date" data-filter-control="select" data-sortable="true">Date de création</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entreprise in entreprise %}
+                            <tr>
+                                {# <td>{{ entreprise.id }}</td> #}
+                                <td>{{ entreprise.nom }}</td>
+                                <td>{{ entreprise.getSiret() }}</td>
+                                <td>{{ entreprise.getEmailReferent() }}</td>
+                                <td>{{ entreprise.getNumTelephone() }}</td>
+                                {% if entreprise.getCreatedAt() is not null %}
+                                    <td>{{ entreprise.getCreatedAt().format('d/m/Y') }}</td>
+                                {% else %}
+                                    <td>Pas renseigné</td>
+                                {% endif %}
+                                <td>
+                                    <div class="d-flex justify-content-evenly">
+                                        <a href="{{ path('app_entreprise_show', {'id': entreprise.id}) }}" class="btn btn-primary btn me-3">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                                                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                                            </svg>
+                                        </a>
+                                        <a href="{{ path('app_entreprise_edit', {'id': entreprise.id}) }}" class="btn btn-cleo btn me-3">
+                                            Modifier
+                                        </a>
+                                        <form method="post" action="{{ path('app_entreprise_delete', {'id': entreprise.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette entreprise ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ entreprise.id) }}">
+                                            <button class="btn btn btn-danger">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                                                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+{# <script src="{{ asset('js/tableDesc.js') }}"></script> #}
+<script src="{{ asset('js/bootstrap-table.min.js') }}"></script>
+<script src="{{ asset('js/bootstrap-table-filter-control.min.js') }}"></script>
+<script src="{{ asset('js/bootstrapTableFR.min.js') }}"></script>
+<script src="{{ asset('js/SDRITabs.js') }}"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('myForm');
+    const submitButtonXML = document.getElementById('submitButtonXML');
+    const submitButtonCSV = document.getElementById('submitButtonCSV');
+    const checkboxes = document.querySelectorAll('.checkbox');
+
+    submitButtonXML.addEventListener('click', function() {
+        collectAndSubmit('XML');
+    });
+
+    submitButtonCSV.addEventListener('click', function() {
+        collectAndSubmit('CSV');
+    });
+
+    function collectAndSubmit(parametre) {
+        const selectedIds = Array.from(checkboxes)
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => checkbox.value);
+
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'selectedIds';
+        hiddenInput.value = JSON.stringify(selectedIds);
+        form.appendChild(hiddenInput);
+
+        form.action = parametre === 'XML'
+            ? "{{ path('app_demande_importXML', { 'parametre': 'XML' }, true) }}"
+            : "{{ path('app_demande_importCSV', { 'parametre': 'CSV' }, true) }}";
+
+        form.submit();
+    }
+});
+
+$(document).ready(function() {
+        $('#maModal').modal('show');
+    });
+
+</script>
+
+
+
+
+{% endblock %}

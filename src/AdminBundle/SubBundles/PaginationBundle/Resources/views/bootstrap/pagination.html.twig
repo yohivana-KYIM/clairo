@@ -1,0 +1,17 @@
+<nav>
+    <ul class="pagination">
+        {% if currentPage > 1 %}
+            <li><a href="?page={{ currentPage - 1 }}">Previous</a></li>
+        {% endif %}
+
+        {% for i in 1..pagesCount %}
+            <li class="{{ currentPage == i ? 'active' : '' }}">
+                <a href="?page={{ i }}">{{ i }}</a>
+            </li>
+        {% endfor %}
+
+        {% if currentPage < pagesCount %}
+            <li><a href="?page={{ currentPage + 1 }}">Next</a></li>
+        {% endif %}
+    </ul>
+</nav>

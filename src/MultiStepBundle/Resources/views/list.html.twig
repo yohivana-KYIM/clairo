@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<div class="container">
+    <div class="container-title">Liste requêtes d'accès</div>
+    <div class="container-content">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Shep Number</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for step in steps %}
+                <tr>
+                    <td>{{ step.stepId }}</td>
+                    <td>{{ step.stepNumber }}</td>
+                    <td>
+                        <a href="{{ path('person_access_show', {id: step.stepId}) }}">Voir</a> |
+                        <a href="{{ path('person_access_edit', {id: step.stepId}) }}">Modifier</a> |
+                        <form method="post" action="{{ path('person_access_delete', {id: step.stepId}) }}" style="display:inline;" onsubmit="return confirm('Supprimer cet élément ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ step.stepId) }}">
+                            <button type="submit">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="3">Aucun step trouvé.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

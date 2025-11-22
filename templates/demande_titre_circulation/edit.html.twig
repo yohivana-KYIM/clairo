@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit DemandeTitreCirculation{% endblock %}
+
+{% block body %}
+    <h1>Edit DemandeTitreCirculation</h1>
+
+    {{ include('demande_titre_circulation/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_demande_titre_circulation_index') }}">back to list</a>
+
+    {{ include('demande_titre_circulation/_delete_form.html.twig') }}
+{% endblock %}

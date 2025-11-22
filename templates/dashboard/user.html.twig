@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block container %}
+<div class="container-title">Mes indicateurs</div>
+<div class="dashboard-section">
+    <ul>
+        <li>Demandes en brouillon : {{ stats.drafts }}</li>
+        <li>En cours de traitement : {{ stats.in_progress }}</li>
+        <li>Demandes validées : {{ stats.approved }}</li>
+        <li>Demandes refusées : {{ stats.refused }}</li>
+        <li>Documents manquants : {{ stats.missing_documents }}</li>
+    </ul>
+</div>
+{% endblock %}

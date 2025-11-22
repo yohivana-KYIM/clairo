@@ -1,0 +1,28 @@
+{% block title %}Erreurs dans la demande d'accès{% endblock %}
+
+{% block body %}
+    <h2 style="color:#D8000C;">Erreurs détectées dans votre demande</h2>
+
+    <p>Veuillez corriger les champs suivants :</p>
+
+    <table style="width:100%; border-collapse: collapse;">
+        <thead>
+        <tr>
+            <th style="border: 1px solid #ddd; padding: 8px;">Section</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Champ</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Commentaire</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for error in errors %}
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ error.step|trans }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ error.field|trans }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ error.comment ?? '-' }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <p>Merci de corriger ces informations afin que nous puissions traiter votre demande.</p>
+{% endblock %}

@@ -1,0 +1,446 @@
+{% extends 'base.html.twig' %}
+
+{% import _self as ui %}
+
+{# === Macros utilitaires ================================================== #}
+{% macro family(w) -%}
+    {%- set t  = (w.type|default(''))|lower -%}
+    {%- set id = (w.id|default(''))|lower -%}
+    {%- if t in ['kpis','indicators'] -%}indicators
+    {%- elseif t == 'chart' -%}chart
+    {%- elseif 'alert' in id -%}alert
+    {%- elseif 'deadline' in id -%}deadline
+    {%- elseif 'ranking' in id or 'validator' in id -%}ranking
+    {%- elseif 'ratio' in id or 'activity' in id -%}ratio
+    {%- elseif 'todo' in id -%}todos
+    {%- else -%}table{%- endif -%}
+{%- endmacro %}
+
+{% block title %}Tableau de bord{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        :root{ --bg: #fff; --bd: #e9ecef; --tx: #1f2937; --muted:#6b7280; --chip:#f3f4f6; --success:#16a34a; --warn:#f59e0b; --danger:#dc2626; --info:#2563eb; --card:#ffffff; --ring:#e5e7eb; } /* --- Tachos (demi-cercle) --- */ .tachos{display:flex;flex-wrap:wrap;gap:14px} .tacho{ --size: 148px; /* diamètre visuel */ --stroke: 10; /* épaisseur de l’arc */ --track: #e8e9ee; /* fond de jauge */ --accent: #5163f3; /* couleur de progression par défaut */ --text: #111827; --muted:#6b7280; --card:#fff; position:relative;width:calc(var(--size));padding:10px;border-radius:12px;background:var(--card); box-shadow:0 1px 4px rgba(0,0,0,.08) } .tacho.-ok { --accent:#10b981; } /* vert */ .tacho.-warn { --accent:#f59e0b; } /* orange */ .tacho.-danger { --accent:#ef4444; } /* rouge */ .tacho.-info { --accent:#3b82f6; } /* bleu */ .tacho .svgwrap{position:relative;height:calc(var(--size)/2);width:var(--size)} .tacho svg{display:block;height:100%;width:100%} .tacho .track{fill:none;stroke:var(--track);stroke-width:var(--stroke);stroke-linecap:round} .tacho .progress{fill:none;stroke:var(--accent);stroke-width:var(--stroke);stroke-linecap:round;transition:stroke-dashoffset .6s ease} .tacho .needle{ position:absolute;left:50%;bottom:8px;width:2px;height:calc(var(--size)/2 - 8px);background:var(--text); transform-origin:bottom center;opacity:.7;transition:transform .6s ease } .tacho .readout{position:relative;text-align:center;margin-top:4px} .tacho .val{font:600 20px/1.2 ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial} .tacho .name{font:500 12px/1.2 ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial;color:var(--muted);margin-top:4px} .grid { display:grid; gap:16px; grid-template-columns:repeat(12,1fr); } .cols-1 { grid-column:span 3; } .cols-2 { grid-column:span 6; } .cols-3 { grid-column:span 9; } .cols-4 { grid-column:span 12; } @media (max-width: 992px){ .cols-1,.cols-2,.cols-3,.cols-4{ grid-column:span 12;} } .card { background:var(--card); border-radius:14px; padding:16px; box-shadow:0 1px 4px rgba(0,0,0,.06); border:1px solid var(--bd); } .card h3 { margin:0 0 10px 0; font-size:16px; } .muted{ color:var(--muted); font-size:12px; } /* INDICATORS (KPIs) */ .kpis { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:12px; } .kpi { background:linear-gradient(180deg,#f8fafc,#f1f5f9); border:1px solid var(--bd); border-radius:12px; padding:12px; } .kpi .name{ color:var(--muted); font-size:12px;} .kpi .val{ font-size:22px; font-weight:800; margin-top:4px;} /* CHART */ .card--chart { border-top:3px solid var(--info); } /* ALERTS */ .alerts { display:flex; flex-direction:column; gap:10px; } .alert-item{ border:1px solid var(--bd); border-left:6px solid var(--warn); border-radius:10px; padding:10px 12px; background:#fffaf2; display:flex; gap:12px; align-items:flex-start;} .alert-item.success{ border-left-color:var(--success); background:#f3fcf6;} .alert-item.danger{ border-left-color:var(--danger); background:#fff5f5;} .alert-badge{ font-size:11px; padding:3px 8px; border-radius:999px; background:var(--chip); } .alert-title{ font-weight:700; } .meta{ display:flex; gap:8px; flex-wrap:wrap; } /* DEADLINES */ .deadline-list{ display:flex; flex-direction:column; gap:12px; } .deadline{ border:1px dashed var(--bd); border-radius:12px; padding:12px; background:#fcfdff; } .bar{ height:8px; background:var(--ring); border-radius:999px; overflow:hidden; } .bar > i{ display:block; height:100%; width:0; background:var(--info); } .bar.-warn > i{ background:var(--warn); } .bar.-danger > i{ background:var(--danger); } /* RANKING */ .ranking{ counter-reset:rk; } .rk-item{ counter-increment:rk; display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--bd); border-radius:12px; margin-bottom:8px; background:#fbfeff; } .medal{ width:28px; height:28px; border-radius:50%; display:grid; place-items:center; font-weight:800; background:#e5e7eb; } .rk-item:nth-child(1) .medal{ background:linear-gradient(180deg,#ffd700,#f3c623); } .rk-item:nth-child(2) .medal{ background:linear-gradient(180deg,#c0c0c0,#a8a8a8); } .rk-item:nth-child(3) .medal{ background:linear-gradient(180deg,#cd7f32,#b86b27); } /* RATIOS */ .ratio-list{ display:grid; gap:10px; } .ratio{ border:1px solid var(--bd); border-radius:12px; padding:10px 12px; background:#f9fafb; } .stack{ display:flex; height:2px; border-radius:999px; overflow:hidden; background:var(--ring); } .seg-approve{ background:var(--success); } .seg-refuse{ background:var(--danger); } .seg-other{ background:var(--muted); } /* TODOS */ .todo-list{ display:flex; flex-direction:column; gap:10px; } .todo{ border:1px solid var(--bd); border-radius:12px; padding:10px 12px; background:#ffffff; display:flex; justify-content:space-between; gap:10px; } .chip{ font-size:11px; line-height:1; padding:6px 8px; border-radius:999px; background:var(--chip); border:1px solid var(--bd); } .chip.-urgent{ background:#fff1f2; border-color:#fecaca; color:var(--danger); } .chip.-fast{ background:#fffbeb; border-color:#fde68a; color:#92400e; } /* GENERIC TABLE (fallback) */ table { width:100%; border-collapse:collapse; } th, td { padding:8px 10px; border-bottom:1px solid var(--bd); font-size:14px; } th { text-align:left; color:#4b5563; font-weight:600; }
+        /* Pagination */
+        .pager{display:flex;gap:6px;align-items:center;justify-content:flex-end;margin-top:10px}
+        .pager .count{margin-right:auto;color:var(--muted);font-size:12px}
+        .pager button{border:1px solid var(--bd);background:#fff;padding:6px 10px;border-radius:8px;cursor:pointer}
+        .pager button[disabled]{opacity:.45;cursor:default}
+        .pager button.active{background:#111827;color:#fff;border-color:#111827}
+        .card--chart canvas.chart { width: 100% !important; display:block; }
+    </style>
+{% endblock %}
+
+{% block container %}
+    <div class="container-title">Tableau de bord</div>
+    {% set order = ['indicators','chart','alert','deadline','ranking','ratio','todos','table'] %}
+    {% set defaultCols = {'indicators':4,'chart':4,'alert':2,'deadline':2,'ranking':2,'ratio':2,'todos':2,'table':2} %}
+
+    <div class="grid">
+        {% for fam in order %}
+            {% for w in payload.widgets %}
+                {% set family = (ui.family(w)|trim ~ '') %}
+                {% if family == fam %}
+
+                    {# -------- Détermination d’affichage (anti-blocs vides) -------- #}
+                    {% set show = false %}
+
+                    {% if family == 'indicators' %}
+                        {% set k = w.data %}
+                        {% if k %}
+                            {% set enCours = k.inProcess|default(k.readyForTechPhase|default(k.toReview|default(null))) %}
+                            {% set stats = {
+                                'Total demandes': k.totalRequests|default(null),
+                                'Entreprises':   k.totalCompanies|default(null),
+                                'Brouillons':    k.drafts|default(null),
+                                'En cours':      enCours,
+                                'Approuvées':    k.approved|default(null),
+                                'Refusées':      k.refused|default(null),
+                                'Livrées':       k.delivered|default(null),
+                                'À facturer':    k.toInvoice|default(null),
+                                'En attente paiement': k.awaitingPayment|default(null)
+                            } %}
+                            {% set values = [] %}
+                            {% for _l,_v in stats %}{% if _v is not null %}{% set values = values|merge([_v]) %}{% endif %}{% endfor %}
+                            {% set show = values|length > 0 %}
+                        {% endif %}
+
+                    {% elseif family == 'chart' %}
+                        {% set labels   = w.data.labels|default([]) %}
+                        {% set datasets = w.data.datasets|default([]) %}
+                        {% set nonEmpty = 0 %}
+                        {% for ds in datasets %}
+                            {% if ds.data|default([])|length > 0 %}
+                                {% set nonEmpty = nonEmpty + 1 %}
+                            {% endif %}
+                        {% endfor %}
+                        {% set show = (labels|length > 0) and (nonEmpty > 0) %}
+
+                    {% elseif family in ['alert','deadline','ranking','ratio','todos','table'] %}
+                        {% set data = w.data|default([]) %}
+                        {% if data is iterable %}
+                            {% set show = data|length > 0 %}
+                        {% else %}
+                            {% set show = data ? true : false %}
+                        {% endif %}
+                    {% endif %}
+
+                    {% if show %}
+                        {% set cols = w.cols|default(attribute(defaultCols, family)|default(2)) %}
+                        <section id="{{ w.id }}" class="card cols-{{ cols }} card--{{ family }}" data-family="{{ family }}" data-page-size="{{ w.pageSize|default(5) }}">
+                            <h3>{{ w.title }}</h3>
+
+                            {# ===================== INDICATORS ===================== #}
+                            {% if family == 'indicators' %}
+                                {% set total = w.data.totalRequests|default(0) %}
+                                {% set enCours = w.data.inProcess|default(w.data.readyForTechPhase|default(w.data.toReview|default(null))) %}
+                                {% set stats = {
+                                    'Total demandes': w.data.totalRequests|default(null),
+                                    'Entreprises':   w.data.totalCompanies|default(null),
+                                    'Brouillons':    w.data.drafts|default(null),
+                                    'En cours':      enCours,
+                                    'Approuvées':    w.data.approved|default(null),
+                                    'Refusées':      w.data.refused|default(null),
+                                    'Livrées':       w.data.delivered|default(null),
+                                    'À facturer':    w.data.toInvoice|default(null),
+                                    'En attente paiement': w.data.awaitingPayment|default(null)
+                                } %}
+
+                                {% set values = [] %}
+                                {% for _label, _v in stats %}{% if _v is not null %}{% set values = values|merge([_v]) %}{% endif %}{% endfor %}
+                                {% set denom = total > 0 ? total : (values ? (values|max) : 100) %}
+
+                                <div class="tachos">
+                                    {% for label, v in stats %}
+                                        {% if v is not null %}
+                                            {% set pct = denom > 0 ? (v / denom * 100) : 0 %}
+                                            {% set pct = pct > 100 ? 100 : (pct < 0 ? 0 : pct) %}
+                                            {% set angle = (-90 + (pct * 1.8)) %}
+                                            {% set intent = 'info' %}
+                                            {% if label matches '/Approuv|Livr|Total/' %}{% set intent = 'ok' %}{% endif %}
+                                            {% if label matches '/Brouillon|cours|facturer|paiement/i' %}{% set intent = 'warn' %}{% endif %}
+                                            {% if label matches '/Refus/i' %}{% set intent = 'danger' %}{% endif %}
+
+                                            <div class="tacho -{{ intent }}" style="--pct: {{ pct|number_format(1, '.', '') }};">
+                                                <div class="svgwrap" role="img" aria-label="{{ label }} : {{ v }} ({{ pct|round(0, 'floor') }}%)">
+                                                    <svg viewBox="0 0 200 110" aria-hidden="true" focusable="false">
+                                                        <path class="track" d="M20,100 A80,80 0 0,1 180,100"/>
+                                                        <path class="progress" d="M20,100 A80,80 0 0,1 180,100"
+                                                              pathLength="100" stroke-dasharray="100"
+                                                              stroke-dashoffset="{{ (100 - pct)|number_format(2, '.', '') }}"/>
+                                                    </svg>
+                                                    <i class="needle" style="transform: rotate({{ angle|number_format(2, '.', '') }}deg);"></i>
+                                                </div>
+                                                <div class="readout">
+                                                    <div class="val">{{ v }}</div>
+                                                    <div class="name">{{ label }}</div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+
+                                {# ======================== CHART ======================== #}
+                                {% elseif family == 'chart' %}
+                                {% set chartId = 'chart_' ~ w.id %}
+                                <canvas id="{{ chartId }}"
+                                        class="chart"
+                                        data-type="bar"
+                                        data-min-h="240"
+                                        data-max-h="320"
+                                        data-labels='{{ w.data.labels|default([])|json_encode(constant("JSON_UNESCAPED_UNICODE"))|e("html_attr")|raw }}'
+                                        data-datasets='{{ w.data.datasets|default([])|json_encode(constant("JSON_UNESCAPED_UNICODE"))|e("html_attr")|raw }}'>
+                                </canvas>
+
+                                {# ======================== ALERTS ======================= #}
+                                {% elseif family == 'alert' %}
+                                {% set cols = w.columns|default([]) %}
+                                <div class="alerts">
+                                    {% for r in w.data %}
+                                        {% set title = attribute(r,'alertType')|default(attribute(r,'status')|default('Alerte')) %}
+                                        {% set days  = attribute(r,'daysOpen')|default(null) %}
+                                        {% set level = 'warn' %}
+                                        {% if title matches '/échec|ko|refus/i' %}{% set level = 'danger' %}{% endif %}
+                                        {% if title matches '/ok|valid|approu/i' %}{% set level = 'success' %}{% endif %}
+                                        <div class="alert-item {{ level }}">
+                                            <div class="medal">!</div>
+                                            <div>
+                                                <div class="alert-title"><a href="{{ path('person_access_show', {'id' : attribute(r,'stepId')}) }}">{{ title }}</a></div>
+                                                <div class="meta muted">
+                                                    {% if attribute(r,'companyName') is not null %}<span class="chip">{{ attribute(r,'companyName') }}</span>{% endif %}
+                                                    {% if attribute(r,'status') is not null %}<span class="chip">{{ attribute(r,'status')|trans }}</span>{% endif %}
+                                                    {% if attribute(r,'requestDate') is not null %}<span class="chip">{{ attribute(r,'requestDate')|date_in_french }}</span>{% endif %}
+                                                    {% if days is not null %}<span class="chip -urgent">{{ days }} j</span>{% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                                {# ====================== DEADLINES ====================== #}
+                                {% elseif family == 'deadline' %}
+                                {% set cols = w.columns|default([]) %}
+                                <div class="deadline-list">
+                                    {% for r in w.data %}
+                                        {% set label = attribute(r,'companyName')|default(attribute(r,'employeeEmail')|default('#' ~ (attribute(r,'stepId')|default('')))) %}
+                                        {% set dayFields = cols|filter(c => 'days' in c) %}
+                                        {% set dField = (dayFields|first)|default('daysLeftTraining') %}
+                                        {% set days = attribute(r, dField)|default(0) %}
+                                        {% set days_pos   = days > 0 ? days : 0 %}
+                                        {% set days_clamp = days_pos < 100 ? days_pos : 100 %}
+                                        {% set pct        = 100 - days_clamp %}
+                                        {% set barClass = days <= 0 ? '-danger' : (days <= 15 ? '-warn' : '') %}
+                                        <div class="deadline">
+                                            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+                                                <div><strong>{{ label }}</strong></div>
+                                                <div class="chip {{ days <= 0 ? '-urgent' : (days <= 15 ? '-fast' : '') }}">
+                                                    {% if days <= 0 %} Expiré {{ days }} j {% else %} {{ days }} j restants {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="bar {{ barClass }}" title="{{ pct|round(0, 'floor') }}%"><i style="width: {{ pct }}%"></i></div>
+                                            <div class="muted" style="margin-top:6px;">
+                                                {% if attribute(r,'contractEndDate') is not null %} Contrat : {{ attribute(r,'contractEndDate') }} {% endif %}
+                                                {% if attribute(r,'fluxelTrainingDate') is not null %} • Formation : {{ attribute(r,'fluxelTrainingDate') }} {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                                {# ======================= RANKING ======================= #}
+                                {% elseif family == 'ranking' %}
+                                {% set colsAll = w.columns|default([]) %}
+                                {% set nameCol = (colsAll|filter(c=> 'company' in c or 'securityOfficerName' in c or 'employeeEmail' in c)|first)|default(colsAll|first) %}
+                                {% set valCol  = (colsAll|filter(c=> 'total' in c or 'count' in c or 'approvedCount' in c or 'refusal' in c)|first)|default(null) %}
+                                <div class="ranking">
+                                    {% for r in w.data %}
+                                        <div class="rk-item">
+                                            <div class="medal">{{ loop.index }}</div>
+                                            <div style="flex:1;">
+                                                <div><strong>{{ attribute(r, nameCol) }}</strong></div>
+                                                {% if valCol %}<div class="muted">{{ valCol }} : {{ attribute(r, valCol) }}</div>{% endif %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                                {# ======================== RATIO ======================== #}
+                                {% elseif family == 'ratio' %}
+                                <div class="ratio-list">
+                                    {% for r in w.data %}
+                                        {% set name = attribute(r,'companyName')|default(attribute(r,'employeeEmail')|default('—')) %}
+                                        {% set ar = attribute(r,'approvalRate')|default(attribute(r,'completenessRate')|default(0))|round(2) %}
+                                        {% set rr = attribute(r,'refusalRate')|default(0)|round(2) %}
+                                        {% set rest = 100 - (ar + rr) %}
+                                        <div class="ratio">
+                                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                                <strong>{{ name }}</strong>
+                                                <span class="muted">{{ ar }}% OK{% if rr %} • {{ rr }}% KO{% endif %}</span>
+                                            </div>
+                                            <div class="stack" aria-hidden="true">
+                                                <i class="seg-approve" style="width: {{ ar }}%"></i>
+                                                {% if rr > 0 %}<i class="seg-refuse" style="width: {{ rr }}%"></i>{% endif %}
+                                                {% if rest > 0 %}<i class="seg-other" style="width: {{ rest }}%"></i>{% endif %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                                {# ======================== TODOS ======================== #}
+                                {% elseif family == 'todos' %}
+                                <div class="todo-list">
+                                    {% for r in w.data %}
+                                        {% set pri = (attribute(r,'priorityLevel')|default('normal'))|lower %}
+                                        {% set priClass = pri == 'urgent' ? '-urgent' : (pri starts with 'à traiter' ? '-fast' : '') %}
+                                        <div class="todo">
+                                            <div style="display:flex;gap:10px;align-items:center;">
+                                                <input type="checkbox" aria-label="done">
+                                                <div>
+                                                    <div>
+                                                        <strong>
+                                                            <a href="{{ path('person_access_show', {'id' : attribute(r,'stepId')}) }}">
+                                                                {{ attribute(r,'todoType')|default('Action') }}
+                                                            </a>
+                                                        </strong>
+                                                    </div>
+                                                    <div class="muted">
+                                                        {% if attribute(r,'companyName') is not null %}{{ attribute(r,'companyName') }} • {% endif %}
+                                                        {% if attribute(r,'status') is not null %}{{ attribute(r,'status') | trans }}{% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <span class="chip {{ priClass }}">{{ pri }}</span>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                                {# ====================== TABLE (fallback) ================ #}
+                            {% else %}
+                                {% set cols = w.columns|default([]) %}
+                                <div style="overflow:auto">
+                                    <table>
+                                        <thead>
+                                        <tr>{% for c in cols %}<th>{{ c|replace({'Id':'ID','stepId':'ID'}) }}</th>{% endfor %}</tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for r in w.data %}
+                                            <tr>{% for c in cols %}<td>{{ attribute(r, c) }}</td>{% endfor %}</tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% endif %}
+                            <div class="pager" data-pager></div>
+                        </section>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block extra_javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <script>
+        (function () {
+            function firstMatch(root, selectors) {
+                for (const sel of selectors) {
+                    const el = root.querySelector(sel);
+                    if (el) return el;
+                }
+                return null;
+            }
+
+            function paginateSection(section) {
+                const size = parseInt(section.getAttribute('data-page-size') || '8', 10);
+                if (!size || size < 1) return;
+
+                // Trouve la liste d’items à paginer
+                const list = firstMatch(section, [
+                    '.alerts',
+                    '.deadline-list',
+                    '.ranking',
+                    '.ratio-list',
+                    '.todo-list',
+                    'table tbody'
+                ]);
+                if (!list) return;
+
+                // Sélecteur d’item selon le type de liste
+                const itemSelector = list.matches('table tbody') ? 'tr' : ':scope > *';
+                const items = Array.from(list.querySelectorAll(itemSelector));
+                if (items.length <= size) return;
+
+                // Conteneur des contrôles
+                const pager = section.querySelector('[data-pager]') || (() => {
+                    const p = document.createElement('div');
+                    p.className = 'pager';
+                    p.setAttribute('data-pager', '');
+                    list.after(p);
+                    return p;
+                })();
+
+                const total = items.length;
+                const pages = Math.ceil(total / size);
+                let page = 1;
+
+                function showPage(p) {
+                    page = Math.min(Math.max(1, p), pages);
+                    const start = (page - 1) * size;
+                    const end = start + size;
+
+                    items.forEach((el, i) => {
+                        el.style.display = (i >= start && i < end) ? '' : 'none';
+                    });
+
+                    renderControls();
+                }
+
+                function btn(label, goTo, {disabled=false, active=false, title='' } = {}) {
+                    const b = document.createElement('button');
+                    b.type = 'button';
+                    b.textContent = label;
+                    if (title) b.title = title;
+                    if (active) b.classList.add('active');
+                    if (disabled) b.disabled = true;
+                    if (!disabled) b.addEventListener('click', () => showPage(goTo));
+                    return b;
+                }
+
+                function renderControls() {
+                    pager.innerHTML = '';
+
+                    // Info compteur
+                    const from = (page - 1) * size + 1;
+                    const to = Math.min(page * size, total);
+                    const info = document.createElement('span');
+                    info.className = 'count';
+                    info.textContent = `${from}-${to} / ${total}`;
+                    pager.appendChild(info);
+
+                    // Prev
+                    pager.appendChild(btn('‹', page - 1, { disabled: page === 1, title: 'Précédent' }));
+
+                    // Numéros (fenêtre compacte)
+                    const maxButtons = 7;
+                    let start = Math.max(1, page - 3);
+                    let end = Math.min(pages, start + maxButtons - 1);
+                    start = Math.max(1, end - maxButtons + 1);
+
+                    if (start > 1) pager.appendChild(btn('1', 1));
+                    if (start > 2) pager.appendChild(btn('…', page, { disabled: true }));
+
+                    for (let p = start; p <= end; p++) {
+                        pager.appendChild(btn(String(p), p, { active: p === page }));
+                    }
+
+                    if (end < pages - 1) pager.appendChild(btn('…', page, { disabled: true }));
+                    if (end < pages) pager.appendChild(btn(String(pages), pages));
+
+                    // Next
+                    pager.appendChild(btn('›', page + 1, { disabled: page === pages, title: 'Suivant' }));
+                }
+
+                // Init
+                showPage(1);
+            }
+
+            // Active la pagination sur tous les widgets qui la déclarent
+            document.querySelectorAll('section[data-page-size]').forEach(paginateSection);
+        })();
+    </script>
+    <script>
+        (function () {
+            if (!window.Chart) return;
+
+            function init(canvas){
+                const parseAttr = (name, fallback=[]) => {
+                    const raw = canvas.getAttribute(name);
+                    if (!raw) return fallback;
+                    try { return JSON.parse(raw); } catch(e1) {}
+                    // Si le template a laissé des &quot; / &#39;
+                    try { return JSON.parse(raw.replace(/&quot;/g,'"').replace(/&#39;/g,"'")); } catch(e2) {}
+                    console.error(`JSON invalide dans ${name}:`, raw);
+                    return fallback;
+                };
+
+                const labels   = parseAttr('data-labels', []);
+                const datasets = parseAttr('data-datasets', []).map(ds => ({
+                    label: ds.label,
+                    data: ds.data,
+                    borderWidth: ds.borderWidth ?? 1,
+                    backgroundColor: ds.backgroundColor,
+                    borderColor: ds.borderColor,
+                    type: ds.type || undefined
+                }));
+
+                new Chart(canvas.getContext('2d'), {
+                    type: canvas.getAttribute('data-type') || 'bar',
+                    data: { labels, datasets }
+                });
+            }
+
+            document.querySelectorAll('canvas.chart').forEach(init);
+        })();
+    </script>
+{% endblock %}

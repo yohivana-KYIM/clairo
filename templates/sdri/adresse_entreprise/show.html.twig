@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}AdresseEntreprise{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h4 class="container-title">Adresse et coordonnées (entreprise)</h4>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- N° et voie -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <label class="form-label h5">N° et voie : <span class="text-danger">*</span></label>
+                <input type="text" class="form-control is-valid" value="{{ adresse_entreprise.numVoie }}" disabled>
+            </div>
+
+            <!-- Tour, etc. -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <label class="form-label h5">Tour, etc...</label>
+                <input type="text" class="form-control" value="{{ adresse_entreprise.tourEtc }}" disabled>
+            </div>
+
+            <!-- Distribution -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <label class="form-label h5">Distribution :</label>
+                <input type="text" class="form-control" value="{{ adresse_entreprise.distribution }}" disabled>
+            </div>
+
+            <!-- Code postal -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <label class="form-label h5">Code postal : <span class="text-danger">*</span></label>
+                <input type="text" class="form-control is-valid" value="{{ adresse_entreprise.cp }}" disabled>
+            </div>
+
+            <!-- Ville -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <label class="form-label h5">Ville : <span class="text-danger">*</span></label>
+                <input type="text" class="form-control is-valid" value="{{ adresse_entreprise.ville }}" disabled>
+            </div>
+
+            <!-- N° téléphone -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <label class="form-label h5">N° téléphone :</label>
+                <input type="text" class="form-control" value="{{ adresse_entreprise.numTelephone }}" disabled>
+            </div>
+        </div>
+
+        <div class="row mt-4 mb-3">
+            <div class="col-6 text-start">
+                <a class="btn btn-danger btn-lg" href="{{ path('app_entreprise_show', {'id': entreprise}) }}">
+                    Retour
+                </a>
+            </div>
+            <div class="col-6 text-end">
+                <a class="btn btn-success btn-lg" href="{{ path('app_demande_sdri') }}">
+                    Suivant
+                </a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Évolution des décisions - {{ selected_decision|capitalize }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h2>📊 Évolution mensuelle : <strong data-i18n="{{ selected_decision }}">{{ selected_decision }}</strong></h2>
+
+        <form method="get" class="mb-3">
+            <label for="decision">Changer de décision :</label>
+            <select name="decision" id="decision" onchange="this.form.submit()" class="form-select w-auto d-inline-block ms-2">
+                {% for option in ['approved', 'refused', 'provisioned', 'enquete_prealable', 'pending'] %}
+                    <option data-i18n="{{ option }}" value="{{ option }}" {{ option == selected_decision ? 'selected' : '' }}>
+                        {{ option }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+
+        <canvas id="decisionChart" height="100"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const labels = {{ data|map(r => r.month)|json_encode|raw }};
+        const values = {{ data|map(r => r.count)|json_encode|raw }};
+
+        new Chart(document.getElementById('decisionChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Nombre de décisions',
+                    data: values,
+                    fill: false,
+                    borderWidth: 2,
+                    tension: 0.2
+                }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Évolution mensuelle'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+{% endblock %}

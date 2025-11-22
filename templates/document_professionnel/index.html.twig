@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}DocumentProfessionnel index{% endblock %}
+
+{% block body %}
+    <h1>DocumentProfessionnel index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>DateGies0Debut</th>
+                <th>DateGies0Fin</th>
+                <th>DateAtex0Debut</th>
+                <th>DateAtex0Fin</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for document_professionnel in document_professionnels %}
+            <tr>
+                <td>{{ document_professionnel.id }}</td>
+                <td>{{ document_professionnel.dateGies0Debut ? document_professionnel.dateGies0Debut|date('Y-m-d') : '' }}</td>
+                <td>{{ document_professionnel.dateGies0Fin ? document_professionnel.dateGies0Fin|date('Y-m-d') : '' }}</td>
+                <td>{{ document_professionnel.dateAtex0Debut ? document_professionnel.dateAtex0Debut|date('Y-m-d') : '' }}</td>
+                <td>{{ document_professionnel.dateAtex0Fin ? document_professionnel.dateAtex0Fin|date('Y-m-d') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_document_professionnel_show', {'id': document_professionnel.id}) }}">show</a>
+                    <a href="{{ path('app_document_professionnel_edit', {'id': document_professionnel.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_document_professionnel_new') }}">Create new</a>
+{% endblock %}

@@ -1,0 +1,60 @@
+framework:
+    html_sanitizer:
+        sanitizers:
+            safe:
+                allow_safe_elements: true
+
+                allow_attributes:
+                    "href": ["a"]
+                    "src": ["img"]
+                    "alt": ["img"]
+                    "title": ["a", "img"]
+
+                block_elements:
+                    - "script"
+                    - "iframe"
+                    - "svg"
+                    - "math"
+                    - "object"
+                    - "embed"
+                    - "link"
+                    - "style"
+                    - "meta"
+                    - "base"
+                    - "form"
+                    - "input"
+                    - "video"
+                    - "audio"
+                    - "source"
+                    - "canvas"
+                    - "textarea"
+                    - "frameset"
+                    - "frame"
+                    - "applet"
+                    - "noscript"
+
+                drop_elements:
+                    - "*:namespace"     # Block XML namespaces completely
+
+                drop_attributes:
+                    - "on*"             # Remove all JS events
+                    - "style"           # Remove CSS injections
+                    - "srcset"          # Prevent responsive JS exploits
+                    - "formaction"      # Prevent form exfiltration
+                    - "data-*"          # Prevent data transport payloads
+                    - "class"           # Remove CSS classes (MUST BE QUOTED)
+                    - "id"              # Remove DOM ids (MUST BE QUOTED)
+
+                force_attributes:
+                    "target": ["a", "_blank"]
+                    "rel": ["a", "noopener"]
+
+                force_https_urls: true
+
+                allowed_link_schemes: ["https"]
+                allowed_media_schemes: ["https"]
+
+                allow_relative_links: false
+                allow_relative_medias: false
+
+                max_input_length: 10000

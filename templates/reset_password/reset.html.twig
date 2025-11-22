@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reset your password{% endblock %}
+
+{% block body %}
+    <link rel="stylesheet" href="{{ asset('css/registerstyle.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+    <header>
+        <div class="container-fluid bg-cleo p-2 ps-4 text-center d-flex flex-wrap border-bottom border-bottom-dark shadow-sm">
+            <img class="" src="/img/logo.png" alt="" width="120" height="60">
+        </div>
+    </header>
+    <body class="overflow-hidden" id="bg-pattern">
+        <div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+            <div class="border border-dark-subtle rounded wrapper p-5">
+                <h1 class="text-center pt-5 fw-bold">Réinitialisation du mot de passe</h1>
+                {{ form_start(resetForm, {'attr': {'class': 'm-5'}}) }}
+                    <div class="form-floating mb-5">
+                        {{ form_widget(resetForm.plainPassword.first, {'attr': {'class': 'form-control border-dark-subtle mb-4', 'id': 'floatingInput', 'placeholder': 'Votre nouveau mot de passe'}}) }}
+                        <label for="floatingInput">Mot de passe</label>
+                    </div>
+                    <div class="form-floating mb-5">
+                        {{ form_widget(resetForm.plainPassword.second, {'attr': {'class': 'form-control border-dark-subtle', 'id': 'floatingInput2', 'placeholder': 'Votre nouveau mot de passe'}}) }}
+                        <label for="floatingInput2">Confirmez votre mot de passe</label>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <a class="btn btn-lg btn-danger me-3" href="{{ path('app_login') }}">Retour</a>
+                        <button class="btn btn-lg btn-cleo">Réinitialiser</button>
+                    </div>
+                {{ form_end(resetForm) }}
+            </div>
+        </div>
+    </body>
+
+{% endblock %}

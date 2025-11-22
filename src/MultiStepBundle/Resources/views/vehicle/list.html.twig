@@ -1,0 +1,108 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/bootstrapTable.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/customContainer.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/tablefiltercontrol.css') }}">
+{% endblock %}
+{% block body %}
+<div class="container">
+    <div class="container-title">Mes demandes de titre de circulations</div>
+    <div class="container-content">
+        <table class="table table-bordered table-hover" data-pagination="true" data-toggle="table" data-filter-control="true" data-click-to-select="true" data-sort-stable="true">
+            <thead>
+            <tr>
+                <th>Demande</th>
+                <th>Immatriculation</th>
+                <th>Propriétaire</th>
+                <th>Responsable</th>
+                <th>Date de la demande</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for step in steps %}
+                <tr>
+                    <td>{{ step.stepNumber }}</td>
+                    <td>{{ step.getInternalData('vehicle_step_two', 'registration_number') }}</td>
+                    <td>{{ step.getInternalData('vehicle_step_one', 'owner_or_renter') }}</td>
+                    <td>{{ step.getInternalData('vehicle_step_one', 'responsible_name') }}</td>
+                    <td>{{ step.getInternalData('vehicle_step_one', 'request_date') }}</td>
+                    <td>Déposé</td>
+                    <td>
+                        <a class="btn btn-cleo" href="{{ path('vehicle_access_show', {id: step.stepId}) }}">Voir</a>
+                        <a class="btn btn-cleo" href="{{ path('vehicle_access_edit', {id: step.stepId}) }}">Modifier</a>
+                        <form method="post" action="{{ path('vehicle_access_delete', {id: step.stepId}) }}" style="display:inline;" onsubmit="return confirm('Supprimer cet élément ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ step.stepId) }}">
+                            <button class="btn btn-danger" type="submit">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="7">Aucune demande de véhicules trouvés.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a class="btn btn-cleo .creer-demande" href="{{ path('vehicle_access_request') }}">Faire une demande</a>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const monthNames = ["janvier", "février", "mars", "avril", "mai", "juin",
+            "juillet", "août", "septembre", "octobre", "novembre", "décembre"
+        ];
+
+        // Select all rows except header
+        const rows = document.querySelectorAll("table tbody tr");
+
+        rows.forEach(row => {
+            const dateCell = row.cells[4]; // 3rd column: Date de la demande
+            let dateText = dateCell.textContent.trim();
+
+            let dateObj = null;
+
+            if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateText)) {
+                // Format: DD/MM/YYYY
+                const [day, month, year] = dateText.split('/');
+                dateObj = new Date(`${year}-${month}-${day}`);
+            } else if (/^\d{4}-\d{2}-\d{2}$/.test(dateText)) {
+                // Format: YYYY-MM-DD
+                dateObj = new Date(dateText);
+            }
+
+            if (dateObj instanceof Date && !isNaN(dateObj)) {
+                const day = String(dateObj.getDate()).padStart(2, '0');
+                const month = monthNames[dateObj.getMonth()];
+                const year = dateObj.getFullYear();
+                dateCell.textContent = `${day} ${month} ${year}`;
+            }
+        });
+    });
+</script>
+{% block extra_javascripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var $tables = $("table[data-toggle='table']");
+
+            // Rebuild each table so sort/search use data-value
+            $tables.each(function () {
+                var $t = $(this);
+
+                // Destroy auto-init (if already done), then re-init with our data
+                $t.btUseDataValue({
+                    escape: false,          // keep HTML from __display_*
+                    sortStable: true,
+                    locale: 'fr-FR',
+                    filterControl: $t.is('[data-filter-control]'),
+                    search: $t.is('[data-search]'),
+                    pagination: $t.is('[data-pagination]'),
+                    pageSize: $t.data('page-size') || 10
+                });
+
+                // optional: retrigger hooks some of your scripts listen to
+                $t.trigger('post-body.bs.table').trigger('load-success.bs.table');
+            });
+        });
+    </script>
+{% endblock %}
+{% endblock %}

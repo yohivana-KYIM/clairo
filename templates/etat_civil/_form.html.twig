@@ -1,0 +1,148 @@
+<link rel="stylesheet" href="{{ asset('css/mainform.css') }}">
+{# <header>
+    <div class="container-fluid bg-cleo p-2 ps-4 text-center d-flex flex-wrap border-bottom border-bottom-dark shadow-sm">
+        <img class="" src="{{ asset('/img/logo.png') }}" alt="" width="120" height="60">
+    </div>
+</header> #}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="container">
+        <nav class="d-flex justify-content-center" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                {% if intervention.id is defined %}
+                    <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0" href="{{ path('app_intervention_edit', {'id': intervention.id}) }}">Intervention</a></li>
+                {% else %}
+                    <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0">Intervention</a></li>
+                {% endif %}
+
+                {% if etatCivil.id is defined and etatCivil.id is not null %}
+                    <li class="breadcrumb-item active" aria-current="page"><a class="link-body-emphasis link-underline link-underline-opacity-0" href="{{ path('app_etat_civil_edit', {'id': etatCivil.id}) }}">Etat Civil</a></li>
+                {% else %}
+                    <li class="breadcrumb-item active" aria-current="page"><a class="link-body-emphasis link-underline link-underline-opacity-0">Etat Civil</a></li>
+                {% endif %}
+
+                {% if filiation.id is defined and filiation.id is not null %}
+                    <li class="breadcrumb-item active"><a class="link-underline link-underline-opacity-0" href="{{ path('app_filiation_edit', {'id': filiation.id}) }}">Filiation</a></li>
+                {% else %}
+                    <li class="breadcrumb-item active"><a class="link-underline link-underline-opacity-0">Filiation</a></li>
+                {% endif %}
+
+                {% if adresse.id is defined and adresse.id is not null %}
+                    <li class="breadcrumb-item active"><a class="link-underline link-underline-opacity-0" href="{{ path('app_adresse_edit', {'id': adresse.id}) }}">Adresse</a></li>
+                {% else %}
+                    <li class="breadcrumb-item active"><a class="link-underline link-underline-opacity-0">Adresse</a></li>
+                {% endif %}
+
+                {% if infoComplementaire.id is defined and infoComplementaire.id is not null %}
+                    <li class="breadcrumb-item active"><a class="link-underline link-underline-opacity-0" href="{{ path('app_info_complementaire_edit', {'id': infoComplementaire.id}) }}">Information Complementaire</a></li>
+                {% else %}
+                    <li class="breadcrumb-item active"><a class="link-underline link-underline-opacity-0">Information Complementaire</a></li>
+                {% endif %}
+
+                {% if documentPersonnel.id is defined and documentPersonnel.id is not null %}
+                    <li class="breadcrumb-item active"><a class="link-underline link-underline-opacity-0" href="{{ path('app_document_personnel_edit', {'id': documentPersonnel.id}) }}">Document Personnel</a></li>
+                {% else %}
+                    <li class="breadcrumb-item active"><a class="link-underline link-underline-opacity-0">Document Personnel</a></li>
+                {% endif %}
+
+                {% if documentProfessionnel.id is defined and documentProfessionnel.id is not null %}
+                    <li class="breadcrumb-item active"><a class="link-underline link-underline-opacity-0" href="{{ path('app_document_professionnel_edit', {'id': documentProfessionnel.id}) }}">Document professionnel</a></li>
+                {% else %}
+                    <li class="breadcrumb-item active"><a class="link-underline link-underline-opacity-0">Document professionnel</a></li>
+                {% endif %}
+                {% if intervention.id is defined and intervention.id is not null and etatCivil.id is defined and etatCivil.id is not null and  filiation.id is defined and filiation.id is not null and  adresse.id is defined and adresse.id is not null and  infoComplementaire.id is defined and infoComplementaire.id is not null and documentPersonnel.id is defined and documentPersonnel.id is not null and documentProfessionnel.id is defined and documentProfessionnel.id is not null %}
+                        <li class="breadcrumb-item" aria-current="page"><a class="link-underline link-underline-opacity-0"  href="{{ path('app_demande_titre_circulation_edit', {'id': demande.id}) }}">Récapitulatif</a></li>
+                {% else %}
+                    <li class="breadcrumb-item" aria-current="page"><a class="link-underline link-underline-opacity-0">Récapitulatif</a></li>
+                {% endif %}
+            </ol>
+        </nav>
+        <div class="border border-dark-subtle rounded-top info-form">
+            <div class="col-12 bg-cleo rounded-top p-0 m-0 h5">
+                <p class="p-3">Etat Civil</p>
+            </div>
+            {{ form_start(form) }}
+            <div class="row p-3">
+                <div class="col-lg-4 col-md-6">
+                    <div class="p-3 row">
+                        <label class="h5">Titre :<span style="color: red;">*</span></label>
+                        {{ form_row(form.titre, {'attr': {'class': 'is-invalid formvalidate'}}) }}
+                    </div>
+                    <div class="p-3 row">
+                        <label class="h5">Nom :<span style="color: red;">*</span></label>
+                        {{ form_row(form.Nom, {'attr': {'class': 'is-invalid formvalidate'}}) }}
+                    </div>
+                    <div class="p-3 row">
+                        <label class="h5">Prénom :<span style="color: red;">*</span></label>
+                        {{ form_row(form.prenom, {'attr': {'class': 'is-invalid formvalidate'}}) }}
+                    </div>
+                    <div class="p-3 row">
+                        <label class="h5">2ème Prénom :</label>
+                        {{ form_row(form.prenom2) }}
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="p-3 row">
+                        <label class="h5">3ème Prénom :</label>
+                        {{ form_row(form.prenom3) }}
+                    </div>
+                    <div class="p-3 row">
+                        <label class="h5">4ème Prénom :</label>
+                        {{ form_row(form.prenom4) }}
+                    </div>
+                    <div class="p-3 row">
+                        <label class="h5">Né(e) le :<span style="color: red;">*</span></label>
+                        {{ form_row(form.dateNaissance, {'attr': {'class': 'is-invalid '}}) }}
+                    </div>
+                    <div class="p-3 row">
+                        <label class="h5">Pays de naissance :<span style="color: red;">*</span></label>
+                        {{ form_row(form.paysNaissance, {'attr': {'class': 'is-invalid formvalidate'}}) }}
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="p-3 row">
+                        <label class="h5">Lieu de naissance :<span style="color: red;">*</span></label>
+                        {{ form_row(form.lieuNaissance, {'attr': {'class': 'is-invalid formvalidate'}}) }}
+                    </div>
+                    <div class="p-3 row">
+                        <label class="h5">Code postal de naissance :<span style="color: red;">*</span></label>
+                        {{ form_row(form.cpNaissance, {'attr': {'class': 'is-invalid formvalidate'}}) }}
+                    </div>
+                    <div class="p-3 row">
+                        <label class="h5">Arrondissement de naissance :</label>
+                        {{ form_row(form.arrondissementNaissance) }}
+                    </div>
+                    <div class="p-3 row">
+                        <label class="h5">Nom marital :</label>
+                        {{ form_row(form.nomMarital) }}
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="p-3 row">
+                        <label class="h5">Nationalité :<span style="color: red;">*</span></label>
+                        {{ form_row(form.nationalite, {'attr': {'class': 'francais_etranger is-invalid formvalidate'}}) }}
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-12 p-0 d-flex justify-content-around">
+                    <a class="btn btn-danger btn-lg me-3" href="{{ path('app_intervention_edit', {'id': intervention.id}) }}">
+                        <img src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32">
+                        Retour
+                    </a>
+                    <a href="{{ path('app_home') }}" class="btn btn-lg btn-cleo">
+                        Reprendre ultérieurement
+                    </a>
+                    <button class="btn btn-success btn-lg me-3">
+                        {{ button_label|default('Suivant') }}
+                        <img src="{{ asset('css/icons/arrow-right-short.svg') }}" width="32" height="32">
+                    </button>
+                    </div>
+                </div>
+            {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+{# <script src="{{ asset('/js/cpnaissance.js') }}"></script> #}
+<script src="{{ asset('/js/datenaissance.js') }}"></script>
+<script src="{{ asset('/js/formconfirmation.js') }}"></script>
+<script src="{{ asset('/js/etatcivil.js') }}"></script>

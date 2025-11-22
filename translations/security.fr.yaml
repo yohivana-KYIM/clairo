@@ -1,0 +1,5 @@
+files:
+  file_oversize: le fichier %filename% dépasse la taille maximale autorisée
+  unauthorized_file_types: '%filename% - Type de fichiers(%filetype%) non authorisés [ %types% ]'
+  multiples_extensions_denied: Les fichiers %filename% avec des extensions multiples ne sont pas autorisés.
+  security_issues: Le fichier %filename% contient des menaces de sécurité.

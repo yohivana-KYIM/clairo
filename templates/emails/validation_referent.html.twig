@@ -1,0 +1,7 @@
+<h2>Validation d’un nouvel utilisateur</h2>
+<p>L’utilisateur {{ user.email }} souhaite rejoindre votre entreprise : <strong>{{ entreprise.nom }}</strong>.</p>
+<p>Souhaitez-vous valider cette inscription ?</p>
+<p>
+    ✅ <a href="{{ app_url }}/referent/validate/{{ user.id }}/{{ validate_token }}">Oui, je valide</a><br>
+    ❌ <a href="{{ app_url }}/referent/reject/{{ user.id }}/{{ reject_token }}">Non, je refuse</a>
+</p>

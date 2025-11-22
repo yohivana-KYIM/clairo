@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Accueil | Fluxel{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+        <link rel="stylesheet" href="{{ asset('css/bootstrap5.3.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+        <link href="{{ asset('fontawesome/css/all.css') }}" rel="stylesheet">
+        {{ encore_entry_link_tags('app') }}
+        {% block stylesheets %}
+        {% endblock %}
+    </head>
+    <body>
+    {% set basePublicPath = app_public_path  %}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="flash-message {{ label }}">
+                {{ message }}
+                <span class="flash-close">&times;</span>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-cleo">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ path('app_home') }}">
+            <div class="logo-banner">
+                <img src="{{ asset('img/logo.png') }}" alt="Fluxel Logo" class="logo">
+            </div>
+        </a>
+        {% if app.user %}
+            {% if app.user.isReferentVerified %}
+                <button class="navbar-toggler bg-cleo" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active text-light" aria-current="page" href="{{ path('app_dashboard') }}">
+                                <i class="fas fa-tachometer-alt"></i> Tableau de bord
+                            </a>
+                        </li>
+                        <!-- Demandes -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" href="#" id="requestsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-file-alt"></i> Accès des personnes
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ path('person_access_request_from_null') }}">Créer une demande</a></li>
+                                <li><a class="dropdown-item" href="{{ path('person_access_request') }}">Continuer ma demande</a></li>
+                                <li><a class="dropdown-item" href="{{ path('person_access_list') }}">Suivi des demandes</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_mes_demandes') }}">Problèmes de carte</a></li>
+    {#                            {% if app.user.hasRole('ROLE_REFSECU') %}#}
+    {#                                <li><a class="dropdown-item" href="{{ path('app_demande_entreprise') }}">Validation des demandes</a></li>#}
+    {#                            {% endif %}#}
+                            </ul>
+                        </li>
+
+                        <!-- ACCESS Véhicules -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" href="#" id="vehicleDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-car"></i> Accès véhicules
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ path('vehicle_access_request') }}">Ajouter un accès</a></li>
+                                <li><a class="dropdown-item" href="{{ path('vehicle_access_list') }}">Gérer les accès</a></li>
+                                <li class="underdev"><a class="dropdown-item" href="{{ path('vehicle_access_history') }}">Historique des accès</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_mes_demandes') }}">Problèmes de carte</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- Carte d'accès -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" href="#" id="cardsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-id-card"></i> Cartes d’accès
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ path('app_cart') }}">Commander une carte</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_mes_commandes') }}">Suivi des cartes</a></li>
+                            </ul>
+                        </li>
+                        <!-- SETTINGS -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" href="#" id="settingsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-cogs"></i> Paramètres
+                            </a>
+                            <ul class="dropdown-menu">
+                                {% if app.user.hasRole('ROLE_ADMIN') %}
+                                    <li><a class="dropdown-item" href="{{ path('settings_general') }}">Paramètres généraux</a></li>
+                                {% endif %}
+                                <li><a class="dropdown-item" href="{{ path('settings_personalization') }}">Personnalisation</a></li>
+                                {% if app.user.hasRole('ROLE_ADMIN') %}
+                                    <li><a class="dropdown-item" href="{{ path('settings_security') }}">Sécurité</a></li>
+                                {% endif %}
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-khaki" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user"></i> {{ app.user.userIdentifier }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ path('messages_list') }}">Mes messages</a></li>
+                                {% if app.user.hasRole('ROLE_ADMIN') %}
+                                    <li><a class="dropdown-item" href="{{ path('app_user_index') }}">Gérer les utilisateurs</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_admin_dashboard_history') }}">Historique de connexion</a></li>
+                                {% endif %}
+                                {% if is_granted('IS_IMPERSONATOR') %}
+                                    <li>
+                                        <a class="dropdown-item"
+                                            href="{{ path('app_home', app.request.query.all | merge({'_switch_user': '_exit'})    | merge({'id': app.request.attributes.get('id')}) ) }}">
+                                            🔁 Usurpation(Quitter)
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                <li><a class="dropdown-item" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li>
+                            </ul>
+                        </li>
+                        {% if app.user.roles|length > 1 %}
+                            <li class="nav-item dropdown underdev">
+                                <a class="nav-link dropdown-toggle text-warning" href="#" id="activeRoleDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-mask"></i>
+                                    {% if app.session.get('active_role') %}
+                                        {{ app.session.get('active_role')| replace({'ROLE_': 'Espace '}) }}
+                                    {% else %}
+                                        Changer d'espace
+                                    {% endif %}
+                                </a>
+                                <ul class="dropdown-menu">
+                                    {% for role in app.user.roles %}
+                                        {% if role != app.session.get('active_role') %}
+                                            <li>
+                                                <a class="dropdown-item" href="{{ path('app_switch_role', {role: role}) }}">
+                                                    {{ role| replace({'ROLE_': 'Espace '}) }}
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if app.session.get('active_role') %}
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item text-danger" href="{{ path('app_unswitch_role') }}">
+                                                Espace initiale
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            {% else %}
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item dropdown">
+                            <a class="dropdown-item" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+                        </li>
+                    </ul>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</nav>
+{% block navbar %}{% endblock %}
+{% block body %}
+    <div class="container bg-khaki">
+        {% if app.user and app.user.isReferentVerified %}
+            {% block container %}
+                <div class="container-title text-center text-khaki mb-4">
+                    {% block containertitle %}{% endblock %}
+                </div>
+            {% endblock %}
+        {% else %}
+            <div class="container-title">
+                {% if app.user and not(app.user.entreprise) %}
+                    Pré-inscription réussie !
+                {% else %}
+                    En attente de validation de votre entreprise
+                {% endif %}
+            </div>
+
+            <p style="font-size: 16px; color: #333;">
+                ✅ Votre demande d'inscription a bien été prise en compte.
+            </p>
+
+            {% if app.user and not(app.user.entreprise) %}
+
+                <p style="font-size: 16px; color: #333;">
+                    🔎 Pour finaliser votre pré-inscription, merci de sélectionner votre <strong>entreprise</strong> ci-dessous.
+                </p>
+
+                <p style="font-size: 16px; color: #333;">
+                    ⏳ Une fois votre entreprise confirmée et votre référent sécurité informé, votre compte sera validé et vous recevrez un email pour activer toutes les fonctionnalités de la plateforme.
+                </p>
+
+                <form action="{{ path('app_user_submit_company') }}" method="POST" style="margin-top: 20px;">
+                    <div>
+                        <label for="company" style="font-size: 16px; color: #333; display: block; margin-bottom: 8px;">
+                            Sélectionnez votre entreprise :
+                        </label>
+                        <select id="company-select" class="form-control select2" name="company" style="width: 50%;">
+                            <option value="">-- Sélectionnez votre entreprise --</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-cleo">
+                        Soumettre
+                    </button>
+                </form>
+
+            {% endif %}
+
+            <p style="font-size: 16px; color: #333; margin-top: 20px;">
+                📬 Vous serez notifié par email dès que votre accès sera activé.
+            </p>
+
+            <p style="font-size: 16px; color: #333;">
+                Merci de votre collaboration !
+            </p>
+        {% endif %}
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        window.APP_BASE_PATH = '{{ app_base_path }}';
+        window.APP_PUBLIC_PATH = '{{ app_public_path }}';
+    </script>
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/select2.min.js') }}"></script>
+    <script src="{{ asset('js/fr.min.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                width: '100%',
+                placeholder: "...",
+                allowClear: true
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            $('.underdev').remove();
+        });
+    </script>
+    <script src="{{ asset('js/bootstrap-table.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrapTableFR.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap-table-filter-control.min.js') }}"></script>
+    <script>
+        if ($.fn.bootstrapTable) {
+            $.fn.bootstrapTable.locales['fr-FR'] = {
+                formatLoadingMessage: function () { return ''; },
+                formatRecordsPerPage: function (pageNumber) { return `${pageNumber} lignes par page`; },
+                formatShowingRows: function (pageFrom, pageTo, totalRows) {
+                    return `Affichage de ${pageFrom} à ${pageTo} sur ${totalRows} lignes`;
+                },
+                formatSearch: function () { return 'Rechercher'; },
+                formatNoMatches: function () { return 'Aucun enregistrement trouvé'; },
+                formatPaginationSwitch: function () { return 'Afficher/Masquer pagination'; },
+                formatRefresh: function () { return 'Rafraîchir'; },
+                formatToggle: function () { return 'Changer de vue'; },
+                formatColumns: function () { return 'Colonnes'; }
+            };
+            $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['fr-FR']);
+        } else {
+            console.error("Bootstrap Table n'est pas chargé correctement.");
+        }
+    </script>
+    <script src="{{ asset('js/bootstrap5.3.js') }}"></script>
+    <script src="{{ asset('fontawesome/js/all.js') }}"></script>
+    {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+    </body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleButton = document.querySelector('.toggle-optional-fields');
+            if (toggleButton) {
+                const table = document.querySelector('table');
+                if (!table) return;
+                const optionalHeaderCells = table.querySelectorAll('thead th.optional-field');
+
+                // Obtenir les index (positions) des colonnes optionnelles
+                const optionalIndexes = Array.from(optionalHeaderCells).map(th => Array.from(th.parentNode.children).indexOf(th));
+
+                // Fonction pour cacher/afficher les colonnes optionnelles
+                function toggleOptionalColumns() {
+                    const rows = table.querySelectorAll('tr');
+                    optionalIndexes.forEach(index => {
+                        rows.forEach(row => {
+                            const cells = row.children;
+                            if (cells[index]) {
+                                const cell = cells[index];
+                                cell.style.display = cell.style.display === 'none' ? '' : 'none';
+                                if (cell.style.display === 'none') {
+                                    toggleButton.textContent = 'Afficher les colonnes optionnelles';
+                                } else {
+                                    toggleButton.textContent = 'Masquer les colonnes optionnelles';
+                                }
+                            }
+                        });
+                    });
+                }
+
+                // Masquer par défaut
+                toggleOptionalColumns();
+
+                toggleButton.addEventListener('click', toggleOptionalColumns);
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // ==== Fonction d'initialisation ====
+            function initAdvancedSortAndFilter() {
+                const table = document.querySelector('table');
+                if (!table) return false;
+
+                const thead = table.querySelector('thead');
+                if (!thead) return false;
+
+                const ths = thead.querySelectorAll('tr:first-child th');
+                if (!ths.length) return false;
+
+                const tbody = table.querySelector('tbody');
+                if (!tbody) return false;
+
+                console.log("✔️ Tri & filtres avancés initialisés.");
+
+                let sortState = [];
+
+                // === Détection filtrable ===
+                const hasSearchable = Array.from(ths).some(th => th.classList.contains('col-searchable'));
+
+                if (hasSearchable && !thead.querySelector('.column-filter')) {
+                    const filterRow = document.createElement('tr');
+                    ths.forEach((th, index) => {
+                        const cell = document.createElement('th');
+
+                        if (th.classList.contains('col-searchable')) {
+                            const input = document.createElement('input');
+                            input.type = 'text';
+                            input.className = 'column-filter';
+                            input.dataset.column = index;
+                            input.placeholder = '🔍';
+                            cell.appendChild(input);
+                        }
+
+                        filterRow.appendChild(cell);
+                    });
+                    thead.appendChild(filterRow);
+                }
+
+                // === Filtrage ===
+                function applyFilter() {
+                    const filters = table.querySelectorAll('.column-filter');
+                    const rows = tbody.querySelectorAll('tr');
+
+                    rows.forEach(row => {
+                        let visible = true;
+
+                        filters.forEach(filter => {
+                            const colIndex = parseInt(filter.dataset.column);
+                            const filterValue = filter.value.trim().toLowerCase();
+                            const cell = row.children[colIndex];
+                            const cellValue = cell ? cell.textContent.trim().toLowerCase() : '';
+
+                            if (filterValue && !cellValue.includes(filterValue)) {
+                                visible = false;
+                            }
+                        });
+
+                        row.style.display = visible ? '' : 'none';
+                    });
+                }
+
+                function clearSortIndicators() {
+                    ths.forEach(th => {
+                        th.innerHTML = th.dataset.label || th.textContent.trim();
+                    });
+                }
+
+                function updateSortIndicators() {
+                    clearSortIndicators();
+                    sortState.forEach(({ index, direction }, i) => {
+                        const th = ths[index];
+                        th.dataset.label = th.dataset.label || th.textContent.trim();
+                        const arrow = direction === 'asc' ? ' 🔼' : ' 🔽';
+                        const badge = sortState.length > 1 ? ` <sup>${i + 1}</sup>` : '';
+                        th.innerHTML = th.dataset.label + arrow + badge;
+                    });
+                }
+
+                function sortTable() {
+                    const rows = Array.from(tbody.querySelectorAll('tr'));
+
+                    rows.sort((a, b) => {
+                        for (let { index, direction } of sortState) {
+                            let cellA = a.children[index]?.innerText.trim() || '';
+                            let cellB = b.children[index]?.innerText.trim() || '';
+                            let numA = parseFloat(cellA);
+                            let numB = parseFloat(cellB);
+
+                            if (!isNaN(numA) && !isNaN(numB)) {
+                                if (numA !== numB)
+                                    return direction === 'asc' ? numA - numB : numB - numA;
+                            } else if (cellA !== cellB) {
+                                return direction === 'asc'
+                                    ? cellA.localeCompare(cellB)
+                                    : cellB.localeCompare(cellA);
+                            }
+                        }
+                        return 0;
+                    });
+
+                    tbody.innerHTML = '';
+                    rows.forEach(row => tbody.appendChild(row));
+                    updateSortIndicators();
+                    applyFilter();
+                }
+
+                function updateSortState(th, mode, index) {
+                    const existingIndex = sortState.findIndex(s => s.index === index);
+
+                    if (mode === 'col-unisort') {
+                        let direction = th.dataset.direction?.toLowerCase() === 'desc' ? 'desc' : 'asc';
+                        if (existingIndex !== -1) {
+                            direction = sortState[existingIndex].direction === 'asc' ? 'desc' : 'asc';
+                        }
+                        sortState = [{ index, direction }];
+                    } else if (mode === 'col-multisort') {
+                        if (existingIndex === -1) {
+                            sortState.push({ index, direction: 'asc' });
+                        } else if (sortState[existingIndex].direction === 'asc') {
+                            sortState[existingIndex].direction = 'desc';
+                        } else {
+                            sortState.splice(existingIndex, 1);
+                        }
+                    }
+
+                    sortTable();
+                }
+
+                const hasUni = [...ths].some(th => th.classList.contains('col-unisort'));
+                const hasMulti = [...ths].some(th => th.classList.contains('col-multisort'));
+                const allowUni = hasUni && !hasMulti;
+                const allowMulti = hasMulti && !hasUni;
+
+                const multiPrioritized = [];
+
+                ths.forEach((th, index) => {
+                    const isUni = th.classList.contains('col-unisort');
+                    const isMulti = th.classList.contains('col-multisort');
+
+                    if (!isUni && !isMulti) return;
+                    const mode = isUni ? 'col-unisort' : 'col-multisort';
+                    const canUse = (isUni && allowUni) || (isMulti && allowMulti);
+                    if (!canUse) return;
+
+                    th.style.cursor = 'pointer';
+                    th.addEventListener('click', () => updateSortState(th, mode, index));
+                    th.addEventListener('dblclick', () => { sortState = []; sortTable(); });
+
+                    if (isMulti && th.dataset.direction) {
+                        const direction = th.dataset.direction?.toLowerCase() === 'desc' ? 'desc' : 'asc';
+                        const priority = th.dataset.prior ? parseInt(th.dataset.prior) : index;
+                        multiPrioritized.push({ index, direction, priority });
+                    }
+
+                    if (isUni && th.dataset.direction && allowUni) {
+                        const direction = th.dataset.direction?.toLowerCase() === 'desc' ? 'desc' : 'asc';
+                        sortState = [{ index, direction }];
+                    }
+                });
+
+                if (multiPrioritized.length > 0 && allowMulti) {
+                    sortState = multiPrioritized
+                        .sort((a, b) => a.priority - b.priority)
+                        .map(({ index, direction }) => ({ index, direction }));
+                }
+
+                table.querySelectorAll('.column-filter').forEach(input =>
+                    input.addEventListener('input', applyFilter)
+                );
+
+                sortTable();
+
+                return true; // important → indique succès
+            }
+
+            // ==== INTERVAL JUSQU’À CE QUE ÇA MARCHE ====
+            const interval = setInterval(() => {
+                if (initAdvancedSortAndFilter()) {
+                    clearInterval(interval);
+                }
+            }, 150);
+
+            // Sécurité → stop après 10 sec
+            setTimeout(() => clearInterval(interval), 10000);
+
+        });
+    </script>
+    <script>
+        // whenever one of the target inputs is edited…
+        const fieldNames = ['numvoie','distribution','ville','cp','numtel', 'tourEtc'];
+        const inputsSelector = fieldNames.map(name => `[name$="[${name}]"]`).join(',');
+        document.querySelectorAll(inputsSelector).forEach(input => {
+            input.addEventListener('input', function() {
+                const form   = this.closest('form');
+                const select = form.querySelector('.adresse-autocomplete');
+                if (select) {
+                    // clear the selection…
+                    select.value = '';
+                }
+            });
+        });
+        document.querySelectorAll('.adresse-autocomplete').forEach(select => {
+            select.addEventListener('change', function () {
+                const selected = this.selectedOptions[0];
+                if (!selected) return;
+
+                const form = this.closest('form');
+
+                const map = {
+                    id: this.dataset.targetId,
+                    numvoie: this.dataset.targetNumvoie,
+                    distribution: this.dataset.targetDistribution,
+                    ville: this.dataset.targetVille,
+                    cp: this.dataset.targetCp,
+                    numtel: this.dataset.targetNumtel,
+                };
+
+                Object.entries(map).forEach(([dataKey, fieldName]) => {
+                    const value = selected.dataset[dataKey];
+                    if (value !== undefined) {
+                        const input = form.querySelector(`[name$="[${fieldName}]"]`);
+                        if (input) {
+                            input.value = value;
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        (function() {
+            function fixEncodingUltra(input) {
+                if (!input) return '';
+
+                // Vérifie si le texte contient des motifs typiques de corruption
+                const suspicious = /Ã|â€|Â/;
+                if (!suspicious.test(input)) {
+                    return input; // On ne touche à rien si tout va bien
+                }
+
+                let output = input;
+
+                try {
+                    const bytes = new Uint8Array([...output].map(c => c.charCodeAt(0)));
+                    const decoded = new TextDecoder('utf-8').decode(bytes);
+                    if (decoded && decoded !== output && suspicious.test(decoded)) {
+                        output = decoded;
+                    }
+                } catch (_) {}
+
+                const replacements = {
+                    'Ã ': 'à', 'Ã¢': 'â', 'Ã¤': 'ä',
+                    'Ã§': 'ç',
+                    'Ã¨': 'è', 'Ã©': 'é', 'Ãª': 'ê', 'Ã«': 'ë',
+                    'Ã®': 'î', 'Ã¯': 'ï',
+                    'Ã´': 'ô', 'Ã¶': 'ö',
+                    'Ã¹': 'ù', 'Ã»': 'û', 'Ã¼': 'ü',
+                    'Ãœ': 'Ü', 'Ã–': 'Ö',
+                    'Ã€': 'À', 'Ã‚': 'Â', 'Ã‰': 'É', 'Ãˆ': 'È',
+                    'ÃŽ': 'Î', 'ÃŸ': 'ß',
+                    'Ã±': 'ñ',
+                    'â‚¬': '€',
+                    'â€š': '‚', 'â€ž': '„',
+                    'â€¦': '…',
+                    'â€': '†', 'â€¡': '‡',
+                    'â€°': '‰',
+                    'â€¹': '‹',
+                    'â€™': '’', 'â€œ': '“', 'â€�': '”',
+                    'â€¢': '•', 'â€“': '–', 'â€”': '—',
+                    'â„¢': '™',
+                    'â€˜': '‘',
+                    'Â«': '«', 'Â»': '»',
+                    'Â': '',
+                };
+
+                for (const [bad, good] of Object.entries(replacements)) {
+                    output = output.split(bad).join(good);
+                }
+
+                output = output.replace(/\uFFFD/g, '');
+                output = output.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+                output = output.replace(/\u00A0/g, ' ').replace(/\uFEFF/g, '');
+                return output.trim();
+            }
+
+            function fixAllTextNodes() {
+                const walker = document.createTreeWalker(
+                    document.body,
+                    NodeFilter.SHOW_TEXT,
+                    null,
+                    false
+                );
+
+                let node;
+                while (node = walker.nextNode()) {
+                    if (/[Ãâ€Â]/.test(node.nodeValue)) {
+                        const fixed = fixEncodingUltra(node.nodeValue);
+                        if (fixed !== node.nodeValue) {
+                            node.nodeValue = fixed;
+                        }
+                    }
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', fixAllTextNodes);
+        })();
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.flash-close').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    this.parentElement.style.display = 'none';
+                });
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const companySelect = document.getElementById('company-select');
+
+            // Config API URL et clés (à partir de tes data-* )
+            const apiUrl = '/api/autocomplete?query=';
+            const keyId = 'siret';
+            const keyLabel = 'uniteLegale.denominationUniteLegale';
+
+            if (companySelect) {
+                if (companySelect.length === 0) return;
+                let debounceTimer;
+
+                const query = 'all';
+                if (query.length < 2) {
+                    return; // éviter requêtes inutiles
+                }
+
+                fetch(apiUrl + encodeURIComponent(query) + '&source=sirene' + '&strict=true')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Vider le select
+                        companySelect.innerHTML = '<option value="">-- Sélectionnez votre entreprise --</option>';
+
+                        // Remplir les options
+                        data.forEach(item => {
+                            const id = getNestedValue(item, keyId);
+                            const label = getNestedValue(item, keyLabel);
+
+                            const option = document.createElement('option');
+                            option.value = id;
+                            option.textContent = label + ' (' + id + ')';
+                            companySelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors du chargement des entreprises :', error);
+                    });
+            }
+        }, 300); // debounce 300ms
+
+            // Helper pour lire une clé imbriquée
+        function getNestedValue(obj, keyPath) {
+            return keyPath.split('.').reduce((o, k) => (o && o[k] !== undefined) ? o[k] : '', obj);
+        }
+    </script>
+    <script src="{{ asset('js/bootstrap-table.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrapTableFR.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap-table-filter-control.min.js') }}"></script>
+    <script>
+        (function () {
+            const $table = $('[data-toggle="table"]');
+
+            // 1) Locale FR + messages bootstrap-table
+            (function registerFrenchLocale() {
+                const plural = (n, s, p) => (Number(n) > 1 ? p : s);
+                $.fn.bootstrapTable.locales['fr-FR'] = {
+                    formatLoadingMessage() { return ''; },
+                    formatNoMatches() {
+                        // Message vide FR propre
+                        return 'Aucune demande trouvée.';
+                        // ou : return 'Aucune demande de titre de circulation trouvée.';
+                    },
+                    formatRecordsPerPage(pageNumber) {
+                        return `${pageNumber} ${plural(pageNumber, 'ligne par page', 'lignes par page')}`;
+                    },
+                    formatShowingRows(from, to, total) {
+                        // Corrige "1 à 1 sur 1" alors qu'il n'y a aucune donnée
+                        if (!total || total === 0) {
+                            return 'Affichage de 0 à 0 sur 0 ligne';
+                        }
+                        // from/to/total réels
+                        const unit = plural(total, 'ligne', 'lignes');
+                        return `Affichage de ${from} à ${to} sur ${total} ${unit}`;
+                    }
+                };
+                $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['fr-FR']);
+            })();
+
+            // 2) Nettoyage : retirer d’éventuelles lignes "hardcodées" de type "Aucune demande…"
+            (function removeManualEmptyRow() {
+                const $tbody = $table.find('tbody');
+                $tbody.find('tr').each(function () {
+                    const $tds = $(this).find('td');
+                    if ($tds.length === 1 && /Aucune demande/i.test($tds.text().trim())) {
+                        $(this).remove();
+                    }
+                });
+            })();
+
+            // 3) Renommer l’entête "Demande" → "N° de demande"
+            (function renameHeader() {
+                const $th = $table.find('thead th[data-field="demande"] .th-inner');
+                if ($th.length) $th.text('N° de demande');
+            })();
+
+            // 4) Accessibilité + placeholders des filtres
+            (function enhanceFiltersA11y() {
+                const setPh = (sel, ph, aria) => {
+                    const $el = $(sel);
+                    if ($el.length) {
+                        if ($el.is('input')) $el.attr('placeholder', ph);
+                        if (aria) $el.attr('aria-label', aria);
+                    }
+                };
+                setPh('.bootstrap-table-filter-control-demande', 'Rechercher une référence', 'Recherche par référence');
+                setPh('.bootstrap-table-filter-control-nom', 'Rechercher un nom', 'Recherche par nom');
+                setPh('.bootstrap-table-filter-control-prenom', 'Rechercher un prénom', 'Recherche par prénom');
+                setPh('.bootstrap-table-filter-control-comment', 'Rechercher un commentaire', 'Recherche par commentaire');
+
+                // Selects : mettre "— Tous —" sur l’option vide
+                const setSelectAllLabel = (sel) => {
+                    const $s = $(sel);
+                    if ($s.length) {
+                        const $opt = $s.find('option').first();
+                        $opt.text('— Tous —');
+                        $s.attr('aria-label', 'Filtre');
+                    }
+                };
+                setSelectAllLabel('.bootstrap-table-filter-control-date');
+                setSelectAllLabel('.bootstrap-table-filter-control-status');
+                setSelectAllLabel('.bootstrap-table-filter-control-place');
+            })();
+
+            // 5) Empty state + (dés)activation des filtres selon le nombre de lignes
+            function applyEmptyStateAndFilters() {
+                const opts = $table.bootstrapTable('getOptions') || {};
+                // totalRows est maintenu par bootstrap-table
+                const total = opts.totalRows != null ? opts.totalRows : $table.bootstrapTable('getData').length;
+
+                // Empty state DOM (à côté du tableau)
+                const $container = $table.closest('.bootstrap-table');
+                $container.find('.no-records-found').remove();
+                let $empty = $container.siblings('.empty-state');
+                const $cta = $('a.btn.btn-cleo.creer-demande');
+
+                // Désactivation des filtres si 0 résultat
+                const $filters = $table.find('.filter-control .form-control, .filter-control .form-select');
+
+                if (!total || total === 0) {
+                    // Créer l’empty state si absent
+                    if ($empty.length === 0) {
+                        $empty = $(`
+                          <div class="empty-state">
+                            <div>Aucune demande de titre de circulation trouvée.</div>
+                            <div class="actions"></div>
+                          </div>
+                        `);
+                        $container.after($empty);
+                    }
+                    // Mettre le CTA dedans
+                    if ($cta.length && !$empty.find('.actions').find($cta).length) {
+                        $empty.find('.actions').append($cta);
+                    }
+                    // Désactiver les filtres
+                    $filters.prop('disabled', true);
+                    // Forcer l’info pagination en "0 à 0 sur 0"
+                    $container.find('.pagination-info').text('Affichage de 0 à 0 sur 0 ligne');
+                    // Masquer la pagination visuelle
+                    $container.find('.pagination').hide();
+                } else {
+                    // Réactiver filtres
+                    $filters.prop('disabled', false);
+                    // Supprimer l’empty state si présent
+                    if ($empty.length) $empty.remove();
+                    // Remettre le CTA sous la table si on l’avait déplacé
+                    if ($cta.length && !$cta.closest('.container-content').length) {
+                        $('.container-content').append($cta);
+                    }
+                    // Laisser bootstrap-table gérer le texte via formatShowingRows
+                    $container.find('.pagination').show();
+                }
+            }
+
+            // 6) Hooker les événements bootstrap-table pour être toujours à jour
+            $table
+                .on('load-success.bs.table', applyEmptyStateAndFilters)
+                .on('post-body.bs.table', applyEmptyStateAndFilters)
+                .on('page-change.bs.table', applyEmptyStateAndFilters)
+                .on('search.bs.table', applyEmptyStateAndFilters)
+                .on('column-switch.bs.table', applyEmptyStateAndFilters);
+
+            // 7) Initial pass (si déjà rendu côté serveur)
+            // Si la table n'a pas été initialisée par JS (cas markup + data-*), bootstrap-table
+            // a déjà injecté ses structures. On applique notre logique immédiatement.
+            applyEmptyStateAndFilters();
+        })();
+    </script>
+    <script>
+        (function () {
+            // Ciblez votre tableau (ajustez le sélecteur si besoin)
+            var $table = $("table[data-toggle='table']");
+
+            function cellIsEmpty(td) {
+                if (!td) return true;
+                // texte vide ?
+                var textEmpty = (td.textContent || "").trim() === "";
+                // pas d'éléments "utiles" ?
+                var noUsefulChild = td.querySelectorAll("img,button,a,input,select,textarea").length === 0;
+                // pas d'attributs de données non vides (ex. data-i18n)
+                var dataI18n = td.getAttribute("data-i18n");
+                var dataNonEmpty = dataI18n && dataI18n.trim() !== "";
+                return textEmpty && noUsefulChild && !dataNonEmpty;
+            }
+
+            function updateEmptyColumns() {
+                // Pour chaque <th>, on vérifie la colonne correspondante
+                $table.find("thead th").each(function (i, th) {
+                    var field = $(th).data("field"); // nécessaire pour l'API bootstrapTable
+                    if (!field) return; // ignore les colonnes sans data-field (ex: Actions)
+
+                    var tds = $table.find("tbody tr td:nth-child(" + (i + 1) + ")");
+                    if (tds.length === 0) return;
+
+                    var allEmpty = true;
+                    tds.each(function (_, td) {
+                        if (!cellIsEmpty(td)) {
+                            allEmpty = false;
+                            return false; // break
+                        }
+                    });
+
+                    // Masque/Affiche via l'API officielle (plus propre que le CSS seul)
+                    try {
+                        if (allEmpty) {
+                            $table.bootstrapTable("hideColumn", field);
+                        } else {
+                            $table.bootstrapTable("showColumn", field);
+                        }
+                    } catch (e) {
+                        // Fallback si l'API n'est pas dispo : on masque par CSS
+                        var display = allEmpty ? "none" : "";
+                        // th / td / tfoot
+                        $table.find("thead th:nth-child(" + (i + 1) + ")").css("display", display);
+                        $table.find("tbody td:nth-child(" + (i + 1) + ")").css("display", display);
+                        $table.find("tfoot td:nth-child(" + (i + 1) + ")").css("display", display);
+                    }
+                });
+            }
+
+            // Recalcule après chaque rendu pertinent du plugin
+            $table.on("post-body.bs.table page-change.bs.table search.bs.table load-success.bs.table", updateEmptyColumns);
+
+            // Premier passage (au cas où le tableau est déjà présent)
+            $(updateEmptyColumns);
+        })();
+    </script>
+    <script>
+        (function () {
+            var $table = $("table[data-toggle='table']");
+
+            function centerActionsColumn() {
+                // dernier <th> contenant "Actions"
+                var $th = $table.find("thead th").filter(function () {
+                    var raw = $(this).text().trim();
+                    var inner = $(this).find(".th-inner").text().trim();
+                    return (raw || inner).toLowerCase().includes("actions");
+                }).last();
+
+                if (!$th.length) return;
+
+                var colIndex = $th.index() + 1;
+
+                // centre l’en-tête
+                $th.css("text-align", "center");
+
+                // centre les cellules (vertical + horizontal)
+                var $cells = $table.find("tbody td:nth-child(" + colIndex + ")");
+                $cells.addClass("actions-cell");
+            }
+
+            $(centerActionsColumn);
+            $table.on(
+                "post-header.bs.table post-body.bs.table page-change.bs.table search.bs.table load-success.bs.table",
+                centerActionsColumn
+            );
+        })();
+    </script>
+    <script>
+        (function ($) {
+            $.fn.btUseDataValue = function (opts) {
+                return this.each(function () {
+                    var $table = $(this);
+
+                    // Détruire l’auto-init éventuel
+                    if ($table.data('bootstrap.table')) {
+                        $table.bootstrapTable('destroy');
+                    }
+
+                    // ===== 1) Colonnes depuis l’en-tête =====
+                    var cols = [];
+                    $table.find('thead tr:first th').each(function (i) {
+                        var $th   = $(this);
+                        var field = $th.data('field');
+
+                        // Fallback si pas de data-field : déduire "actions" ou nommer automatiquement
+                        if (!field) {
+                            var titleTxt = ($th.find('.th-inner').text().trim() || $th.text().trim()).toLowerCase();
+                            field = titleTxt.includes('actions') ? 'actions' : '__col_' + i;
+                        }
+
+                        // Capturer le nom pour le formatter (évite le bug de fermeture)
+                        const fieldName = field;
+
+                        var col = {
+                            field: fieldName,
+                            title: ($th.find('.th-inner').text().trim() || $th.text().trim()),
+                            // tri autorisé uniquement si demandé
+                            sortable: $th.is('[data-sortable]'),
+                            // Affiche le HTML d’origine, trie/recherche sur row[field]
+                            formatter: function (value, row) {
+                                return (row && row['__display_' + fieldName] != null) ? row['__display_' + fieldName] : (value ?? '');
+                            }
+                        };
+
+                        // recopier data-* usuels (filter-control, searchable, align, class, etc.)
+                        $.each(this.attributes, function () {
+                            if (!this || !this.name) return;
+                            if (this.name.startsWith('data-')) {
+                                var key = this.name.replace(/^data-/, '').replace(/-([a-z])/g, function (_, c) { return c.toUpperCase(); });
+                                if (key !== 'field' && key !== 'toggle') col[key] = $th.data(key);
+                            }
+                        });
+
+                        // Règles spécifiques Actions
+                        if (fieldName === 'actions') {
+                            col.sortable    = false;
+                            col.searchable  = false;
+                            col.switchable  = false;
+                            col.align       = col.align || 'center';
+                            col.valign      = col.valign || 'middle';
+                        }
+
+                        cols.push(col);
+                    });
+
+                    // ===== 2) Données depuis le DOM (utilise data-value si présent) =====
+                    var data = [];
+                    $table.find('tbody tr').each(function () {
+                        var row = {};
+                        $(this).children('td,th').each(function (i) {
+                            var c = cols[i];
+                            if (!c) return; // sécurité
+                            var fieldName = c.field;
+                            var dv = this.getAttribute('data-value');
+                            // valeur de tri/recherche
+                            row[fieldName] = (dv != null && dv !== '') ? dv : (this.textContent || '').trim();
+                            // contenu HTML d’origine pour l’affichage
+                            row['__display_' + fieldName] = (this.innerHTML || '').trim();
+                        });
+                        data.push(row);
+                    });
+
+                    // ===== 3) Initialisation Bootstrap-Table =====
+                    var finalOptions = $.extend(true, {
+                        columns: cols,
+                        data: data,
+                        sortStable: true,
+                        escape: false,   // IMPORTANT pour les boutons HTML
+                        locale: 'fr-FR'
+                    }, opts || {});
+
+                    $table.bootstrapTable(finalOptions);
+                });
+            };
+        })(jQuery);
+    </script>
+    <script>
+        /* ===================================================================
+           ANTI-XSS ENTERPRISE SHIELD – CLIENT-SIDE BAN MODE 100%
+           - Analyse heuristique anti-payload
+           - Auto-ban local après 3 tentatives (no server)
+           - Bannissement complet de l'accès
+           =================================================================== */
+
+        (function() {
+
+            /* ---------------------------------------------------------------
+               BAN SYSTEM (Local uniquement — aucun serveur)
+               --------------------------------------------------------------- */
+            const MAX_ATTEMPTS = 3;
+            const STORAGE_KEY = "xss_local_ban_counter";
+            const BAN_FLAG = "xss_ban_active";
+
+            function getAttempts() {
+                return parseInt(localStorage.getItem(STORAGE_KEY) || "0", 10);
+            }
+
+            function incrementAttempts() {
+                const newValue = getAttempts() + 1;
+                localStorage.setItem(STORAGE_KEY, String(newValue));
+                return newValue;
+            }
+
+            function activateBan() {
+                localStorage.setItem(BAN_FLAG, "true");
+
+                document.body.innerHTML = `
+            <div style="
+                background:#2a0000;
+                color:#ff4444;
+                padding:80px;
+                text-align:center;
+                font-size:24px;
+                height:100vh;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-family:sans-serif;
+            ">
+                🚫 Accès bloqué pour raisons de sécurité.<br><br>
+                Votre comportement a été identifié comme dangereux.
+            </div>
+        `;
+            }
+
+            function isBanned() {
+                return localStorage.getItem(BAN_FLAG) === "true";
+            }
+
+            // Si déjà banni → bloquer tout de suite
+            if (isBanned()) {
+                setTimeout(activateBan, 0);
+                return;
+            }
+
+
+            /* ---------------------------------------------------------------
+               HEURISTIC ENGINE (complexe)
+               --------------------------------------------------------------- */
+            const heuristics = [
+                /<script/i,
+                /<\/script>/i,
+                /on\w+=/i,
+                /javascript:/i,
+                /data:/i,
+                /vbscript:/i,
+                /<svg/i,
+                /<iframe/i,
+                /<img/i,
+                /expression\s*\(/i,
+                /%3C/i, /%3E/i,
+                /&#/i,
+                /\\x[0-9A-F]{2}/i,
+                /\\u[0-9A-F]{4}/i,
+                /alert\s*\(/i,
+                /prompt\s*\(/i,
+                /confirm\s*\(/i,
+                /\[\]/i,
+                /\(!\)/i,
+                /!!\[\]/i,
+                /([A-Za-z0-9]{150,})/,
+                /innerHTML/i,
+                /document\.cookie/i,
+                /fetch\s*\(/i,
+                /XMLHttpRequest/i,
+                /<\/\s*textarea/i,
+                /<\/\s*style/i,
+                /<\/\s*title/i
+            ];
+
+            function isMalicious(value) {
+                return heuristics.some(regex => regex.test(value));
+            }
+
+
+            /* ---------------------------------------------------------------
+               CLEANING ROUTINE
+               --------------------------------------------------------------- */
+            function sanitize(value) {
+                return value.replace(/[<>]/g, "");
+            }
+
+
+            function analyzeAndClean(el) {
+                const editable = el.hasAttribute("contenteditable");
+                const input = editable ? el.innerText : el.value;
+                if (!input) return;
+
+                // Détection heuristique
+                if (isMalicious(input)) {
+
+                    console.error("🚨 XSS Attempt Detected:", input);
+
+                    const attempts = incrementAttempts();
+
+                    if (attempts >= MAX_ATTEMPTS) {
+                        activateBan();
+                        return;
+                    }
+
+                    showWarn(el);
+
+                    const safe = sanitize(input);
+                    if (editable) el.innerText = safe;
+                    else el.value = safe;
+                }
+            }
+
+
+            /* ---------------------------------------------------------------
+               WARNING UX
+               --------------------------------------------------------------- */
+            function showWarn(el) {
+                if (el.dataset.warned === "true") return;
+
+                const msg = document.createElement("div");
+                msg.textContent = "⚠️ Entrée bloquée — sécurité active.";
+                msg.style.cssText = `
+            font-size:12px; color:#900;
+            margin-top:4px;
+        `;
+
+                el.insertAdjacentElement("afterend", msg);
+                el.dataset.warned = "true";
+
+                setTimeout(() => msg.remove(), 3500);
+            }
+
+
+            /* ---------------------------------------------------------------
+               EVENT BINDING
+               --------------------------------------------------------------- */
+            const EVENTS = ["input", "paste", "change", "keyup", "blur"];
+
+            function protect(el) {
+                if (el.dataset.protected === "true") return;
+
+                EVENTS.forEach(evt => {
+                    el.addEventListener(evt, () => analyzeAndClean(el));
+                });
+
+                el.dataset.protected = "true";
+            }
+
+            function protectAll() {
+                const SEL = `
+            input[type=text],
+            input[type=email],
+            input[type=url],
+            input[type=tel],
+            input:not([type]),
+            textarea,
+            [contenteditable=true]
+        `;
+                document.querySelectorAll(SEL).forEach(protect);
+            }
+
+
+            /* ---------------------------------------------------------------
+               OBSERVER DOM (ajouts dynamiques)
+               --------------------------------------------------------------- */
+            const mo = new MutationObserver(protectAll);
+            mo.observe(document.body, { childList: true, subtree: true });
+
+            document.addEventListener("DOMContentLoaded", protectAll);
+
+        })();
+    </script>
+    <script>
+        /* ============================================================================
+           ULTRA–SHIELD™  (XSS + SQL + ENTROPY + BEHAVIOR + GHOST + 24H BAN)
+           FRONT-END SECURITY SUITE – 100% CLIENT-SIDE
+           ============================================================================ */
+
+        (function() {
+
+            /*--------------------------------------------------------------
+              BAN 24H
+              --------------------------------------------------------------*/
+            const BAN_KEY = "shield_ban_until";
+            const ATTEMPT_KEY = "shield_attempts";
+            const BAN_DURATION = 24 * 60 * 60 * 1000;
+            const MAX_ATTEMPTS = 3;
+
+            const now = () => Date.now();
+
+            const isBanned = () =>
+                now() < parseInt(localStorage.getItem(BAN_KEY) || "0", 10);
+
+            const activateBan = () => {
+                localStorage.setItem(BAN_KEY, String(now() + BAN_DURATION));
+
+                document.addEventListener("click", e => e.preventDefault(), true);
+                document.addEventListener("submit", e => e.preventDefault(), true);
+                document.addEventListener("input", e => e.preventDefault(), true);
+
+                document.body.style.opacity = "0.6";
+                document.body.style.pointerEvents = "none";
+            };
+
+            if (isBanned()) { activateBan(); return; }
+
+            const addAttempt = () => {
+                const v = parseInt(localStorage.getItem(ATTEMPT_KEY) || "0", 10) + 1;
+                localStorage.setItem(ATTEMPT_KEY, String(v));
+                return v;
+            };
+
+
+            /*--------------------------------------------------------------
+               HEURISTICS (XSS + SQL)
+              --------------------------------------------------------------*/
+            const patterns = [
+                // XSS
+                /<script/i, /<\/script>/i, /on\w+=/i, /javascript:/i, /data:/i,
+                /vbscript:/i, /<svg/i, /<iframe/i, /<img/i, /expression\s*\(/i,
+                /%3C/i, /%3E/i, /&#/i, /\\x[0-9A-F]{2}/i, /\\u[0-9A-F]{4}/i,
+                /alert\s*\(/i, /prompt\s*\(/i, /confirm\s*\(/i,
+                /\[\]/i, /\(!\)/i, /!!\[\]/i,
+
+                // SQL
+                /\bselect\b/i, /\bupdate\b/i, /\bdelete\b/i, /\binsert\b/i,
+                /\bdrop\b/i, /\bjoin\b/i, /\bunion\b/i, /\border\s+by\b/i,
+                /\bgroup\s+by\b/i, /--/i, /#/i, /%27/i, /%22/i, /%2D%2D/i,
+                /\bor\s+\d+=\d+/i, /\band\s+\d+=\d+/i,
+
+                // Long payloads
+                /[A-Za-z0-9]{160,}/,
+            ];
+
+            const isMalicious = (v) => patterns.some(rx => rx.test(v));
+
+
+            /*--------------------------------------------------------------
+               ENTROPY DETECTION
+              --------------------------------------------------------------*/
+            function entropy(str) {
+                if (str.length === 0) return 0;
+                const freq = {};
+                for (let c of str) freq[c] = (freq[c] || 0) + 1;
+                let e = 0;
+                for (let c in freq) {
+                    const p = freq[c] / str.length;
+                    e -= p * Math.log2(p);
+                }
+                return e;
+            }
+
+            const isEntropySuspicious = (v) =>
+                entropy(v) > 4.5 && v.length > 25;   // threshold for complex payloads
+
+
+            /*--------------------------------------------------------------
+               BEHAVIOR ANALYTICS (anti-bot)
+              --------------------------------------------------------------*/
+            let lastInputTime = 0;
+            let pasteCount = 0;
+            let burstCount = 0;
+
+            document.addEventListener("paste", () => pasteCount++);
+            document.addEventListener("keyup", () => {
+                const t = now();
+                if (t - lastInputTime < 40) burstCount++;  // too fast typing → automation
+                lastInputTime = t;
+            });
+
+            const behaviorSuspicious = () =>
+                pasteCount > 6 || burstCount > 40;
+
+
+            /*--------------------------------------------------------------
+               SILENT CLEANERS (Ghost)
+              --------------------------------------------------------------*/
+            const cleanXSS = (v) => v.replace(/[<>]/g, "");
+            const cleanSQL = (v) =>
+                v.replace(/['"`]/g, "")
+                    .replace(/;/g, "")
+                    .replace(/--/g, "")
+                    .replace(/#/g, "")
+                    .replace(/\\/g, "")
+                    .replace(/\//g, "");
+
+            const clean = (v) => cleanSQL(cleanXSS(v));
+
+
+            /*--------------------------------------------------------------
+               PROCESS FIELD
+              --------------------------------------------------------------*/
+            function process(el) {
+                const editable = el.hasAttribute("contenteditable");
+                const raw = editable ? el.innerText : el.value;
+                if (!raw || isBanned()) return;
+
+                // Heuristic triggers
+                if (isMalicious(raw) || isEntropySuspicious(raw) || behaviorSuspicious()) {
+
+                    const attempts = addAttempt();
+                    if (attempts >= MAX_ATTEMPTS) {
+                        activateBan();
+                        return;
+                    }
+
+                    // Ghost cleaning
+                    const safe = clean(raw);
+                    if (editable) el.innerText = safe;
+                    else el.value = safe;
+                }
+            }
+
+
+            /*--------------------------------------------------------------
+               PROTECT ALL FIELDS
+              --------------------------------------------------------------*/
+            const EVENTS = ["input", "paste", "change", "keyup"];
+
+            function protect(el) {
+                if (el.dataset.shield === "1") return;
+                EVENTS.forEach(evt =>
+                    el.addEventListener(evt, () => process(el))
+                );
+                el.dataset.shield = "1";
+            }
+
+            function protectAll() {
+                document.querySelectorAll(`
+            input[type=text],
+            input[type=email],
+            input[type=url],
+            input[type=tel],
+            input:not([type]),
+            textarea,
+            [contenteditable=true]
+        `).forEach(protect);
+            }
+
+            const observer = new MutationObserver(protectAll);
+            observer.observe(document.body, { childList: true, subtree: true });
+
+            document.addEventListener("DOMContentLoaded", protectAll);
+
+        })();
+    </script>
+    {% block extra_javascripts %}{% endblock %}
+</html>
+
+

@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}DemandeTitreCirculation{% endblock %}
+
+{% block body %}
+    <h1>DemandeTitreCirculation</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ demande_titre_circulation.id }}</td>
+            </tr>
+            <tr>
+                <th>Intervention</th>
+                <td>{{ demande_titre_circulation.intervention.id }}</td>
+                <td>{{ demande_titre_circulation.intervention.motif }}</td>
+            </tr>
+            <tr>
+                <th>Utilisateur</th>
+                <td>{{ demande_titre_circulation.user.email }}</td>
+            </tr>
+            <tr>
+                <th>Created_at</th>
+                <td>{{ demande_titre_circulation.createdAt ? demande_titre_circulation.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Validated_at</th>
+                <td>{{ demande_titre_circulation.validatedAt ? demande_titre_circulation.validatedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Ip</th>
+                <td>{{ demande_titre_circulation.ip }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_demande_titre_circulation_index') }}">back to list</a>
+
+    <a href="{{ path('app_demande_titre_circulation_edit', {'id': demande_titre_circulation.id}) }}">edit</a>
+
+    {{ include('demande_titre_circulation/_delete_form.html.twig') }}
+{% endblock %}

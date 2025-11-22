@@ -1,0 +1,17 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+multi_step_bundle:
+    resource: "../src/MultiStepBundle/Resources/config/routes.yaml"
+    type: yaml
+admin_bundle:
+    resource: "../src/AdminBundle/Resources/config/routes.yaml"
+    type: yaml
+sorting_bundle:
+    resource: "../src/AdminBundle/SubBundles/SortingBundle/Resources/config/routes.yaml"
+    type: yaml
+app_integration_autocomplete:
+    resource: '../src/AppIntegrationBundle/Resources/config/routes.yaml'
+    type: yaml

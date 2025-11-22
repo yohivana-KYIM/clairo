@@ -1,0 +1,163 @@
+{# <link rel="stylesheet" href="{{ asset('css/bootstrap5.3.css') }}"> #}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    .container {
+        width: 100%;
+        margin: 0 auto;
+        margin-top: 5%;
+    }
+
+    .footer-container {
+        width: 100%;
+        text-align: center;
+        margin-top: auto;
+    }
+
+    .d-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    h1 {
+        text-align: center;
+        margin: 0;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    th,
+    td {
+        border: 1px solid #000;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .border-dark {
+        border-color: #000;
+    }
+
+    .row {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .col-6 {
+        flex: 0 0 48%;
+        max-width: 48%;
+    }
+
+    .mt-3 {
+        margin-top: 3%;
+    }
+
+    .order-1 {
+        order: 1;
+    }
+
+    .order-2 {
+        order: 2;
+    }
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<base href="http://localhost">
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between p-4">
+        <img src="{{ asset('img/logo.png') }}" width="150" height="80">
+        <p>FLUXEL S.A.S <br>
+        Société par Actions Simplifiée <br>
+        Route Gay-Lussac - BP 43 - 13117 Lavéra <br>
+        SIRET 530042662200011 - NAF : 5224A</p>
+        <h1 class="d-flex justify-content-center order-2">FACTURE</h1>
+
+        <p class="order-1">
+            {{ entreprise.getNom() }}<br>
+            {{ adresseEntreprise.numvoie }} <br>
+            {{ adresseEntreprise.cp }}
+            {{ adresseEntreprise.ville }} {{ entreprise.getNationalite() }}<br>
+            {{ entreprise.getTvaIntraCommunautaire() }}
+        </p>
+    </div>
+</div>
+    <div class="container">
+        <table class="table table-bordered border-dark" style="height: 50%;">
+            <thead>
+                <tr>
+                    <th>Désignation</th>
+                    <th>Quantité</th>
+                    <th>Prix HT</th>
+                    <th>TVA</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for orderDetailsArray in orderDetailsArrays %}
+                    <tr>
+                        <td>{{ orderDetailsArray.details.description }}</td>
+                        <td>{{ orderDetailsArray.details.quantity }}</td>
+                        <td>{{((orderDetailsArray.details.price) / 100)| number_format(2,',','.')}} €</td>
+                        <td>{{((orderDetailsArray.details.price) / 100 * 0.2)| number_format(2,',','.') }} €</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="container">
+        <div class="d-flex justify-content-end row">
+            <div class="col-6">
+                <table class="table table-bordered border-dark">
+                    <thead>
+                        <tr>
+                            <th>Total produits</th>
+                            <td>{{ orderTotal.totalQuantity }}</td>
+                        </tr>
+                        <tr>
+                            <th>Montant HT</th>
+                            <td>{{ ((orderTotal.totalPrice) / 100)| number_format(2,',','.')}} €</td>
+                        </tr>
+                        <tr>
+                            <th>Montant TVA</th>
+                            <td>{{ ((orderTotal.totalPrice) / 100 * 0.2)| number_format(2,',','.')}} €</td>
+                        </tr>
+                        <tr>
+                            <th>Net à payer</th>
+                            <td>{{ ((orderTotal.totalPrice) / 100 * 1.2)| number_format(2,',','.')}} €</td>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+<div class="footer-container">
+    <div class="container mt-3">
+        <div class="text-center">
+            <p>Les virements se font au compte de : FLUXEL S.A.S. <br>
+            Crédit Agricole - Caisse Régionale Alpes Provence - FR76 1130 6000 3004 3852 1705 022 - AGRIFRPP813 <br>
+            N°identification TVA : FR 14530042660 taxe payée sur les débits.</p>
+        </div>
+    </div>
+</div>

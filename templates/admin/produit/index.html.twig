@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Produit index{% endblock %}
+{% block stylesheets %}
+    .container
+    {
+        top: 150px;
+    }
+{% endblock %}
+
+{% block container %}
+<link rel="stylesheet" href="{{ asset('css/bootstrapTable.css') }}">
+<link rel="stylesheet" href="{{ asset('css/customContainer.css') }}">
+<link rel="stylesheet" href="{{ asset('css/tablefiltercontrol.css') }}">
+<link rel="stylesheet" href="{{ asset('css/customNav.css') }}">
+
+    <h1 class="container-title">Produits</h1>
+    <div class="col-12">
+        <table class="table table-hover" data-pagination="true" data-toggle="table" data-filter-control="true" data-click-to-select="true" data-auto-refresh="true">
+            <thead>
+                <tr>
+                    <th data-field="email" data-filter-control="input" data-sortable="true">Id</th>
+                    <th data-field="roles" data-filter-control="select" data-sortable="true">Nom</th>
+                    <th data-field="IsVerified" data-filter-control="select" data-sortable="true">Prix</th>
+                    <th data-field="createdAt" data-filter-control="input" data-sortable="true">Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for produit in produits %}
+                <tr>
+                    <td>{{ produit.id }}</td>
+                    <td>{{ produit.name }}</td>
+                    <td>{{ produit.price }}</td>
+                    <td>{{ produit.description }}</td>
+                    <td>
+                        <a class="btn btn-primary" href="{{ path('app_produit_show', {'id': produit.id}) }}">Voir</a>
+                        <a class="btn btn-cleo" href="{{ path('app_produit_edit', {'id': produit.id}) }}">Modifier</a>
+                    </td>
+                </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5">no records found</td>
+                    </tr>
+                {% endfor %}
+                <a class="btn btn-success mb-4" href="{{ path('app_produit_new') }}">Create new</a>
+            </tbody>
+        </table>
+    </div>
+
+<script src="{{ asset('js/jqueryTable.js') }}"></script>
+<script src="{{ asset('js/bootstrapTable.js') }}"></script>
+<script src="{{ asset('js/bootstrap-table.min.js') }}"></script>
+<script src="{{ asset('js/bootstrap-table-filter-control.min.js') }}"></script>
+<script src="{{ asset('js/bootstrapTableFR.min.js') }}"></script>
+{% endblock %}

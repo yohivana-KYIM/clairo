@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Filiation index{% endblock %}
+
+{% block body %}
+    <h1>Filiation index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>NomPere</th>
+                <th>PrenomPere</th>
+                <th>NomMere</th>
+                <th>PrenomMere</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for filiation in filiations %}
+            <tr>
+                <td>{{ filiation.id }}</td>
+                <td>{{ filiation.nomPere }}</td>
+                <td>{{ filiation.prenomPere }}</td>
+                <td>{{ filiation.nomMere }}</td>
+                <td>{{ filiation.prenomMere }}</td>
+                <td>
+                    <a href="{{ path('app_filiation_show', {'id': filiation.id}) }}">show</a>
+                    <a href="{{ path('app_filiation_edit', {'id': filiation.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_filiation_new') }}">Create new</a>
+{% endblock %}

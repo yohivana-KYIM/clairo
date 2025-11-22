@@ -1,0 +1,10 @@
+<table class="table-auto w-full border border-gray-200">
+    <thead>
+    <tr>{% for key in items[0] | keys %}<th class="px-4 py-2">{{ key }}</th>{% endfor %}</tr>
+    </thead>
+    <tbody>
+    {% for item in items %}
+        <tr>{% for value in item %}<td class="border px-4 py-2">{{ value }}</td>{% endfor %}</tr>
+    {% endfor %}
+    </tbody>
+</table>

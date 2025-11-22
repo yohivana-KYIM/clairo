@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Adresse Entreprise | Fluxel{% endblock %}
+
+{% block body %}
+    {# <h1>Edit AdresseEntreprise</h1> #}
+
+    {{ include('sdri/adresse_entreprise/_form.html.twig', {'button_label': 'Terminer'}) }}
+
+    {# <a href="{{ path('app_adresse_entreprise_index') }}">back to list</a> #}
+
+    {# {{ include('adresse_entreprise/_delete_form.html.twig') }} #}
+{% endblock %}

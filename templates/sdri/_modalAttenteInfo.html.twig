@@ -1,0 +1,27 @@
+
+
+<div class="modal fade" id="createModal{{ demande.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 fw-bold mb-2" id="exampleModalLabel">Demande d'information complémentaire</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {# {{ dump(demande) }} #}
+                {% set infocomplementaire = 'infocomplementaire' %}
+                <form method="post" action="{{ path('app_demande_sdri_status_titre', {'id': demande.id, 'parametre': infocomplementaire}, true) }}">
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="ici" id="message" name="message" style="height: 170px" required></textarea>
+                        <label for="message">Veuillez renseigner les informations manquantes</label>
+                    </div>
+                    <div class="modal-footer col-12 d-flex justify-content-around">
+                        <button type="button" class="btn btn-danger btn-lg" data-bs-dismiss="modal">Fermer</button>
+                        <button type="submit" class="btn btn-cleo btn-lg">Envoyer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

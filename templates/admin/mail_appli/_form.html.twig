@@ -1,0 +1,38 @@
+{# {{ form_start(form) }}
+
+
+    {{ form_widget(form) }}
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }} #}
+<header>
+    <div class="container-fluid fixed-top bg-cleo p-2 ps-4 text-center d-flex flex-wrap border-bottom border-bottom-dark shadow-sm">
+        <img class="" src="{{ asset('/img/logo.png') }}" alt="" width="120" height="60">
+    </div>
+</header>
+<link rel="stylesheet" href="{{ asset('css/mainform.css') }}">
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="container">
+            <div class="border border-dark-subtle info-form rounded-top">
+                <div class="col-12 bg-cleo rounded-top p-0 m-0 h5">
+                <p class="p-3">Gestion de l'email de l'application</p>
+                </div>
+                <div class="col-12">
+                    {{ form_start(form, {'attr': {'class': 'm-4'}}) }}
+
+                    <label class="h5 mt-1 mb-3">Email :</label>
+                            {{ form_widget(form.email) }}
+                    <div class="row mt-4">
+                        <div class="col-12 p-0 d-flex justify-content-around">
+                            <a class="btn btn-danger btn-lg me-3" href="{{ path('app_mail_appli_index') }}">
+                                <img src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32">
+                                Retour
+                            </a>
+                            <button class="btn btn-lg btn-success">{{ button_label|default('Save') }}</button>
+                        </div>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>

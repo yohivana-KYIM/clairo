@@ -1,0 +1,170 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Revue des Informations{% endblock %}
+{% block stylesheets %}<link rel="stylesheet" href="{{ asset('css/multistep.css') }}">{% endblock %}
+{% block container %}
+    <div class="container-title">Revue des Informations Fournies</div>
+    <div class="review-container">
+        <h1 class="review-section-title">Récapitulatif</h1>
+        {% for section, data in all_data %}
+            {%  if data %}
+                <div class="review-section">
+                <h2 class="review-section-title" data-i18n="{{ section }}">{{ section }}</h2>
+                {% for label, value in data %}
+                    {% set v = '' %}
+                    {% if value is string %}
+                        {% set v = value|lower %}
+                    {% endif %}
+                    <div class="review-item">
+                        <span class="review-item-label" data-i18n="{{ label }}">{{ label }}</span>:
+                        <span class="review-item-value" data-field="{{ label }}">
+                            {% if label == 'access_purpose' %}
+                                {{ value|base64_decode }}
+							{% elseif value is iterable %}
+                                <ul>
+									{% for subValue in value %}
+                                        {% if subValue is not iterable %}
+                                            <li data-i18n="{{ subValue }}">{{ subValue }}</li>
+                                        {% endif %}
+                                    {% endfor %}
+								</ul>
+							{% elseif value is same as(null) %}
+                                <em>Non renseigné</em>
+							{% elseif v ends with '.pdf' or v ends with '.jpg' or v ends with '.jpeg'
+                                or v ends with '.svg' or v ends with '.png' or v ends with '.webp' %}
+                                {# ✅ Extraire nom du fichier #}
+                                {% set fileName = value|split('/')|last %}
+
+                                {# ✅ Normaliser le chemin #}
+                                {% set normalizedBasePublicPath = basePublicPath|trim('/') %}
+                                {% set normalizedValue = value|replace({'\\':'/'}) %}
+
+                                {# ✅ Construire la clé de remplacement proprement #}
+                                {% set replaceKey = '/' ~ normalizedBasePublicPath %}
+
+                                {# ✅ Nettoyer le chemin #}
+                                {% set cleanPath = normalizedValue|replace({ (replaceKey): '' }) %}
+
+                                <a
+                                        data-basePublicPath="{{ basePublicPath }}"
+                                        data-normalizedBasePublicPath="{{ normalizedBasePublicPath }}"
+                                        data-originalValue="{{ value }}"
+                                        data-normalizedValue="{{ normalizedValue }}"
+                                        data-replaceKey="{{ replaceKey }}"
+                                        href="{{ cleanPath }}"
+                                        download="{{ fileName }}">
+									Télécharger
+								</a>
+                            {% else %}
+                                {{ value|raw }}
+                            {% endif %}
+						</span>
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        {% endfor %}
+
+            <div class="review-actions">
+                {% if hide_buttons is not defined %}
+                    <a href="{{ review_back_link }}" class="btn-action btn-cancel">Retour</a>
+                    <form id="review-form" method="POST" action="{{ review_persist_link }}" style="display: inline-block">
+                        <input type="hidden" name="ending" id="ending" value="1" required>
+                        <button type="submit" class="btn-action mt-4 mb-4" id="terminateBtn">Terminer</button>
+                    </form>
+                    {% if step_id is defined %}
+                        {% if is_writable %}
+                            <a href="{{ review_edit_link }}" class="btn-action">Modifier</a>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <a href="{{ path('person_access_list') }}" class="btn btn-danger">Retour</a>
+                {% endif %}
+                {% if step_id is defined and step_id > 0 %}
+                    <a href="{{ path('person_access_word_download', {id: step_id}) }}" target="_blank" class="btn btn-cleo" download>📥 Télécharger</a>
+                {% endif %}
+            </div>
+    </div>
+    {# =========================== #}
+    {# Ton bloc JS corrigé complet #}
+    {# =========================== #}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Récupération des éléments HTML
+            /** @type {HTMLButtonElement|null} */
+            const terminateBtn = document.getElementById('terminateBtn');
+            /** @type {HTMLElement|null} */
+            const namePrompt = document.getElementById('namePrompt');
+            /** @type {HTMLInputElement|null} */
+            const nameInput = document.getElementById('nameInput');
+            /** @type {HTMLInputElement|null} */
+            const finalName = document.getElementById('finalName');
+            /** @type {HTMLButtonElement|null} */
+            const confirmOverwrite = document.getElementById('confirmOverwrite');
+            /** @type {HTMLButtonElement|null} */
+            const confirmSaveBtn = document.getElementById('confirmSaveBtn');
+            /** @type {HTMLFormElement|null} */
+            const reviewForm = document.getElementById('review-form');
+
+            // Liste fournie côté Twig : sécurisée pour éviter les erreurs IDE
+            const existingNames = {{ existingNames is defined ? existingNames|json_encode|raw : '[]' }};
+
+            if (!existingNames) {
+                return;
+            }
+
+            if (!Array.isArray(existingNames)) {
+                console.warn('existingNames doit être un tableau.');
+                return;
+            }
+
+            if (!nameInput || !finalName || !confirmSaveBtn || !reviewForm) {
+                console.warn('Certains éléments requis sont manquants.');
+                return;
+            }
+
+            // Auto-complétion simple
+            nameInput.addEventListener('input', function () {
+                const value = nameInput.value.trim().toLowerCase();
+                window.selectedNameExists = existingNames.includes(value);
+            });
+
+            // Affichage de la boîte de saisie si clic sur Terminer
+            if (terminateBtn && namePrompt) {
+                terminateBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    namePrompt.style.display = 'block';
+                });
+            }
+
+            // Validation avant soumission
+            confirmSaveBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const inputValue = nameInput.value.trim();
+                if (!inputValue) {
+                    alert("Veuillez entrer un nom.");
+                    return;
+                }
+
+                if (existingNames.includes(inputValue.toLowerCase())) {
+                    const overwriteConfirmed = confirm("Ce nom existe déjà. Voulez-vous vraiment l’écraser ?");
+                    if (!overwriteConfirmed) {
+                        return;
+                    }
+                    if (confirmOverwrite) {
+                        confirmOverwrite.value = '1';
+                    }
+                }
+
+                finalName.value = inputValue;
+                if (reviewForm && typeof reviewForm.submit === 'function') {
+                    reviewForm.submit();
+                } else {
+                    console.error('Le formulaire review-form est introuvable ou invalide.');
+                }
+            });
+        });
+    </script>
+{% endblock %}

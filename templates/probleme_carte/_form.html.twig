@@ -1,0 +1,94 @@
+<div class="container">
+    <div class="container-title">Problème de Carte d'accés</div>
+    {{ form_start(form) }}
+                        <div class="col-12 pt-3">
+                            <div class="p-3 row">
+                                <label for="" class="h5">Motif :<span style="color: red;">*</span></label>
+                                {{ form_widget(form.motif, {'attr': {'class': 'is-invalid formvalidate',  'value': form.motif.vars.value is empty ? "J'ai perdu mon badge" : form.motif.vars.value}}) }}
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6" id="sepa">
+                            <div class="p-3 row">
+                                <label for="" class="h5">Nom :<span style="color: red;">*</span></label>
+                                {{ form_widget(form.nom, {'attr': {'class': 'is-invalid formvalidate', 'value': user.email|guess_last_name}}) }}
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6" id="sepa">
+                            <div class="p-3 row">
+                                <label for="" class="h5">Prénom :<span style="color: red;">*</span></label>
+                                {{ form_widget(form.prenom, {'attr': {'class': 'is-invalid formvalidate', 'value': user.email|guess_first_name }}) }}
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="p-3 row">
+                                <label for="" class="h5">Adresse mail :<span style="color: red;">*</span></label>
+                                {{ form_widget(form.email, {'attr': {'class': 'is-invalid formvalidate', 'value': user.email }}) }}
+                            </div>
+                        </div>
+                        {% set maxDate = "now"|date_modify("-18 years")|date("Y-m-d") %}
+                        <div class="col-lg-6 col-md-6">
+                            <div class="p-3 row">
+                                <label for="" class="h5">Date de naissance :<span style="color: red;">*</span></label>
+                                {{ form_widget(form.dateNaissance, {'attr': {'class': 'is-invalid formvalidate', 'max': maxDate}}) }}
+                                {{ form_errors(form.dateNaissance) }}
+
+                            </div>
+                        </div>
+                        <div class="pb-3 col-12">
+                            <div class="p-3 row">
+                                <label for="" class="h5">Suite à donner :<span style="color: red;">*</span></label>
+                                {{ form_widget(form.suiteDonner, {'attr': {'class': 'is-invalid formvalidate'}}) }}
+                            </div>
+                        </div>
+            <div class="row mt-4">
+                <div class="col-12 p-0 d-flex justify-content-around">
+                    {% if app.request.attributes.get('_route') == 'app_probleme_carte_new' %}
+                        <a class="btn btn-danger btn-lg me-3" href="{{ path('app_home') }}">
+                            <img src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32">
+                            Retour
+                        </a>
+                        <button class="btn btn-success btn-lg me-3">
+                            {{ button_label|default('Confirmer') }}
+                            <img src="{{ asset('css/icons/check.svg') }}" width="32" height="32">
+                        </button>
+                    {% endif %}
+                    {% if app.request.attributes.get('_route') == 'app_probleme_carte_edit' %}
+                        {% if lastRoute == 'demandesdri' %}
+                            {% set targetRoute = 'app_demande_sdri' %}
+                            <a class="btn btn-success btn-lg me-3" href="{{ path(targetRoute) }}">
+                                Terminer
+                                <img src="{{ asset('css/icons/check.svg') }}" width="32" height="32">
+                            </a>
+                        {% elseif lastRoute == 'mesdemandes' %}
+                            {% set targetRoute = 'app_mes_demandes' %}
+                            <a class="btn btn-success btn-lg me-3" href="{{ path(targetRoute) }}">
+                                Terminer
+                                <img src="{{ asset('css/icons/check.svg') }}" width="32" height="32">
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+            </div>
+    {{ form_end(form) }}
+</div>
+
+<script src="{{ asset('/js/formconfirmation.js') }}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const select = document.getElementById("probleme_carte_motif");
+        if (select && !select.value) {
+            // ✅ si rien n’est encore sélectionné → forcer par défaut
+            select.value = "J'ai perdu mon badge";
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const select = document.getElementById("probleme_carte_suiteDonner");
+        if (select && !select.value) {
+            select.value = "Demande de réédition"; // ✅ sélection forcée par défaut
+        }
+    });
+</script>

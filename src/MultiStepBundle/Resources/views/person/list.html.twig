@@ -1,0 +1,134 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/bootstrapTable.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/customContainer.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/tablefiltercontrol.css') }}">
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="container-title">Mes demandes de titre de circulation</div>
+        <div class="container-content">
+            <table class="table table-bordered table-hover" data-pagination="true" data-toggle="table" data-filter-control="true" data-click-to-select="true" data-sort-stable="true">
+                <thead>
+                <tr>
+                    <th data-field="demande" data-filter-control="input" data-sortable="true">Demande</th>
+                    <th data-field="nom" data-filter-control="input" data-sortable="true">Nom</th>
+                    <th data-field="prenom" data-filter-control="input" data-sortable="true">Prénom</th>
+                    <th data-field="date" class="date" data-filter-control="select" data-sortable="true">Date de la demande</th>
+                    <th data-field="status" data-filter-control="select" data-sortable="true">Statut</th>
+                    <th data-field="place" data-filter-control="select" data-sortable="true">Lieu de retrait</th>
+                    <th data-field="comment" data-filter-control="input" data-sortable="true">Commentaire</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for step in steps %}
+                    <tr>
+                        <td>{{ step.stepNumber }}</td>
+                        <td>{{ step.employeeFirstName }}</td>
+                        <td>{{ step.employeeLastName }}</td>
+                        <td data-value="{{ step.requestDate|date('Ymd') }}">{{ step.requestDate }}</td>
+                        <td data-i18n="{{ step.status }}">{{ step.status }}</td>
+                        <td>{{ step.stepData.getInternalData('person_step_six', 'card_place')|trans}}</td>
+                        <td>{{ step.observations ?? '' }} {{ step.cezarStepId ?? '' }}</td>
+                        <td>
+                            <a class="btn btn-cleo" href="{{ path('person_access_show', {id: step.stepId}) }}">Voir</a>
+                            {% if writer.isWritable(step.stepData, app.user) %}
+                                <a class="btn btn-cleo" href="{{ path('person_access_edit', {id: step.stepId}) }}">Modifier</a>
+                            {% endif %}
+                            {% if step.status == 'paid' %}
+                                <a class="btn btn-cleo" href="{{ path('app_cards', {id: step.stepId}) }}" target="_blank">Apercu de la carte</a>
+                            {% endif %}
+                            <form method="post" action="{{ path('person_access_delete', {id: step.stepId}) }}" style="display:inline;" onsubmit="return confirm('Supprimer cet élément ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ step.stepId) }}">
+                                <button class="btn btn-danger" type="submit">Supprimer</button>
+                            </form>
+                            {% if actions[step.stepId] is defined %}
+                                {% for action in actions[step.stepId] %}
+                                    <a href="{{ path(action.route, action.params) }}"
+                                       class="{{ action.class }}"
+                                       data-i18n="{{ action.translationKey }}">{{ action.label }}</a>
+                                {% endfor %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="7">Aucune demande de personne trouvée.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <a class="btn btn-cleo .creer-demande" href="{{ path('person_access_request') }}">Faire une demande</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const monthNames = ["janvier", "février", "mars", "avril", "mai", "juin",
+                "juillet", "août", "septembre", "octobre", "novembre", "décembre"
+            ];
+
+            const rows = document.querySelectorAll("table tbody tr");
+
+            rows.forEach(row => {
+                const dateCell = row.cells[3];
+                let dateText = dateCell.textContent.trim();
+                let dateObj = null;
+
+                if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateText)) {
+                    const [day, month, year] = dateText.split('/');
+                    dateObj = new Date(`${year}-${month}-${day}`);
+                } else if (/^\d{4}-\d{2}-\d{2}$/.test(dateText)) {
+                    dateObj = new Date(dateText);
+                }
+
+                if (dateObj instanceof Date && !isNaN(dateObj)) {
+                    const day = String(dateObj.getDate()).padStart(2, '0');
+                    const month = monthNames[dateObj.getMonth()];
+                    const year = dateObj.getFullYear();
+                    dateCell.textContent = `${day} ${month} ${year}`;
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const rows = document.querySelectorAll("table tbody tr");
+            rows.forEach(row => {
+                const wrapper = row.cells[5];
+                const raw = wrapper.textContent.trim();
+                const tmp = document.createElement('div');
+                tmp.innerHTML = raw;
+                const enc = tmp.querySelector('.encoded-content');
+                if (enc) {
+                    const decodedHtml = atob(enc.textContent);
+                    wrapper.innerHTML = decodedHtml;
+                }
+            });
+        });
+    </script>
+    {% block extra_javascripts %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var $tables = $("table[data-toggle='table']");
+
+                // Rebuild each table so sort/search use data-value
+                $tables.each(function () {
+                    var $t = $(this);
+
+                    // Destroy auto-init (if already done), then re-init with our data
+                    $t.btUseDataValue({
+                        escape: false,          // keep HTML from __display_*
+                        sortStable: true,
+                        locale: 'fr-FR',
+                        filterControl: $t.is('[data-filter-control]'),
+                        search: $t.is('[data-search]'),
+                        pagination: $t.is('[data-pagination]'),
+                        pageSize: $t.data('page-size') || 10
+                    });
+
+                    // optional: retrigger hooks some of your scripts listen to
+                    $t.trigger('post-body.bs.table').trigger('load-success.bs.table');
+                });
+            });
+        </script>
+    {% endblock %}
+{% endblock %}

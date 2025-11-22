@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration | Fluxel{% endblock %}
+
+{% block body %}
+
+
+<div class="container">
+    <h1 class="container-title">Historique de connexion</h1>
+    <div class="col-12">
+        <table id="table" class="table table-hover" data-pagination="true" data-toggle="table" data-filter-control="true" data-click-to-select="true" data-auto-refresh="true">
+            <thead>
+                <tr>
+                    <th data-field="id" data-filter-control="input" data-sortable="true">Id</th>
+                    <th data-field="email" data-filter-control="input" data-sortable="true">Email</th>
+                    <th data-field="status" data-filter-control="select" data-sortable="true">IP</th>
+                    <th data-field="creation" data-filter-control="input" data-sortable="true">Date de connexion</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for history in history %}
+                    <tr>
+                        <td>{{ history.id }}</td>
+                        <td>{{ history.login }}</td>
+                        <td>{{ history.ip }}</td>
+                        <td>{{ history.getCreatedAt().format('d/m/Y à h:m:s') }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="{{ asset('js/jquery.min.js') }}"></script>
+<script src="{{ asset('js/tableDesc.js') }}"></script>
+{% endblock %}

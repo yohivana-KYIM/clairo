@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}DemandeTitreCirculation index{% endblock %}
+
+{% block body %}
+    <h1>DemandeTitreCirculation index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Created_at</th>
+                <th>Validated_at</th>
+                <th>Ip</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for demande_titre_circulation in demande_titre_circulations %}
+            <tr>
+                <td>{{ demande_titre_circulation.id }}</td>
+                <td>{{ demande_titre_circulation.createdAt ? demande_titre_circulation.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ demande_titre_circulation.validatedAt ? demande_titre_circulation.validatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ demande_titre_circulation.ip }}</td>
+                <td>
+                    <a href="{{ path('app_demande_titre_circulation_show', {'id': demande_titre_circulation.id}) }}">show</a>
+                    <a href="{{ path('app_demande_titre_circulation_edit', {'id': demande_titre_circulation.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_demande_titre_circulation_new') }}">Create new</a>
+{% endblock %}

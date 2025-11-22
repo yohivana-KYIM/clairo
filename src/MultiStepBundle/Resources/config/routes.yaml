@@ -1,0 +1,136 @@
+vehicle_access_request:
+  path: /vehicle-access-request/{id}
+  controller: App\MultiStepBundle\Controller\VehicleAccessRequestController::handle
+  defaults:
+    id: null
+  requirements:
+    id: \d+
+
+person_access_show:
+  path: /person/access_show/{id}
+  controller: App\MultiStepBundle\Controller\PersonAccessRequestController::show
+  methods: [GET]
+
+person_access_word_download:
+  path: /person/word_download/{id}
+  controller: App\MultiStepBundle\Controller\PersonAccessRequestController::downloadByWord
+  methods: [GET]
+
+person_access_edit:
+  path: /person/access_edit/{id}
+  controller: App\MultiStepBundle\Controller\PersonAccessRequestController::edit
+  methods: [GET, POST]
+
+person_access_delete:
+  path: /person/access_delete/{id}
+  controller: App\MultiStepBundle\Controller\PersonAccessRequestController::delete
+  methods: [POST]
+
+person_access_validate_investigation:
+  path: /person/validate_investigation
+  controller: App\MultiStepBundle\Controller\PersonAccessRequestController::validateInvestigation
+  methods: [POST]
+
+person_access_reject_reason:
+  path: /person/reject_reason
+  controller: App\MultiStepBundle\Controller\PersonAccessRequestController::rejectWithReason
+  methods: [POST]
+
+vehicle_access_list:
+  path: /vehicle-access-list
+  controller: App\MultiStepBundle\Controller\VehicleAccessRequestController::list
+
+vehicle_access_history:
+  path: /vehicle-access-history
+  controller: App\MultiStepBundle\Controller\VehicleAccessRequestController::history
+
+vehicle_access_review:
+  path: /vehicle-access-review
+  controller: App\MultiStepBundle\Controller\VehicleAccessRequestController::review
+
+vehicle_access_edit:
+  path: /vehicle/access-edit/{id}
+  controller: App\MultiStepBundle\Controller\VehicleAccessRequestController::edit
+
+vehicle_access_show:
+  path: /vehicle/access-show/{id}
+  controller: App\MultiStepBundle\Controller\VehicleAccessRequestController::show
+
+vehicle_access_delete:
+  path: /vehicle-access-delete/{id}
+  controller: App\MultiStepBundle\Controller\VehicleAccessRequestController::delete
+
+vehicle_access_previous:
+  path: /vehicle-access-previous
+  controller: App\MultiStepBundle\Controller\VehicleAccessRequestController::goBack
+
+vehicle_access_persist:
+  path: /vehicle-access-persist
+  controller: App\MultiStepBundle\Controller\VehicleAccessRequestController::persist
+
+person_access_request:
+  path: /person-access-request/{id}
+  controller: App\MultiStepBundle\Controller\PersonAccessRequestController::handle
+  defaults:
+    id: null
+  requirements:
+    id: \d+
+
+person_access_request_from_null:
+  path: /person-access-request-from-null/{id}
+  controller: App\MultiStepBundle\Controller\PersonAccessRequestController::handleFromNull
+  defaults:
+    id: null
+  requirements:
+    id: \d+
+
+person_access_review:
+  path: /person-access-review
+  controller: App\MultiStepBundle\Controller\PersonAccessRequestController::review
+
+person_access_previous:
+  path: /person-access-previous/{id}
+  controller: App\MultiStepBundle\Controller\PersonAccessRequestController::goBack
+  defaults:
+    id: null
+  requirements:
+    id: \d+
+
+person_access_persist:
+  path: /person-access-persist/{id}
+  controller: App\MultiStepBundle\Controller\PersonAccessRequestController::persist
+  defaults:
+    id: null
+  requirements:
+    id: \d+
+
+person_access_list:
+  path: /person-access-list
+  controller: App\MultiStepBundle\Controller\PersonAccessRequestController::list
+
+person_access_history:
+  path: /person-access-history
+  controller: App\MultiStepBundle\Controller\PersonAccessRequestController::history
+
+person_access_transition:
+  path: /person-access/transition/{id}/{transition}
+  controller: App\MultiStepBundle\Controller\PersonAccessRequestController::applyTransition
+
+step_recheck_submit:
+  path: /step/{id}/recheck/submit
+  controller: App\MultiStepBundle\Controller\PersonAccessRequestController::submitReview
+
+persistence_test:
+  path: /items
+  controller: App\MultiStepBundle\Controller\PersistenceController::index
+
+persistence_test_data:
+  path: /items/data
+  controller: App\MultiStepBundle\Controller\PersistenceController::data
+
+person_access_card_place:
+  path: /person/access/{id}/card-pickup
+  controller: App\MultiStepBundle\Controller\PersonAccessRequestController::cardPlace
+  methods: [GET, POST]
+  requirements:
+    id: '\d+'

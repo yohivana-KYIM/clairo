@@ -1,0 +1,33 @@
+<canvas id="statusChart"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const rawData = {{ data|json_encode|raw }};
+    const months = [...new Set(rawData.map(d => d.month))];
+    const statuses = [...new Set(rawData.map(d => d.status))];
+
+    const datasets = statuses.map(status => ({
+        label: status,
+        data: months.map(month => {
+            const row = rawData.find(d => d.month === month && d.status === status);
+            return row ? parseInt(row.count) : 0;
+        }),
+        fill: false,
+        tension: 0.5
+    }));
+
+    new Chart(document.getElementById('statusChart'), {
+        type: 'line',
+        data: {
+            labels: months,
+            datasets: datasets
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Évolution mensuelle des demandes'
+                }
+            }
+        }
+    });
+</script>

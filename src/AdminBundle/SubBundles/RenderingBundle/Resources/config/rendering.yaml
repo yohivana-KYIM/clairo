@@ -1,0 +1,5 @@
+rendering_bundle:
+  rendering_strategy: twig_bootstrap # Options: twig_bootstrap, twig_tailwind, api
+  default_templates:
+    list: "list.html.twig"
+    form: "form.html.twig"

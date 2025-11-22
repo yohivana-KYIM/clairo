@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+{% import '_macros/flash_macros.html.twig' as flash_macros %}
+{% import 'macros.html.twig' as macros %}
+
+{% block title %}Accueil | Fluxel{% endblock %}
+{% set roles = app.user.roles %}
+
+{% block container %}
+    <div class="container-title text-center text-khaki mb-4">
+        {% block containertitle %}
+            Demande de création d’un titre de circulation pour les personnes accédant aux installations portuaires de Lavéra et de Fos exploitées par Fluxel SAS
+        {% endblock %}
+    </div>
+
+    <div>
+        {# Affichage des modales pour les messages 'demandetest' #}
+        {% for message in app.flashes('demandetest') %}
+            {{ macros.modal('modal_demandetest_' ~ loop.index, message, path('app_mes_demandes'), 'Voir ma demande') }}
+        {% endfor %}
+
+        {# Alertes pour les messages 'demandeValide' #}
+        {% for message in app.flashes('demandeValide') %}
+            {{ macros.alert('success', message, path('app_mes_demandes'), 'Voir ma demande') }}
+        {% endfor %}
+
+        {# Alertes pour les messages 'demandeUpdate' #}
+        {% for message in app.flashes('demandeUpdate') %}
+            {{ macros.alert('warning', message, path('app_mes_demandes'), 'Voir ma demande') }}
+        {% endfor %}
+
+        {# Modales pour les messages 'ajoutEntreprise' #}
+        {% for message in app.flashes('ajoutEntreprise') %}
+            {{ macros.modal('modal_ajoutEntreprise_' ~ loop.index, message, null, null) }}
+        {% endfor %}
+    </div>
+
+    {# Boutons dans une grille responsive #}
+    <div class="row g-3 px-3">
+        {{ macros.button(path('person_access_list'), 'Titres de circulation des personnes', asset('/img/demandes.png')) }}
+        {{ macros.button(path('vehicle_access_list'), 'Titres de circulation des véhicules', '/img/ajouter_vehicule.png') }}
+        {{ macros.button(path('app_mes_demandes'), 'Problèmes de carte d’accès', asset('/img/probleme_carte.png')) }}
+
+        {% if app.user.hasRole('ROLE_SDRI') %}
+            {% set label = 'Gestion des demandes de titre de circulation' %}
+            {% if roles|length > 1 %}
+                {% set label = label ~ ' (Vue du SDRI)' %}
+            {% endif %}
+            {{ macros.button(path('app_demande_sdri'), label, '/img/gestion_circulation.png', 'underdev') }}
+            {{ macros.button(path('app_entreprise_index'), 'Entreprises', '/img/ajouter_entreprise.png') }}
+            {{ macros.button(path('workflow_validate_investigation'), 'Import des retour sneas', '/img/import_sneas.png') }}
+        {% endif %}
+
+        {% if app.user.hasRole('ROLE_SDRI') or is_granted('ROLE_REFSECU') %}
+            {{ macros.button(path('app_demande_entreprise'), 'Demandes de mon entreprise', '/img/demandes_entreprise.png', 'underdev') }}
+        {% endif %}
+
+        {% if app.user.hasRole('ROLE_REFSECU') %}
+            {{ macros.button(path('app_mes_commandes'), 'Mes commandes', '/img/commandes.png') }}
+        {% endif %}
+
+        {% if app.user.hasRole('ROLE_ADMIN') %}
+            {{ macros.button(path('app_admin_dashboard'), 'Administration', '/img/admin.png', 'underdev') }}
+            {{ macros.button(path('app_user_index'), 'Utilisateurs', '/img/users.png') }}
+            {{ macros.button(path('app_admin_dashboard_demande'), 'Demandes', asset('/img/demandes.png'), 'underdev') }}
+            {{ macros.button(path('app_produit_index'), 'Produits', '/img/produits.png', 'underdev') }}
+            {{ macros.button(path('app_admin_dashboard_history'), 'Historique des connexions', '/img/histoire_connexion.png') }}
+            {{ macros.button(path('app_mail_appli_index'), 'Gestion des e-mails', '/img/enveloppe.png', 'underdev') }}
+            {{ macros.button(path('app_dashboard'), 'Tableau de bord', '/img/dashboard.png') }}
+        {% endif %}
+
+        {% set label = 'Gestion des demandes de titre de circulation' %}
+        {% if roles|length > 1 %}
+            {% set label = label ~ ' (Vue du gardien)' %}
+        {% endif %}
+        {% if is_granted('ROLE_GARDIEN') %}
+            {{ macros.button(path('app_gardien_tableau'), label, '/img/demandes_entreprise.png', 'underdev') }}
+        {% endif %}
+    </div>
+
+    {% if decodedPassword and passValidator.validate(decodedPassword) == false %}
+        <div class="text-center mt-4">Ton mot de passe est trop simple, change-le !</div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,7 @@
+<h2>Votre demande a été mise à jour</h2>
+<p>Bonjour {{ nameGuesser.guessName(user.email)|upper }}</p>
+<p>Votre demande n° <strong>{{ stepData.stepNumber }}</strong> a évolué.</p>
+<p>Entreprise : {{ stepData.getInternalData('person_step_one', 'company_name') }}</p>
+<p>Date : {{ stepData.getInternalData('person_step_one', 'request_date')|date('d/m/Y') }}</p>
+<p>Nouveau status de la demande : {{ stepData.status|trans }}</p>
+<p>Cordialement,<br>L’équipe Cleo</p>

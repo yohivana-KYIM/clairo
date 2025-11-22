@@ -1,0 +1,9 @@
+{# _macros/card_macros.html.twig #}
+{% macro card(title, value, bgClass, borderClass) %}
+    <div class="card {{ bgClass }} border rounded {{ borderClass }}" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title h4 d-flex justify-content-center text-center">{{ title }}</h5>
+            <h1 class="card-text d-flex justify-content-center fw-bold">{{ value }}</h1>
+        </div>
+    </div>
+{% endmacro %}

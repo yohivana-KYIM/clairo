@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ProblemeCarte{% endblock %}
+
+{% block body %}
+<body>
+    <header>
+        <div class="container-fluid fixed-top bg-cleo p-2 ps-4 text-center d-flex flex-wrap border-bottom border-bottom-dark shadow-sm">
+            <img class="" src="{{ asset('/img/logo.png') }}" alt="" width="120" height="60">
+        </div>
+    </header>
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="container">
+                    <div class="rounded row border border-dark-subtle">
+                        <div class="col-12 bg-cleo rounded-top mb-0 h5 reset2">
+                            <p class="pt-3">Problème de Carte d'accés</p>
+                        </div>
+                        <div class="col-12 pt-3">
+                            <div class="p-3 row">
+                                <label for="" class="h5">Motif :<span style="color: red;">*</span></label>
+                                <td></td>
+                                <div class="form-control is-valid formvalidate">{{ probleme_carte.motif }}</div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 pt-3" id="sepa">
+                            <div class="p-3 row">
+                                <label for="" class="h5">Nom :<span style="color: red;">*</span></label>
+                                {# <td>{{ probleme_carte.nom }}</td> #}
+                                <div class="form-control is-valid formvalidate">{{ probleme_carte.nom }}</div>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 pt-3" id="sepa">
+                            <div class="p-3 row">
+                                <label for="" class="h5">Prénom :<span style="color: red;">*</span></label>
+                                <div class="form-control is-valid formvalidate">{{ probleme_carte.prenom }}</div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="p-3 row">
+                                <label for="" class="h5">Adresse mail :<span style="color: red;">*</span></label>
+                                <div class="form-control is-valid formvalidate">{{ probleme_carte.email }}</div>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="p-3 row">
+                                <label for="" class="h5">Date de naissance :<span style="color: red;">*</span></label>
+                                <div class="form-control is-valid formvalidate">{{ probleme_carte.dateNaissance ? probleme_carte.dateNaissance|date('Y-m-d') : '' }}</div>
+                            </div>
+                        </div>
+                        <div class="pb-3 col-12">
+                            <div class="p-3 row">
+                                <label for="" class="h5">Suite à donner :<span style="color: red;">*</span></label>
+                                <div class="form-control is-valid formvalidate">{{ probleme_carte.suiteDonner }}</div>
+
+                            </div>
+                        </div>
+                    </div>
+            <div class="row mt-4">
+                <div class="col-12 p-0 d-flex justify-content-around">
+            {% if app.request.attributes.get('_route') == 'app_probleme_carte_new' %}
+                <a class="btn btn-danger btn-lg me-3" href="{{ path('app_home') }}">
+                    <img src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32">
+                    Retour
+                </a>
+                <button class="btn btn-success btn-lg me-3">
+                    {{ button_label|default('Confirmer') }}
+                    <img src="{{ asset('css/icons/check.svg') }}" width="32" height="32">
+                </button>
+            {% endif %}
+            {% if app.request.attributes.get('_route') == 'app_probleme_carte_show' %}
+                {% if lastRoute == 'demandesdri' %}
+                    {% set targetRoute = 'app_demande_sdri' %}
+                    <a class="btn btn-success btn-lg me-3" href="{{ path(targetRoute) }}">
+                        Terminer
+                        <img src="{{ asset('css/icons/check.svg') }}" width="32" height="32">
+                    </a>
+                {% elseif lastRoute == 'mesdemandes' %}
+                    {% set targetRoute = 'app_mes_demandes' %}
+                    <a class="btn btn-success btn-lg me-3" href="{{ path(targetRoute) }}">
+                        Terminer
+                        <img src="{{ asset('css/icons/check.svg') }}" width="32" height="32">
+                    </a>
+                {% endif %}
+            {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{{ asset('/js/formconfirmation.js') }}"></script>
+{% endblock %}

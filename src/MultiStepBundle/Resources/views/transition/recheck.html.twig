@@ -1,0 +1,65 @@
+{% extends '@MultiStepBundle/base.html.twig' %}
+
+{% block title %}Revalidation des Informations{% endblock %}
+{%  block other_stylesheets %}
+<style>
+.container {
+    top: 100px;
+}
+.trumbowyg-box, .trumbowyg-editor-box {
+    background: white;
+}
+</style>
+{% endblock %}
+{% block container %}
+    <div class="container-title">Revalidation des Informations</div>
+
+    <form method="POST" action="{{ path('step_recheck_submit', { 'id': step_id }) }}">
+        <div class="review-container">
+            {% for section, data in all_data %}
+                {% if data %}
+                    <div class="review-section">
+                        <h2 class="review-section-title" data-i18n="{{ section }}">{{ section }}</h2>
+                        {% for label, value in data %}
+                            <div class="review-item">
+                                <br/>
+                                <label class="review-item-label" data-i18n="{{ label }}"><strong>{{ label }}</strong></label>:
+                                <span class="review-item-value" data-field="{{ label }}">
+                                    {% if value is iterable %}
+                                        <ul>
+                                            {% for subValue in value %}
+                                                {% if subValue is not iterable %}
+                                                    <li data-i18n="{{ subValue }}">{{ subValue }}</li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    {% elseif value is same as(null) %}
+                                                <em>Non renseigné</em>
+                                    {% elseif value matches '/(pdf|jpg|jpeg|svg)$/i' %}
+                                                {% set fileName = value|split('/')|last %}
+                                                <a data-basePublicPath="{{  basePublicPath }}" href="{{ value|replace({basePublicPath : ''}) }}" download="{{ fileName }}">Télécharger</a>
+                                            {% else %}
+                                                {{ value }}
+                                    {% endif %}
+                                </span>
+
+                                <label>
+                                    <input type="radio" name="field_status[{{ section }}][{{ label }}]" value="valid" checked>
+                                    Valide
+                                </label>
+                                <label>
+                                    <input type="radio" name="field_status[{{ section }}][{{ label }}]" value="invalid">
+                                    À corriger
+                                </label>
+                                <textarea name="corrections[{{ section }}][{{ label }}]" placeholder="Commentaire (optionnel)"></textarea>
+                                <br/>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn-action mt-4">Soumettre la revue</button>
+    </form>
+{% endblock %}

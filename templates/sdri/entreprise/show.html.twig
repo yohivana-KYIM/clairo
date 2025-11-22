@@ -1,0 +1,130 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Entreprise{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ asset('css/mainform.css') }}">
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="container">
+        <div class="border border-dark-subtle rounded-top info-form">
+            <div class="col-12 bg-cleo rounded-top mb-0 h5">
+                <p class="p-3">Identification (entreprise)</p>
+            </div>
+            <div class="row p-3" style="margin-left: 0px; margin-right: 0px">
+                <div class="col-lg-4 col-md-6">
+                    <div class="p-3 row">
+                        <label for="" class="h5">Nom :<span style="color: red;">*</span></label>
+                        <input class="form-control is-valid formvalidate disabled" type="text" value="{{ entreprise.nom }}"  disabled="disabled">
+                    </div>
+                    <div class="p-3 row">
+                        <label for="" class="h5">Complément nom :</label>
+                        <input class="form-control formvalidate disabled" type="text" value="{{ entreprise.complementNom }}"  disabled="disabled">
+                    </div>
+                    <div class="p-3 row">
+                        <label for="" class="h5">Statut :</label>
+                        <input class="form-control formvalidate disabled" type="text" value="{{ entreprise.statut }}"  disabled="disabled">
+                    </div>
+                    <div class="p-3 row">
+                        <label for="" class="h5">N° Siret :<span style="color: red;">*</span></label>
+                        <input class="form-control is-valid formvalidate disabled" type="text" value="{{ entreprise.siret }}"  disabled="disabled">
+                    </div>
+                    <div class="pt-3 ps-3 pe-3 row">
+                        <label for="" class="h5">N° Siren :</label>
+                        <input class="form-control formvalidate disabled" type="text" value="{{ entreprise.siren }}"  disabled="disabled">
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="p-3 row">
+                        <label for="" class="h5">Code APE :</label>
+                        <input class="form-control formvalidate disabled" type="text" value="{{ entreprise.codeAPE }}"  disabled="disabled">
+                    </div>
+                    <div class="p-3 row">
+                        <label for="" class="h5">N° de TVA intracommunautaire :</label>
+                        <input class="form-control formvalidate disabled" type="text" value="{{ entreprise.tvaIntraCommunautaire }}"  disabled="disabled">
+                    </div>
+                    <div class="p-3 row">
+                        <label for="" class="h5">Type :<span style="color: red;">*</span></label>
+                        <input class="form-control is-valid formvalidate disabled" type="text" value="{{ entreprise.type }}"  disabled="disabled">
+                    </div>
+                    <div class="p-3 row">
+                        <label for="" class="h5">N° Téléphone :<span style="color: red;">*</span></label>
+                        <input class="form-control is-valid formvalidate disabled" type="text" value="{{ entreprise.numTelephone }}"  disabled="disabled">
+                    </div>
+                    <div class="pt-3 ps-3 pe-3 row">
+                        <label for="" class="h5">N° NAF :</label>
+                        <input class="form-control formvalidate disabled" type="text" value="{{ entreprise.naf }}"  disabled="disabled">
+                    </div>
+                </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="p-3 row">
+                    <label for="" class="h5">Signe :</label>
+                        <input class="form-control formvalidate disabled" type="text" value="{{ entreprise.signe }}"  disabled="disabled">
+                </div>
+                <div class="p-3 row">
+                    <label for="" class="h5">Secteur :</label>
+                        <input class="form-control formvalidate disabled" type="text" value="{{ entreprise.secteur }}"  disabled="disabled">
+                </div>
+                <div class="p-3 row">
+                    <label for="" class="h5">Nature :</label>
+                        <input class="form-control  formvalidate disabled" type="text" value="{{ entreprise.nature }}"  disabled="disabled">
+                </div>
+                <div class="p-3 row">
+                    <label for="" class="h5">Nom du responsable :<span style="color: red;">*</span></label>
+                        <input class="form-control is-valid formvalidate disabled" type="text" value="{{ entreprise.nature }}"  disabled="disabled">
+                </div>
+                <div class="p-3 row">
+                    <label for="" class="h5">Nationalité de l'entreprise :</label>
+                        <input class="form-control formvalidate disabled" type="text" value="{{ entreprise.nationalite }}"  disabled="disabled">
+                </div>
+            </div>
+                <div class="col-12">
+                    <div class="p-3 row">
+                        <label for="" class="h5">Email Référent sureté / sécurité :<span style="color: red;">*</span></label>
+                        <input class="form-control is-valid formvalidate disabled" type="text" value="{{ entreprise.emailReferent }}"  disabled="disabled">
+                    </div>
+                </div>
+                <div class="col-6 pt-2">
+                    <label for="" class="h5">Suppleant 1 du référent sureté / sécurité :<span style="color: red;">*</span></label>
+                    <input class="form-control formvalidate disabled" type="text" value="{{ entreprise.suppleant1 }}"  disabled="disabled">
+                </div>
+                <div class="col-6 pt-2">
+                    <label for="" class="h5">Suppleant 2 du référent sureté / sécurité :<span style="color: red;">*</span></label>
+                    <input class="form-control formvalidate disabled" type="text" value="{{ entreprise.suppleant2 }}"  disabled="disabled">
+                </div>
+                {% if entreprise.entrepriseMere %}
+                    <div class="col-6 pt-2">
+                        <label for="" class="h5">Entreprise mère<span style="color: red;"></span></label>
+                        <input class="form-control formvalidate disabled" type="text" value="{{ entreprise.entrepriseMere.nom }}"  disabled="disabled">
+                    </div>
+                {% endif %}
+
+                {% if entreprise.filiales|length > 0 %}
+                    <div class="col-6 pt-2">
+                        <h5>Filiales</h5>
+                        <div id="filiales" class="form-control disabled bg-dark-subtle" rows="5" disabled="disabled">
+                        {% for filiale in entreprise.filiales %}
+                            <span>{{ filiale.nom }} - {{ filiale.emailReferent }}</span><br/>
+                        {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="row mt-4">
+                    <div class="col-12 p-0 dcenter d-flex justify-content-around margin-bottom-spacing">
+                        {% set targetRoute = 'app_demande_sdri' %}
+                        <a class="btn btn-danger btn-lg me-3" href="{{ path(targetRoute) }}">
+                            <img src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32">
+                            Retour
+                        </a>
+                        <a class="btn btn-success btn-lg me-3" href="{{ path('app_adresse_entreprise_show', {'id': idAdresseEntreprise, 'id_second': entreprise.id}) }}">
+                            Suivant
+                            <img src="{{ asset('css/icons/arrow-right-short.svg') }}" width="32" height="32">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{# <script src="{{ asset('/js/numphoneEntreprise.js') }}"></script> #}
+<script src="{{ asset('/js/formconfirmation.js') }}"></script>
+{% endblock %}

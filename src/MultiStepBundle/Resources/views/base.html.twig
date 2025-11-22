@@ -1,0 +1,137 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    <head>
+        <title>{% block title %}Multi-Step Form{% endblock %}</title>
+        <link rel="stylesheet" href="{{ asset('css/multistep.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/autocomplete.css') }}">
+        <link   href="https://cdn.jsdelivr.net/npm/trumbowyg@2.31.0/dist/ui/trumbowyg.min.css" rel="stylesheet">
+        <link href="{{ asset('fontawesome/css/all.css') }}" rel="stylesheet">
+        {% block other_stylesheets %}{% endblock %}
+        {% block other_initscripts %}{% endblock %}
+    </head>
+{% endblock %}
+{% block body %}
+    {% set basePublicPath = app_public_path  %}
+    {% block navbar %}
+        <div class="multi-step-header">
+            {% block header %} {% endblock %}
+        </div>
+    {% endblock %}
+    <div class="container">
+        {% block container %}{% endblock %}
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        window.APP_BASE_PATH = '{{ app_base_path }}';
+        window.APP_PUBLIC_PATH = '{{ app_public_path }}';
+    </script>
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            $('.underdev').remove();
+        });
+    </script>
+    <script src="{{ asset('js/autocomplete.js') }}" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/trumbowyg@2.31.0/dist/trumbowyg.min.js"></script>
+    <script src="{{ asset('js/fr.min.js') }}"></script>
+    <script src="{{ asset('js/trumbowyg.fr.min.js') }}"></script>
+    <script src="{{ asset('js/trumbowyg-init.js') }}"></script>
+    <script src="{{ asset('fontawesome/js/all.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Disable autocomplete on all input fields
+            document.querySelectorAll('input').forEach(input => {
+                input.setAttribute('autocomplete', 'off');
+                input.setAttribute('autocorrect', 'off');
+                input.setAttribute('autocapitalize', 'off');
+                input.setAttribute('spellcheck', 'false');
+            });
+
+            // Optionally also disable on form level
+            const form = document.querySelector('form[name="person_access_step_two_form"]');
+            if (form) {
+                form.setAttribute('autocomplete', 'off');
+            }
+        });
+    </script>
+    <script>
+        (function() {
+            function fixEncodingUltra(input) {
+                if (!input) return '';
+
+                // Vérifie si le texte contient des motifs typiques de corruption
+                const suspicious = /Ã|â€|Â/;
+                if (!suspicious.test(input)) {
+                    return input; // On ne touche à rien si tout va bien
+                }
+
+                let output = input;
+
+                try {
+                    const bytes = new Uint8Array([...output].map(c => c.charCodeAt(0)));
+                    const decoded = new TextDecoder('utf-8').decode(bytes);
+                    if (decoded && decoded !== output && suspicious.test(decoded)) {
+                        output = decoded;
+                    }
+                } catch (_) {}
+
+                const replacements = {
+                    'Ã ': 'à', 'Ã¢': 'â', 'Ã¤': 'ä',
+                    'Ã§': 'ç',
+                    'Ã¨': 'è', 'Ã©': 'é', 'Ãª': 'ê', 'Ã«': 'ë',
+                    'Ã®': 'î', 'Ã¯': 'ï',
+                    'Ã´': 'ô', 'Ã¶': 'ö',
+                    'Ã¹': 'ù', 'Ã»': 'û', 'Ã¼': 'ü',
+                    'Ãœ': 'Ü', 'Ã–': 'Ö',
+                    'Ã€': 'À', 'Ã‚': 'Â', 'Ã‰': 'É', 'Ãˆ': 'È',
+                    'ÃŽ': 'Î', 'ÃŸ': 'ß',
+                    'Ã±': 'ñ',
+                    'â‚¬': '€',
+                    'â€š': '‚', 'â€ž': '„',
+                    'â€¦': '…',
+                    'â€': '†', 'â€¡': '‡',
+                    'â€°': '‰',
+                    'â€¹': '‹',
+                    'â€™': '’', 'â€œ': '“', 'â€�': '”',
+                    'â€¢': '•', 'â€“': '–', 'â€”': '—',
+                    'â„¢': '™',
+                    'â€˜': '‘',
+                    'Â«': '«', 'Â»': '»',
+                    'Â': '',
+                };
+
+                for (const [bad, good] of Object.entries(replacements)) {
+                    output = output.split(bad).join(good);
+                }
+
+                output = output.replace(/\uFFFD/g, '');
+                output = output.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+                output = output.replace(/\u00A0/g, ' ').replace(/\uFEFF/g, '');
+                return output.trim();
+            }
+
+            function fixAllTextNodes() {
+                const walker = document.createTreeWalker(
+                    document.body,
+                    NodeFilter.SHOW_TEXT,
+                    null,
+                    false
+                );
+
+                let node;
+                while (node = walker.nextNode()) {
+                    if (/[Ãâ€Â]/.test(node.nodeValue)) {
+                        const fixed = fixEncodingUltra(node.nodeValue);
+                        if (fixed !== node.nodeValue) {
+                            node.nodeValue = fixed;
+                        }
+                    }
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', fixAllTextNodes);
+        })();
+    </script>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Intervention | Fluxel{% endblock %}
+
+{% block body %}
+
+    {{ include('intervention/_form.html.twig', {'button_label': 'Suivant'}) }}
+
+    {# <a href="{{ path('app_intervention_index') }}">back to list</a> #}
+
+    {# {{ include('intervention/_delete_form.html.twig') }} #}
+{% endblock %}

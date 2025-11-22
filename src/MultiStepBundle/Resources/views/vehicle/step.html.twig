@@ -1,0 +1,209 @@
+{% extends '@MultiStepBundle/base.html.twig' %}
+
+{% block title %}Fluxel: {{ current_step }}{% endblock %}
+{% block header %}
+    <div class="step-trail">
+    {{ step_trail|raw }}
+    </div>
+    <div class="clearfix"></div>
+{% endblock %}
+{% block other_stylesheets %}
+    <style>
+        .container {
+            margin-top: 60px;
+        }
+    </style>
+{% endblock %}
+{% block container %}
+    <div class="container-title">Demande de titre de circulation pour {{ step_entity }}</div>
+    <h1>{{ current_step }}</h1>
+    <small class="text-khaki">Tous les champs avec * sont obligatoires, les champs microcésame sont indiqué par "m"</small>
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <div class="form-actions">
+            {% for button in buttons %}
+                {% if (button.type == 'inline_form_confirm') %}
+                    <div id="namePrompt" style="display:none;">
+                        <input type="hidden" name="finalName" id="finalName" required>
+                        <input type="hidden" name="confirmOverwrite" id="confirmOverwrite" value="0" required>
+                        <label for="nameInput">Nom de la sauvegarde :</label>
+                        <input type="text" id="nameInput" class="autocomplete-input" value="{{ step_number }}">
+                        <div id="nameSuggestions" class="autocomplete-suggestions"></div>
+                        <p>&nbsp;</p>
+                        <button type="submit" name="action" formaction="{{ button.route }}" class="btn-action {{ button.class }}" id="confirmSaveBtn">Valider</button>
+                    </div>
+                    <button type="button" name="action" id="terminateBtn" class="btn-action {{ button.class }}" {% if button.attr is defined %} {{ button.attr }} {% endif %}>{{ button.label }}</button>
+                {% else %}
+                    <button type="submit" name="action" formaction="{{ button.route }}" class="btn-action {{ button.class }}" {% if button.attr is defined %} {{ button.attr }} {% endif %}>{{ button.label }}</button>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {{ form_end(form) }}
+    <div class="clearfix"></div>
+    <script>
+        let stepValues = {
+            {% for key, value in data %}
+            "{{ key|e('js') }}":
+                    {%- if value is date -%}
+                "{{ value|date('Y-m-d')|e('js') }}"
+            {%- elseif value is iterable -%}
+            {{ value|json_encode|raw }}
+            {%- else -%}
+            "{{ value|e('js') }}"
+            {%- endif -%}
+            {%- if not loop.last %},{% endif %}
+            {% endfor %}
+        };
+    </script>
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{asset(step_asset)}}" ></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const existingNames = {{ existingNames|json_encode|raw }};
+            if (!existingNames) {
+                return;
+            }
+            if (!Array.isArray(existingNames)) {
+                console.warn('existingNames est invalide.');
+                return;
+            }
+
+            /** @type {HTMLButtonElement} */
+            const terminateBtn = document.getElementById('terminateBtn');
+            /** @type {HTMLElement} */
+            const namePrompt = document.getElementById('namePrompt');
+            /** @type {HTMLInputElement} */
+            const nameInput = document.getElementById('nameInput');
+            /** @type {HTMLInputElement} */
+            const finalName = document.getElementById('finalName');
+            /** @type {HTMLButtonElement} */
+            const confirmOverwrite = document.getElementById('confirmOverwrite');
+            /** @type {HTMLButtonElement} */
+            const confirmSaveBtn = document.getElementById('confirmSaveBtn');
+
+            let selectedNameExists = false;
+
+            // Auto-complétion simple
+            if (nameInput) {
+                nameInput.addEventListener('input', function () {
+                    const value = nameInput.value.trim().toLowerCase();
+                    selectedNameExists = existingNames.includes(value);
+                });
+            }
+
+            if (terminateBtn && namePrompt) {
+                terminateBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    namePrompt.style.display = 'block';
+                });
+            }
+
+            if (confirmSaveBtn && nameInput && finalName) {
+                confirmSaveBtn.addEventListener('click', function (e) {
+                    const inputValue = nameInput.value.trim();
+                    if (!inputValue) {
+                        alert("Veuillez entrer un nom.");
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return;
+                    }
+
+                    if (existingNames.includes(inputValue.toLowerCase())) {
+                        if (!confirm("Ce nom existe déjà. Voulez-vous vraiment l’écraser ?")) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            return;
+                        }
+                        if (confirmOverwrite) {
+                            confirmOverwrite.value = "1";
+                        }
+                    }
+
+                    finalName.value = inputValue;
+
+                    const formaction = confirmSaveBtn.getAttribute('formaction');
+                    if (!formaction) {
+                        console.warn('formaction manquant.');
+                        e.preventDefault();
+                        return;
+                    }
+
+                    const form = confirmSaveBtn.closest('form');
+                    if (form) {
+                        form.setAttribute('action', formaction);
+                        form.submit();
+                    } else {
+                        console.warn('Aucun formulaire parent trouvé.');
+                        e.preventDefault();
+                    }
+                });
+            } else {
+                console.warn('Bouton de sauvegarde, champ nom ou champ final manquant — le bouton de sauvegarde ne sera pas actif.');
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Types MIME autorisés (whitelist stricte, sans SVG ni formats exotiques)
+            const ALLOWED_MIME = new Set([
+                "application/pdf",
+                "image/jpeg","image/png","image/gif","image/bmp","image/webp"
+            ]);
+
+            // Extensions autorisées (fallback si MIME vide ou incohérent)
+            const ALLOWED_EXT = new Set([
+                "pdf","jpg","jpeg","jpe","png","gif","bmp","webp"
+            ]);
+
+            // Taille max par fichier (5 Mo ici)
+            const MAX_BYTES = 5 * 1024 * 1024;
+
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+
+            fileInputs.forEach(input => {
+                // UX : restreint la boîte de dialogue
+                input.setAttribute("accept", "application/pdf,image/*");
+
+                input.addEventListener("change", function () {
+                    const files = Array.from(this.files || []);
+                    const errors = [];
+
+                    files.forEach(file => {
+                        if (!isAllowed(file)) {
+                            errors.push(`• ${sanitize(file.name)} : format interdit (${file.type || "inconnu"})`);
+                        } else if (file.size > MAX_BYTES) {
+                            errors.push(`• ${sanitize(file.name)} : trop volumineux (> 5 Mo)`);
+                        }
+                    });
+
+                    if (errors.length) {
+                        alert(
+                            "⚠️ Upload refusé :\n" + errors.join("\n") +
+                            "\n\n👉 Formats autorisés : ." + Array.from(ALLOWED_EXT).join(", .")
+                        );
+                        this.value = ""; // reset input
+                    }
+                });
+            });
+
+            // Vérifie l’autorisation
+            function isAllowed(file) {
+                const mime = (file.type || "").toLowerCase();
+                if (mime && ALLOWED_MIME.has(mime)) return true;
+
+                const ext = ((file.name || "").split(".").pop() || "").toLowerCase();
+                if (ALLOWED_EXT.has(ext)) return true;
+
+                return false;
+            }
+
+            // ⚠️ Sanitizer simple (empêche injection dans l’alert)
+            function sanitize(str) {
+                return str.replace(/[<>&"'`]/g, c => ({
+                    '<':'&lt;', '>':'&gt;', '&':'&amp;', '"':'&quot;', "'":'&#39;', '`':'&#96;'
+                }[c]));
+            }
+        });
+    </script>
+    <script src="{{ asset('js/bootstrap5.3.js') }}"></script>
+{% endblock %}

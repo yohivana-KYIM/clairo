@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}InfoComplementaire{% endblock %}
+
+{% block body %}
+    <h1>InfoComplementaire</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ info_complementaire.id }}</td>
+            </tr>
+            <tr>
+                <th>NumTelephone</th>
+                <td>{{ info_complementaire.numTelephone }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ info_complementaire.email }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_info_complementaire_index') }}">back to list</a>
+
+    <a href="{{ path('app_info_complementaire_edit', {'id': info_complementaire.id}) }}">edit</a>
+
+    {{ include('info_complementaire/_delete_form.html.twig') }}
+{% endblock %}

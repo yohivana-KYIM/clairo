@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}InfoComplementaire index{% endblock %}
+
+{% block body %}
+    <h1>InfoComplementaire index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>NumTelephone</th>
+                <th>Email</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for info_complementaire in info_complementaires %}
+            <tr>
+                <td>{{ info_complementaire.id }}</td>
+                <td>{{ info_complementaire.numTelephone }}</td>
+                <td>{{ info_complementaire.email }}</td>
+                <td>
+                    <a href="{{ path('app_info_complementaire_show', {'id': info_complementaire.id}) }}">show</a>
+                    <a href="{{ path('app_info_complementaire_edit', {'id': info_complementaire.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_info_complementaire_new') }}">Create new</a>
+{% endblock %}

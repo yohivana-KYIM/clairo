@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EtatCivil{% endblock %}
+
+{% block body %}
+    <h1>EtatCivil</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ etat_civil.id }}</td>
+            </tr>
+            <tr>
+                <th>Titre</th>
+                <td>{{ etat_civil.titre }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ etat_civil.Nom }}</td>
+            </tr>
+            <tr>
+                <th>Prenom</th>
+                <td>{{ etat_civil.prenom }}</td>
+            </tr>
+            <tr>
+                <th>Prenom2</th>
+                <td>{{ etat_civil.prenom2 }}</td>
+            </tr>
+            <tr>
+                <th>Prenom3</th>
+                <td>{{ etat_civil.prenom3 }}</td>
+            </tr>
+            <tr>
+                <th>Prenom4</th>
+                <td>{{ etat_civil.prenom4 }}</td>
+            </tr>
+            <tr>
+                <th>DateNaissance</th>
+                <td>{{ etat_civil.dateNaissance ? etat_civil.dateNaissance|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>PaysNaissance</th>
+                <td>{{ etat_civil.paysNaissance }}</td>
+            </tr>
+            <tr>
+                <th>LieuNaissance</th>
+                <td>{{ etat_civil.lieuNaissance }}</td>
+            </tr>
+            <tr>
+                <th>CpNaissance</th>
+                <td>{{ etat_civil.cpNaissance }}</td>
+            </tr>
+            <tr>
+                <th>ArrondissementNaissance</th>
+                <td>{{ etat_civil.arrondissementNaissance }}</td>
+            </tr>
+            <tr>
+                <th>NomMarital</th>
+                <td>{{ etat_civil.nomMarital }}</td>
+            </tr>
+            <tr>
+                <th>Nationalite</th>
+                <td>{{ etat_civil.nationalite }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_etat_civil_index') }}">back to list</a>
+
+    <a href="{{ path('app_etat_civil_edit', {'id': etat_civil.id}) }}">edit</a>
+
+    {{ include('etat_civil/_delete_form.html.twig') }}
+{% endblock %}

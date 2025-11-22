@@ -1,0 +1,118 @@
+{# templates/dashboard/deadlines/user.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block container %}
+    <div class="container-title">Mes échéances</div>
+
+        {# -- mini KPIs computed in Twig -- #}
+        {% set contractSoon = 0 %}
+        {% set trainingSoon = 0 %}
+        {% for d in deadlines %}
+            {% if d.daysUntilContractEnd is not null and d.daysUntilContractEnd <= 30 %}
+                {% set contractSoon = contractSoon + 1 %}
+            {% endif %}
+            {% if d.daysUntilTrainingExpire is not null and d.daysUntilTrainingExpire <= 30 %}
+                {% set trainingSoon = trainingSoon + 1 %}
+            {% endif %}
+        {% endfor %}
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-muted small">Contrats à échéance ≤ 30 j</div>
+                                <div class="fs-3 fw-bold">{{ contractSoon }}</div>
+                            </div>
+                            <span class="badge bg-{{ contractSoon > 0 ? 'warning' : 'success' }}">
+              {{ contractSoon > 0 ? 'À surveiller' : 'RAS' }}
+            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-muted small">Formations expirant ≤ 30 j</div>
+                                <div class="fs-3 fw-bold">{{ trainingSoon }}</div>
+                            </div>
+                            <span class="badge bg-{{ trainingSoon > 0 ? 'warning' : 'success' }}">
+              {{ trainingSoon > 0 ? 'À surveiller' : 'RAS' }}
+            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-sm align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>#Step</th>
+                    <th>Contrat — fin</th>
+                    <th>Jours restants</th>
+                    <th>Formation Fluxel</th>
+                    <th>Jours restants</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for d in deadlines %}
+                    <tr>
+                        <td class="text-muted">{{ d.stepId }}</td>
+                        <td>{{ d.contractEndDate ?? '—' }}</td>
+                        <td>
+                            {% if d.daysUntilContractEnd is not null %}
+                                {% set n = d.daysUntilContractEnd %}
+                                <span class="badge
+                  {% if n < 0 %} bg-danger
+                  {% elseif n <= 7 %} bg-danger
+                  {% elseif n <= 30 %} bg-warning
+                  {% else %} bg-success
+                  {% endif %}">
+                  {% if n < 0 %}
+                      Expiré {{ n }} j
+                  {% elseif n == 0 %}
+                      Aujourd’hui
+                  {% else %}
+                      {{ n }} j
+                  {% endif %}
+                </span>
+                            {% else %} — {% endif %}
+                        </td>
+                        <td>{{ d.fluxelTrainingDate ?? '—' }}</td>
+                        <td>
+                            {% if d.daysUntilTrainingExpire is not null %}
+                                {% set n = d.daysUntilTrainingExpire %}
+                                <span class="badge
+                  {% if n < 0 %} bg-danger
+                  {% elseif n <= 7 %} bg-danger
+                  {% elseif n <= 30 %} bg-warning
+                  {% else %} bg-success
+                  {% endif %}">
+                  {% if n < 0 %}
+                      Expirée {{ n }} j
+                  {% elseif n == 0 %}
+                      Aujourd’hui
+                  {% else %}
+                      {{ n }} j
+                  {% endif %}
+                </span>
+                            {% else %} — {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            Aucune échéance trouvée.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+{% endblock %}

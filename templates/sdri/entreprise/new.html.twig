@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Entreprise | Fluxel{% endblock %}
+
+{% block body %}
+    {# <h1>Create new Entreprise</h1> #}
+
+    {{ include('sdri/entreprise/_form.html.twig'|default('')) }}
+
+    {# <a href="{{ path('app_entreprise_index') }}">back to list</a> #}
+{% endblock %}

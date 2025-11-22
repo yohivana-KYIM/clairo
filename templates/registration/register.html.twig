@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription | Fluxel{% endblock %}
+
+{% block body %}
+    <link rel="stylesheet" href="{{ asset('css/registerstyle.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+
+    <body class="overflow-hidden" id="bg-pattern">
+        {% for message in app.flashes('emailsent') %}
+            <div class="modal fade" id="maModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="alert alert-success" role="alert">
+                                <div class="fs-5">{{ message }}</div>
+                            </div><br>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-center">
+                            <button type="button" class="btn btn-lg btn-success" data-bs-dismiss="modal">D'accord</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('erreurMiss') %}
+            <div class="modal fade" id="maModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="alert alert-danger" role="alert">
+                                <div class="fs-5">{{ message }}</div>
+                            </div><br>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-center">
+                            <button type="button" class="btn btn-lg btn-danger" data-bs-dismiss="modal">Retour à la page d'inscription</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% for flash_error in app.flashes('verify_email_error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    <div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+        <div class="border border-dark-subtle rounded wrapper">
+            <h1 class="text-center pt-5 fw-bold">Inscription</h1>
+            {{ form_start(registrationForm, {'attr': {'class': 'm-5'}}) }}
+                <div class="form-floating mb-3">
+                    {{ form_widget(registrationForm.email, {'attr': {'class': 'border-dark-subtle', 'id': 'floatingInput2', 'placeholder': 'name@example.com'}}) }}
+                    <label for="floatingInput2">Email</label>
+                    {{ form_errors(registrationForm.email) }}
+                </div>
+                <div class="form-floating mb-3">
+                    {{ form_widget(registrationForm.password.first, {'attr': {'class': 'mt-4 mb-3 border-dark-subtle', 'id': 'floatingInput2', 'placeholder': 'Votre mot de passe'}}) }}
+                    <label for="registration_form_password_first">Mot de passe</label>
+                    {{ form_errors(registrationForm.password.first, {'attr': {'class': 'mt-4 mb-3'}}) }}
+                    <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;">
+                        <img src="/img/eye-slash.png" alt="Afficher" class="toggle-password" data-toggle="#registration_form_password_first"  style="width: 20px; height: 20px;" />
+                    </span>
+                </div>
+                <div class="form-floating mb-3">
+                    {{ form_widget(registrationForm.password.second, {'attr': {'class': 'mt-4 mb-3 border-dark-subtle', 'id': 'floatingInput2', 'placeholder': 'Votre mot de passe'}}) }}
+                    <label for="floatingInput2">Confirmez votre mot de passe</label>
+                    {{ form_errors(registrationForm.password.second, {'attr': {'class': 'mt-4 mb-3'}}) }}
+                </div>
+
+                <div class="p-2 mt-3 me-3">
+                    {{ form_widget(registrationForm.agreeTerms) }}
+                    {{ form_errors(registrationForm.agreeTerms) }}
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-lg btn-cleo mt-2 border-dark-subtle">S'inscrire</button>
+                </div>
+                <div class="ps-1 mt-4 text-center">
+                    <p class="opacity-75 fs-6">Vous avez déjà un compte? <a class="link-body-emphasis link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover" href="{{ path('app_login') }}">Cliquez ici</a></p>
+                </div>
+            {{ form_end(registrationForm) }}
+        </div>
+    </div>
+</body>
+<script>
+
+// function closeAutoCloseAlerts() {
+//     const autoCloseAlerts = document.querySelectorAll('.auto-close-alert');
+//     autoCloseAlerts.forEach((alert) => {
+//         setTimeout(() => {
+//             alert.style.display = 'none';
+//         }, 10000);
+//     });
+// }
+$(document).ready(function() {
+        $('#maModal').modal('show');
+    });
+window.addEventListener('load', closeAutoCloseAlerts);
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.toggle-password').forEach(function (icon) {
+            icon.addEventListener('click', function () {
+                const target = document.querySelector(this.getAttribute('data-toggle'));
+                const isPassword = target.type === "password";
+                target.type = isPassword ? "text" : "password";
+
+                // Switch image
+                this.src = isPassword ? "/img/eye.png" : "/img/eye-slash.png";
+            });
+        });
+    });
+</script>
+{% endblock %}

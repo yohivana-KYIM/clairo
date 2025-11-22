@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ProblemeCarte index{% endblock %}
+
+{% block body %}
+    <h1>ProblemeCarte index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Motif</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>DateNaissance</th>
+                <th>SuiteDonner</th>
+                <th>Email</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for probleme_carte in probleme_cartes %}
+            <tr>
+                <td>{{ probleme_carte.id }}</td>
+                <td>{{ probleme_carte.motif }}</td>
+                <td>{{ probleme_carte.nom }}</td>
+                <td>{{ probleme_carte.prenom }}</td>
+                <td>{{ probleme_carte.dateNaissance ? probleme_carte.dateNaissance|date('Y-m-d') : '' }}</td>
+                <td>{{ probleme_carte.suiteDonner }}</td>
+                <td>{{ probleme_carte.email }}</td>
+                <td>
+                    <a href="{{ path('app_probleme_carte_show', {'id': probleme_carte.id}) }}">show</a>
+                    <a href="{{ path('app_probleme_carte_edit', {'id': probleme_carte.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_probleme_carte_new') }}">Create new</a>
+{% endblock %}

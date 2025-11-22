@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paramètres de sécurité{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="container-title">Paramètres de Sécurité</div>
+
+        <form method="post" class="card p-4 shadow-sm">
+
+            <!-- Sécurité des comptes -->
+            <fieldset class="mb-4">
+                <legend class="text-khaki fw-semibold border-bottom pb-2 mb-3">Sécurité des comptes</legend>
+
+                <div class="mb-3">
+                    <label for="password_policy" class="form-label">Politique de mots de passe</label>
+                    <select class="form-select" id="password_policy" name="password_policy">
+                        <option value="low">Faible (8 caractères minimum)</option>
+                        <option value="medium">Moyenne (12 caractères, chiffres et majuscules)</option>
+                        <option value="high">Élevée (16 caractères, symboles, majuscules et chiffres)</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password_expiry" class="form-label">Expiration du mot de passe</label>
+                    <select class="form-select" id="password_expiry" name="password_expiry">
+                        <option value="never">Jamais</option>
+                        <option value="30">Tous les 30 jours</option>
+                        <option value="60">Tous les 60 jours</option>
+                        <option value="90">Tous les 90 jours</option>
+                    </select>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="force_password_change" name="force_password_change">
+                    <label class="form-check-label" for="force_password_change">Forcer le changement de mot de passe à la première connexion</label>
+                </div>
+            </fieldset>
+
+            <!-- Authentification -->
+            <fieldset class="mb-4">
+                <legend class="text-khaki fw-semibold border-bottom pb-2 mb-3">Authentification et Connexion</legend>
+
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="two_factor_auth" id="2fa_disabled" value="disabled" checked>
+                        <label class="form-check-label" for="2fa_disabled">Désactivée</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="two_factor_auth" id="2fa_email" value="email">
+                        <label class="form-check-label" for="2fa_email">Via Email</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="two_factor_auth" id="2fa_sms" value="sms">
+                        <label class="form-check-label" for="2fa_sms">Via SMS</label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="login_attempts" class="form-label">Nombre maximal de tentatives de connexion avant blocage</label>
+                    <select class="form-select" id="login_attempts" name="login_attempts">
+                        <option value="3">3 tentatives</option>
+                        <option value="5">5 tentatives</option>
+                        <option value="10">10 tentatives</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="auto_logout" class="form-label">Déconnexion automatique après inactivité</label>
+                    <select class="form-select" id="auto_logout" name="auto_logout">
+                        <option value="5">5 minutes</option>
+                        <option value="15">15 minutes</option>
+                        <option value="30">30 minutes</option>
+                        <option value="60">1 heure</option>
+                    </select>
+                </div>
+            </fieldset>
+
+            <!-- Protection des données -->
+            <fieldset class="mb-4">
+                <legend class="text-khaki fw-semibold border-bottom pb-2 mb-3">Protection des données</legend>
+
+                <div class="mb-3">
+                    <label for="data_encryption" class="form-label">Chiffrement des données sensibles</label>
+                    <select class="form-select" id="data_encryption" name="data_encryption">
+                        <option value="sha256">SHA-256</option>
+                        <option value="bcrypt">Bcrypt</option>
+                        <option value="argon2">Argon2</option>
+                    </select>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="log_user_activity" name="log_user_activity" checked>
+                    <label class="form-check-label" for="log_user_activity">Activer la journalisation des actions des utilisateurs</label>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="delete_old_logs" name="delete_old_logs">
+                    <label class="form-check-label" for="delete_old_logs">Supprimer automatiquement les logs après 90 jours</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="sdri_receive_refsec_email" name="sdri_receive_refsec_email">
+                    <label class="form-check-label" for="sdri_receive_refsec_email">Supprimer automatiquement les logs après 90 jours</label>
+                </div>
+            </fieldset>
+
+            <!-- Bouton de sauvegarde -->
+            <a class="btn btn-danger btn-lg me-3" href="{{ path('app_home') }}">{{ 'Retour'|trans }}</a>
+            <button type="submit" class="btn btn-cleo">Enregistrer les paramètres</button>
+
+        </form>
+    </div>
+{% endblock %}

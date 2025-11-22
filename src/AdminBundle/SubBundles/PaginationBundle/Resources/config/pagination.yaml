@@ -1,0 +1,3 @@
+pagination_bundle:
+  strategy: server # Options: server, client, infinite_scroll
+  items_per_page: 20

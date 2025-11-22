@@ -1,0 +1,1163 @@
+<?php
+// =============================================
+// FILE: src/Entity/Dashboard/AlertsAdmin.php
+// =============================================
+
+namespace App\Entity\Dashboard;
+
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(readOnly: true)]
+#[ORM\Table(name: 'v_alerts_admin')]
+class AlertsAdmin
+{
+    #[ORM\Id]
+    #[ORM\Column(name: 'step_id', type: 'integer')]
+    private int $stepId;
+
+    #[ORM\Column(name: 'company_name', type: 'text', nullable: true)]
+    private ?string $companyName = null;
+
+    #[ORM\Column(name: 'status', type: 'string', length: 255)]
+    private string $status;
+
+    #[ORM\Column(name: 'request_date', type: 'text', nullable: true)]
+    private ?string $requestDate = null;
+
+    #[ORM\Column(name: 'days_open', type: 'integer')]
+    private int $daysOpen;
+
+    #[ORM\Column(name: 'alert_type', type: 'string', length: 64)]
+    private string $alertType;
+
+    public function getStepId(): int { return $this->stepId; }
+    public function getCompanyName(): ?string { return $this->companyName; }
+    public function getStatus(): string { return $this->status; }
+    public function getRequestDate(): ?string { return $this->requestDate; }
+    public function getDaysOpen(): int { return $this->daysOpen; }
+    public function getAlertType(): string { return $this->alertType; }
+}
+
+<?php
+// ================================================
+// FILE: src/Entity/Dashboard/AlertsRefsecu.php
+// ================================================
+
+namespace App\Entity\Dashboard;
+
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(readOnly: true)]
+#[ORM\Table(name: 'v_alerts_refsecu')]
+class AlertsRefsecu
+{
+    #[ORM\Id]
+    #[ORM\Column(name: 'step_id', type: 'integer')]
+    private int $stepId;
+
+    #[ORM\Column(name: 'company_name', type: 'text', nullable: true)]
+    private ?string $companyName = null;
+
+    #[ORM\Column(name: 'status', type: 'string', length: 255)]
+    private string $status;
+
+    #[ORM\Column(name: 'request_date', type: 'text', nullable: true)]
+    private ?string $requestDate = null;
+
+    #[ORM\Column(name: 'alert_type', type: 'string', length: 64)]
+    private string $alertType;
+
+    public function getStepId(): int { return $this->stepId; }
+    public function getCompanyName(): ?string { return $this->companyName; }
+    public function getStatus(): string { return $this->status; }
+    public function getRequestDate(): ?string { return $this->requestDate; }
+    public function getAlertType(): string { return $this->alertType; }
+}
+
+<?php
+// ============================================
+// FILE: src/Entity/Dashboard/AlertsSdri.php
+// ============================================
+
+namespace App\Entity\Dashboard;
+
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(readOnly: true)]
+#[ORM\Table(name: 'v_alerts_sdri')]
+class AlertsSdri
+{
+    #[ORM\Id]
+    #[ORM\Column(name: 'step_id', type: 'integer')]
+    private int $stepId;
+
+    #[ORM\Column(name: 'company_name', type: 'text', nullable: true)]
+    private ?string $companyName = null;
+
+    #[ORM\Column(name: 'status', type: 'string', length: 255)]
+    private string $status;
+
+    #[ORM\Column(name: 'request_date', type: 'text', nullable: true)]
+    private ?string $requestDate = null;
+
+    #[ORM\Column(name: 'alert_type', type: 'string', length: 64)]
+    private string $alertType;
+
+    public function getStepId(): int { return $this->stepId; }
+    public function getCompanyName(): ?string { return $this->companyName; }
+    public function getStatus(): string { return $this->status; }
+    public function getRequestDate(): ?string { return $this->requestDate; }
+    public function getAlertType(): string { return $this->alertType; }
+}
+
+<?php
+// ================================================
+// FILE: src/Entity/Dashboard/DeadlinesAdmin.php
+// ================================================
+
+namespace App\Entity\Dashboard;
+
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(readOnly: true)]
+#[ORM\Table(name: 'v_deadlines_admin')]
+class DeadlinesAdmin
+{
+    #[ORM\Id]
+    #[ORM\Column(name: 'step_id', type: 'integer')]
+    private int $stepId;
+
+    #[ORM\Column(name: 'company_name', type: 'text', nullable: true)]
+    private ?string $companyName = null;
+
+    #[ORM\Column(name: 'employee_email', type: 'text', nullable: true)]
+    private ?string $employeeEmail = null;
+
+    #[ORM\Column(name: 'status', type: 'string', length: 255)]
+    private string $status;
+
+    #[ORM\Column(name: 'contract_end_date', type: 'text', nullable: true)]
+    private ?string $contractEndDate = null;
+
+    #[ORM\Column(name: 'fluxel_training_date', type: 'text', nullable: true)]
+    private ?string $fluxelTrainingDate = null;
+
+    #[ORM\Column(name: 'contract_expired_by', type: 'integer')]
+    private int $contractExpiredBy;
+
+    #[ORM\Column(name: 'training_expired_by', type: 'integer')]
+    private int $trainingExpiredBy;
+
+    public function getStepId(): int { return $this->stepId; }
+    public function getCompanyName(): ?string { return $this->companyName; }
+    public function getEmployeeEmail(): ?string { return $this->employeeEmail; }
+    public function getStatus(): string { return $this->status; }
+    public function getContractEndDate(): ?string { return $this->contractEndDate; }
+    public function getFluxelTrainingDate(): ?string { return $this->fluxelTrainingDate; }
+    public function getContractExpiredBy(): int { return $this->contractExpiredBy; }
+    public function getTrainingExpiredBy(): int { return $this->trainingExpiredBy; }
+}
+
+<?php
+// ==================================================
+// FILE: src/Entity/Dashboard/DeadlinesRefsecu.php
+// ==================================================
+
+namespace App\Entity\Dashboard;
+
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(readOnly: true)]
+#[ORM\Table(name: 'v_deadlines_refsecu')]
+class DeadlinesRefsecu
+{
+    #[ORM\Id]
+    #[ORM\Column(name: 'step_id', type: 'integer')]
+    private int $stepId;
+
+    #[ORM\Column(name: 'company_name', type: 'text', nullable: true)]
+    private ?string $companyName = null;
+
+    #[ORM\Column(name: 'employee_first_name', type: 'text', nullable: true)]
+    private ?string $employeeFirstName = null;
+
+    #[ORM\Column(name: 'employee_last_name', type: 'text', nullable: true)]
+    private ?string $employeeLastName = null;
+
+    #[ORM\Column(name: 'contract_end_date', type: 'text', nullable: true)]
+    private ?string $contractEndDate = null;
+
+    #[ORM\Column(name: 'access_duration_step6', type: 'text', nullable: true)]
+    private ?string $accessDurationStep6 = null;
+
+    #[ORM\Column(name: 'days_left_contract', type: 'integer')]
+    private int $daysLeftContract;
+
+    #[ORM\Column(name: 'days_left_access', type: 'integer')]
+    private int $daysLeftAccess;
+
+    public function getStepId(): int { return $this->stepId; }
+    public function getCompanyName(): ?string { return $this->companyName; }
+    public function getEmployeeFirstName(): ?string { return $this->employeeFirstName; }
+    public function getEmployeeLastName(): ?string { return $this->employeeLastName; }
+    public function getContractEndDate(): ?string { return $this->contractEndDate; }
+    public function getAccessDurationStep6(): ?string { return $this->accessDurationStep6; }
+    public function getDaysLeftContract(): int { return $this->daysLeftContract; }
+    public function getDaysLeftAccess(): int { return $this->daysLeftAccess; }
+}
+
+<?php
+// ===============================================
+// FILE: src/Entity/Dashboard/DeadlinesSdri.php
+// ===============================================
+
+namespace App\Entity\Dashboard;
+
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(readOnly: true)]
+#[ORM\Table(name: 'v_deadlines_sdri')]
+class DeadlinesSdri
+{
+    #[ORM\Id]
+    #[ORM\Column(name: 'step_id', type: 'integer')]
+    private int $stepId;
+
+    #[ORM\Column(name: 'company_name', type: 'text', nullable: true)]
+    private ?string $companyName = null;
+
+    #[ORM\Column(name: 'fluxel_training_date', type: 'text', nullable: true)]
+    private ?string $fluxelTrainingDate = null;
+
+    #[ORM\Column(name: 'employee_email', type: 'text', nullable: true)]
+    private ?string $employeeEmail = null;
+
+    #[ORM\Column(name: 'days_left_training', type: 'integer')]
+    private int $daysLeftTraining;
+
+    public function getStepId(): int { return $this->stepId; }
+    public function getCompanyName(): ?string { return $this->companyName; }
+    public function getFluxelTrainingDate(): ?string { return $this->fluxelTrainingDate; }
+    public function getEmployeeEmail(): ?string { return $this->employeeEmail; }
+    public function getDaysLeftTraining(): int { return $this->daysLeftTraining; }
+}
+
+<?php
+// =======================================================
+// FILE: src/Entity/Dashboard/GardienPersonSteps.php
+// =======================================================
+
+namespace App\Entity\Dashboard;
+
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(readOnly: true)]
+#[ORM\Table(name: 'v_gardien_person_steps')]
+class GardienPersonSteps
+{
+    #[ORM\Id]
+    #[ORM\Column(name: 'step_id', type: 'integer')]
+    private int $stepId;
+
+    #[ORM\Column(name: 'step_number', type: 'string', length: 255)]
+    private string $stepNumber;
+
+    #[ORM\Column(name: 'step_type', type: 'string', length: 255)]
+    private string $stepType;
+
+    #[ORM\Column(name: 'status', type: 'string', length: 255)]
+    private string $status;
+
+    #[ORM\Column(name: 'user_id', type: 'integer')]
+    private int $userId;
+
+    #[ORM\Column(name: 'cesar_step_id', type: 'string', length: 255)]
+    private string $cesarStepId;
+
+    #[ORM\Column(name: 'security_officer_email', type: 'text', nullable: true)]
+    private ?string $securityOfficerEmail = null;
+
+    #[ORM\Column(name: 'siret_data', type: 'text', nullable: true)]
+    private ?string $siretData = null;
+
+    #[ORM\Column(name: 'company_name', type: 'text', nullable: true)]
+    private ?string $companyName = null;
+
+    #[ORM\Column(name: 'employee_first_name', type: 'text', nullable: true)]
+    private ?string $employeeFirstName = null;
+
+    #[ORM\Column(name: 'employee_last_name', type: 'text', nullable: true)]
+    private ?string $employeeLastName = null;
+
+    #[ORM\Column(name: 'request_date', type: 'text', nullable: true)]
+    private ?string $requestDate = null;
+
+    public function getStepId(): int { return $this->stepId; }
+    public function getStepNumber(): string { return $this->stepNumber; }
+    public function getStepType(): string { return $this->stepType; }
+    public function getStatus(): string { return $this->status; }
+    public function getUserId(): int { return $this->userId; }
+    public function getCesarStepId(): string { return $this->cesarStepId; }
+    public function getSecurityOfficerEmail(): ?string { return $this->securityOfficerEmail; }
+    public function getSiretData(): ?string { return $this->siretData; }
+    public function getCompanyName(): ?string { return $this->companyName; }
+    public function getEmployeeFirstName(): ?string { return $this->employeeFirstName; }
+    public function getEmployeeLastName(): ?string { return $this->employeeLastName; }
+    public function getRequestDate(): ?string { return $this->requestDate; }
+}
+
+<?php
+// ==================================================
+// FILE: src/Entity/Dashboard/PersonAdminSteps.php
+// ==================================================
+
+namespace App\Entity\Dashboard;
+
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(readOnly: true)]
+#[ORM\Table(name: 'v_person_admin_steps')]
+class PersonAdminSteps
+{
+    #[ORM\Id]
+    #[ORM\Column(name: 'step_id', type: 'integer')]
+    private int $stepId;
+
+    #[ORM\Column(name: 'step_number', type: 'string', length: 255)]
+    private string $stepNumber;
+
+    #[ORM\Column(name: 'step_type', type: 'string', length: 255)]
+    private string $stepType;
+
+    #[ORM\Column(name: 'status', type: 'string', length: 255)]
+    private string $status;
+
+    #[ORM\Column(name: 'cesar_step_id', type: 'string', length: 255)]
+    private string $cesarStepId;
+
+    #[ORM\Column(name: 'user_id', type: 'integer')]
+    private int $userId;
+
+    #[ORM\Column(name: 'security_officer_email', type: 'text', nullable: true)]
+    private ?string $securityOfficerEmail = null;
+
+    #[ORM\Column(name: 'siret_data', type: 'text', nullable: true)]
+    private ?string $siretData = null;
+
+    #[ORM\Column(name: 'siret_entreprise', type: 'string', length: 255, nullable: true)]]
+    private ?string $siretEntreprise = null;
+
+    #[ORM\Column(name: 'email_referent_entreprise', type: 'string', length: 255, nullable: true)]
+    private ?string $emailReferentEntreprise = null;
+
+    #[ORM\Column(name: 'company_name', type: 'text', nullable: true)]
+    private ?string $companyName = null;
+
+    #[ORM\Column(name: 'employee_first_name', type: 'text', nullable: true)]
+    private ?string $employeeFirstName = null;
+
+    #[ORM\Column(name: 'employee_last_name', type: 'text', nullable: true)]
+    private ?string $employeeLastName = null;
+
+    #[ORM\Column(name: 'request_date', type: 'text', nullable: true)]
+    private ?string $requestDate = null;
+
+    public function getStepId(): int { return $this->stepId; }
+    public function getStepNumber(): string { return $this->stepNumber; }
+    public function getStepType(): string { return $this->stepType; }
+    public function getStatus(): string { return $this->status; }
+    public function getCesarStepId(): string { return $this->cesarStepId; }
+    public function getUserId(): int { return $this->userId; }
+    public function getSecurityOfficerEmail(): ?string { return $this->securityOfficerEmail; }
+    public function getSiretData(): ?string { return $this->siretData; }
+    public function getSiretEntreprise(): ?string { return $this->siretEntreprise; }
+    public function getEmailReferentEntreprise(): ?string { return $this->emailReferentEntreprise; }
+    public function getCompanyName(): ?string { return $this->companyName; }
+    public function getEmployeeFirstName(): ?string { return $this->employeeFirstName; }
+    public function getEmployeeLastName(): ?string { return $this->employeeLastName; }
+    public function getRequestDate(): ?string { return $this->requestDate; }
+}
+
+<?php
+// =====================================================
+// FILE: src/Entity/Dashboard/PersonRefsecuSteps.php
+// =====================================================
+
+namespace App\Entity\Dashboard;
+
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(readOnly: true)]
+#[ORM\Table(name: 'v_person_refsecu_steps')]
+class PersonRefsecuSteps
+{
+    #[ORM\Id]
+    #[ORM\Column(name: 'step_id', type: 'integer')]
+    private int $stepId;
+
+    #[ORM\Column(name: 'step_number', type: 'string', length: 255)]
+    private string $stepNumber;
+
+    #[ORM\Column(name: 'step_type', type: 'string', length: 255)]
+    private string $stepType;
+
+    #[ORM\Column(name: 'status', type: 'string', length: 255)]
+    private string $status;
+
+    #[ORM\Column(name: 'cesar_step_id', type: 'string', length: 255)]
+    private string $cesarStepId;
+
+    #[ORM\Column(name: 'user_id', type: 'integer')]
+    private int $userId;
+
+    #[ORM\Column(name: 'security_officer_email', type: 'text', nullable: true)]
+    private ?string $securityOfficerEmail = null;
+
+    #[ORM\Column(name: 'siret_data', type: 'text', nullable: true)]
+    private ?string $siretData = null;
+
+    #[ORM\Column(name: 'siret_entreprise', type: 'string', length: 255, nullable: true)]
+    private ?string $siretEntreprise = null;
+
+    #[ORM\Column(name: 'email_referent_entreprise', type: 'string', length: 255, nullable: true)]
+    private ?string $emailReferentEntreprise = null;
+
+    #[ORM\Column(name: 'refsecu_id', type: 'integer', nullable: true)]
+    private ?int $refsecuId = null;
+
+    #[ORM\Column(name: 'refsecu_email', type: 'string', length: 180, nullable: true)]
+    private ?string $refsecuEmail = null;
+
+    #[ORM\Column(name: 'refsecu_siret', type: 'string', length: 255, nullable: true)]
+    private ?string $refsecuSiret = null;
+
+    #[ORM\Column(name: 'refsecu_email_referent', type: 'string', length: 255, nullable: true)]
+    private ?string $refsecuEmailReferent = null;
+
+    #[ORM\Column(name: 'company_name', type: 'text', nullable: true)]
+    private ?string $companyName = null;
+
+    #[ORM\Column(name: 'employee_first_name', type: 'text', nullable: true)]
+    private ?string $employeeFirstName = null;
+
+    #[ORM\Column(name: 'employee_last_name', type: 'text', nullable: true)]
+    private ?string $employeeLastName = null;
+
+    #[ORM\Column(name: 'request_date', type: 'text', nullable: true)]
+    private ?string $requestDate = null;
+
+    public function getStepId(): int { return $this->stepId; }
+    public function getStepNumber(): string { return $this->stepNumber; }
+    public function getStepType(): string { return $this->stepType; }
+    public function getStatus(): string { return $this->status; }
+    public function getCesarStepId(): string { return $this->cesarStepId; }
+    public function getUserId(): int { return $this->userId; }
+    public function getSecurityOfficerEmail(): ?string { return $this->securityOfficerEmail; }
+    public function getSiretData(): ?string { return $this->siretData; }
+    public function getSiretEntreprise(): ?string { return $this->siretEntreprise; }
+    public function getEmailReferentEntreprise(): ?string { return $this->emailReferentEntreprise; }
+    public function getRefsecuId(): ?int { return $this->refsecuId; }
+    public function getRefsecuEmail(): ?string { return $this->refsecuEmail; }
+    public function getRefsecuSiret(): ?string { return $this->refsecuSiret; }
+    public function getRefsecuEmailReferent(): ?string { return $this->refsecuEmailReferent; }
+    public function getCompanyName(): ?string { return $this->companyName; }
+    public function getEmployeeFirstName(): ?string { return $this->employeeFirstName; }
+    public function getEmployeeLastName(): ?string { return $this->employeeLastName; }
+    public function getRequestDate(): ?string { return $this->requestDate; }
+}
+
+<?php
+// ==================================================
+// FILE: src/Entity/Dashboard/PersonSdriSteps.php
+// ==================================================
+
+namespace App\Entity\Dashboard;
+
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(readOnly: true)]
+#[ORM\Table(name: 'v_person_sdri_steps')]
+class PersonSdriSteps
+{
+    #[ORM\Id]
+    #[ORM\Column(name: 'step_id', type: 'integer')]
+    private int $stepId;
+
+    #[ORM\Column(name: 'step_number', type: 'string', length: 255)]
+    private string $stepNumber;
+
+    #[ORM\Column(name: 'step_type', type: 'string', length: 255)]
+    private string $stepType;
+
+    #[ORM\Column(name: 'status', type: 'string', length: 255)]
+    private string $status;
+
+    #[ORM\Column(name: 'cesar_step_id', type: 'string', length: 255)]
+    private string $cesarStepId;
+
+    #[ORM\Column(name: 'user_id', type: 'integer')]
+    private int $userId;
+
+    #[ORM\Column(name: 'company_name', type: 'text', nullable: true)]
+    private ?string $companyName = null;
+
+    #[ORM\Column(name: 'siren', type: 'text', nullable: true)]
+    private ?string $siren = null;
+
+    #[ORM\Column(name: 'employee_first_name', type: 'text', nullable: true)]
+    private ?string $employeeFirstName = null;
+
+    #[ORM\Column(name: 'employee_last_name', type: 'text', nullable: true)]
+    private ?string $employeeLastName = null;
+
+    #[ORM\Column(name: 'request_date', type: 'text', nullable: true)]
+    private ?string $requestDate = null;
+
+    public function getStepId(): int { return $this->stepId; }
+    public function getStepNumber(): string { return $this->stepNumber; }
+    public function getStepType(): string { return $this->stepType; }
+    public function getStatus(): string { return $this->status; }
+    public function getCesarStepId(): string { return $this->cesarStepId; }
+    public function getUserId(): int { return $this->userId; }
+    public function getCompanyName(): ?string { return $this->companyName; }
+    public function getSiren(): ?string { return $this->siren; }
+    public function getEmployeeFirstName(): ?string { return $this->employeeFirstName; }
+    public function getEmployeeLastName(): ?string { return $this->employeeLastName; }
+    public function getRequestDate(): ?string { return $this->requestDate; }
+}
+
+<?php
+// ==================================================
+// FILE: src/Entity/Dashboard/PersonUserSteps.php
+// ==================================================
+
+namespace App\Entity\Dashboard;
+
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(readOnly: true)]
+#[ORM\Table(name: 'v_person_user_steps')]
+class PersonUserSteps
+{
+    #[ORM\Id]
+    #[ORM\Column(name: 'step_id', type: 'integer')]
+    private int $stepId;
+
+    #[ORM\Column(name: 'step_number', type: 'string', length: 255)]
+    private string $stepNumber;
+
+    #[ORM\Column(name: 'step_type', type: 'string', length: 255)]
+    private string $stepType;
+
+    #[ORM\Column(name: 'status', type: 'string', length: 255)]
+    private string $status;
+
+    #[ORM\Column(name: 'cesar_step_id', type: 'string', length: 255)]
+    private string $cesarStepId;
+
+    #[ORM\Column(name: 'user_id', type: 'integer')]
+    private int $userId;
+
+    #[ORM\Column(name: 'security_officer_email', type: 'text', nullable: true)]
+    private ?string $securityOfficerEmail = null;
+
+    #[ORM\Column(name: 'siret_data', type: 'text', nullable: true)]
+    private ?string $siretData = null;
+
+    #[ORM\Column(name: 'siret_entreprise', type: 'string', length: 255, nullable: true)]
+    private ?string $siretEntreprise = null;
+
+    #[ORM\Column(name: 'email_referent_entreprise', type: 'string', length: 255, nullable: true)]
+    private ?string $emailReferentEntreprise = null;
+
+    #[ORM\Column(name: 'company_name', type: 'text', nullable: true)]
+    private ?string $companyName = null;
+
+    #[ORM\Column(name: 'employee_first_name', type: 'text', nullable: true)]
+    private ?string $employeeFirstName = null;
+
+    #[ORM\Column(name: 'employee_last_name', type: 'text', nullable: true)]
+    private ?string $employeeLastName = null;
+
+    #[ORM\Column(name: 'request_date', type: 'text', nullable: true)]
+    private ?string $requestDate = null;
+
+    public function getStepId(): int { return $this->stepId; }
+    public function getStepNumber(): string { return $this->stepNumber; }
+    public function getStepType(): string { return $this->stepType; }
+    public function getStatus(): string { return $this->status; }
+    public function getCesarStepId(): string { return $this->cesarStepId; }
+    public function getUserId(): int { return $this->userId; }
+    public function getSecurityOfficerEmail(): ?string { return $this->securityOfficerEmail; }
+    public function getSiretData(): ?string { return $this->siretData; }
+    public function getSiretEntreprise(): ?string { return $this->siretEntreprise; }
+    public function getEmailReferentEntreprise(): ?string { return $this->emailReferentEntreprise; }
+    public function getCompanyName(): ?string { return $this->companyName; }
+    public function getEmployeeFirstName(): ?string { return $this->employeeFirstName; }
+    public function getEmployeeLastName(): ?string { return $this->employeeLastName; }
+    public function getRequestDate(): ?string { return $this->requestDate; }
+}
+
+<?php
+// ==========================================================
+// FILE: src/Entity/Dashboard/RankingSdriValidations.php
+// ==========================================================
+
+namespace App\Entity\Dashboard;
+
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(readOnly: true)]
+#[ORM\Table(name: 'v_ranking_sdri_validations')]
+class RankingSdriValidations
+{
+    #[ORM\Id]
+    #[ORM\Column(name: 'security_officer_name', type: 'text')]
+    private string $securityOfficerName;
+
+    #[ORM\Column(name: 'approved_count', type: 'integer')]
+    private int $approvedCount;
+
+    public function getSecurityOfficerName(): string { return $this->securityOfficerName; }
+    public function getApprovedCount(): int { return $this->approvedCount; }
+}
+
+<?php
+// ===============================================================
+// FILE: src/Entity/Dashboard/RatioDocumentCompleteness.php
+// ===============================================================
+
+namespace App\Entity\Dashboard;
+
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(readOnly: true)]
+#[ORM\Table(name: 'v_ratio_document_completeness')]
+class RatioDocumentCompleteness
+{
+    #[ORM\Id]
+    #[ORM\Column(name: 'company_name', type: 'text')]
+    private string $companyName;
+
+    #[ORM\Column(name: 'total_requests', type: 'integer')]
+    private int $totalRequests;
+
+    #[ORM\Column(name: 'complete_requests', type: 'integer')]
+    private int $completeRequests;
+
+    #[ORM\Column(name: 'completeness_rate', type: Types::FLOAT)]
+    private float $completenessRate;
+
+    public function getCompanyName(): string { return $this->companyName; }
+    public function getTotalRequests(): int { return $this->totalRequests; }
+    public function getCompleteRequests(): int { return $this->completeRequests; }
+    public function getCompletenessRate(): float { return $this->completenessRate; }
+}
+
+<?php
+// ======================================================
+// FILE: src/Entity/Dashboard/RatioMonthlyApproval.php
+// ======================================================
+
+namespace App\Entity\Dashboard;
+
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(readOnly: true)]
+#[ORM\Table(name: 'v_ratio_monthly_approval')]
+class RatioMonthlyApproval
+{
+    #[ORM\Id]
+    #[ORM\Column(name: 'month', type: 'string', length: 7)]
+    private string $month; // YYYY-MM
+
+    #[ORM\Column(name: 'total', type: 'integer')]
+    private int $total;
+
+    #[ORM\Column(name: 'approved', type: 'integer')]
+    private int $approved;
+
+    #[ORM\Column(name: 'refused', type: 'integer')]
+    private int $refused;
+
+    #[ORM\Column(name: 'approval_rate', type: Types::FLOAT)]
+    private float $approvalRate;
+
+    public function getMonth(): string { return $this->month; }
+    public function getTotal(): int { return $this->total; }
+    public function getApproved(): int { return $this->approved; }
+    public function getRefused(): int { return $this->refused; }
+    public function getApprovalRate(): float { return $this->approvalRate; }
+}
+
+<?php
+// ===================================================
+// FILE: src/Entity/Dashboard/RatioUserActivity.php
+// ===================================================
+
+namespace App\Entity\Dashboard;
+
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(readOnly: true)]
+#[ORM\Table(name: 'v_ratio_user_activity')]
+class RatioUserActivity
+{
+    #[ORM\Id]
+    #[ORM\Column(name: 'employee_email', type: 'text')]
+    private string $employeeEmail;
+
+    #[ORM\Column(name: 'total', type: 'integer')]
+    private int $total;
+
+    #[ORM\Column(name: 'approved', type: 'integer')]
+    private int $approved;
+
+    #[ORM\Column(name: 'refused', type: 'integer')]
+    private int $refused;
+
+    #[ORM\Column(name: 'approval_rate', type: Types::FLOAT)]
+    private float $approvalRate;
+
+    public function getEmployeeEmail(): string { return $this->employeeEmail; }
+    public function getTotal(): int { return $this->total; }
+    public function getApproved(): int { return $this->approved; }
+    public function getRefused(): int { return $this->refused; }
+    public function getApprovalRate(): float { return $this->approvalRate; }
+}
+
+<?php
+// =============================================
+// FILE: src/Entity/Dashboard/TodoAdmin.php
+// =============================================
+
+namespace App\Entity\Dashboard;
+
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(readOnly: true)]
+#[ORM\Table(name: 'v_todo_admin')]
+class TodoAdmin
+{
+    #[ORM\Id]
+    #[ORM\Column(name: 'step_id', type: 'integer')]
+    private int $stepId;
+
+    #[ORM\Column(name: 'company_name', type: 'text', nullable: true)]
+    private ?string $companyName = null;
+
+    #[ORM\Column(name: 'status', type: 'string', length: 255)]
+    private string $status;
+
+    #[ORM\Column(name: 'request_date', type: 'text', nullable: true)]
+    private ?string $requestDate = null;
+
+    #[ORM\Column(name: 'todo_type', type: 'string', length: 255)]
+    private string $todoType;
+
+    #[ORM\Column(name: 'priority_level', type: 'string', length: 32)]
+    private string $priorityLevel;
+
+    public function getStepId(): int { return $this->stepId; }
+    public function getCompanyName(): ?string { return $this->companyName; }
+    public function getStatus(): string { return $this->status; }
+    public function getRequestDate(): ?string { return $this->requestDate; }
+    public function getTodoType(): string { return $this->todoType; }
+    public function getPriorityLevel(): string { return $this->priorityLevel; }
+}
+
+<?php
+// ===============================================
+// FILE: src/Entity/Dashboard/TodoRefsecu.php
+// ===============================================
+
+namespace App\Entity\Dashboard;
+
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(readOnly: true)]
+#[ORM\Table(name: 'v_todo_refsecu')]
+class TodoRefsecu
+{
+    #[ORM\Id]
+    #[ORM\Column(name: 'step_id', type: 'integer')]
+    private int $stepId;
+
+    #[ORM\Column(name: 'company_name', type: 'text', nullable: true)]
+    private ?string $companyName = null;
+
+    #[ORM\Column(name: 'status', type: 'string', length: 255)]
+    private string $status;
+
+    #[ORM\Column(name: 'todo_type', type: 'string', length: 255)]
+    private string $todoType;
+
+    #[ORM\Column(name: 'priority_level', type: 'string', length: 32)]
+    private string $priorityLevel;
+
+    public function getStepId(): int { return $this->stepId; }
+    public function getCompanyName(): ?string { return $this->companyName; }
+    public function getStatus(): string { return $this->status; }
+    public function getTodoType(): string { return $this->todoType; }
+    public function getPriorityLevel(): string { return $this->priorityLevel; }
+}
+
+<?php
+// ============================================
+// FILE: src/Entity/Dashboard/TodoSdri.php
+// ============================================
+
+namespace App\Entity\Dashboard;
+
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(readOnly: true)]
+#[ORM\Table(name: 'v_todo_sdri')]
+class TodoSdri
+{
+    #[ORM\Id]
+    #[ORM\Column(name: 'step_id', type: 'integer')]
+    private int $stepId;
+
+    #[ORM\Column(name: 'company_name', type: 'text', nullable: true)]
+    private ?string $companyName = null;
+
+    #[ORM\Column(name: 'status', type: 'string', length: 255)]
+    private string $status;
+
+    #[ORM\Column(name: 'todo_type', type: 'string', length: 255)]
+    private string $todoType;
+
+    #[ORM\Column(name: 'priority_level', type: 'string', length: 32)]
+    private string $priorityLevel;
+
+    public function getStepId(): int { return $this->stepId; }
+    public function getCompanyName(): ?string { return $this->companyName; }
+    public function getStatus(): string { return $this->status; }
+    public function getTodoType(): string { return $this->todoType; }
+    public function getPriorityLevel(): string { return $this->priorityLevel; }
+}
+
+<?php
+// ==================================================================
+// FILE: src/Repository/Dashboard/AlertsAdminRepository.php
+// ==================================================================
+
+namespace App\Repository\Dashboard;
+
+use App\Entity\Dashboard\AlertsAdmin;
+use Doctrine\Persistence\ManagerRegistry;
+
+final class AlertsAdminRepository extends AbstractViewRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, AlertsAdmin::class);
+    }
+}
+
+<?php
+// =====================================================================
+// FILE: src/Repository/Dashboard/AlertsRefsecuRepository.php
+// =====================================================================
+
+namespace App\Repository\Dashboard;
+
+use App\Entity\Dashboard\AlertsRefsecu;
+use Doctrine\Persistence\ManagerRegistry;
+
+final class AlertsRefsecuRepository extends AbstractViewRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, AlertsRefsecu::class);
+    }
+}
+
+<?php
+// ==================================================================
+// FILE: src/Repository/Dashboard/AlertsSdriRepository.php
+// ==================================================================
+
+namespace App\Repository\Dashboard;
+
+use App\Entity\Dashboard\AlertsSdri;
+use Doctrine\Persistence\ManagerRegistry;
+
+final class AlertsSdriRepository extends AbstractViewRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, AlertsSdri::class);
+    }
+}
+
+<?php
+// =====================================================================
+// FILE: src/Repository/Dashboard/DeadlinesAdminRepository.php
+// =====================================================================
+
+namespace App\Repository\Dashboard;
+
+use App\Entity\Dashboard\DeadlinesAdmin;
+use Doctrine\Persistence\ManagerRegistry;
+
+final class DeadlinesAdminRepository extends AbstractViewRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, DeadlinesAdmin::class);
+    }
+}
+
+<?php
+// =======================================================================
+// FILE: src/Repository/Dashboard/DeadlinesRefsecuRepository.php
+// =======================================================================
+
+namespace App\Repository\Dashboard;
+
+use App\Entity\Dashboard\DeadlinesRefsecu;
+use Doctrine\Persistence\ManagerRegistry;
+
+final class DeadlinesRefsecuRepository extends AbstractViewRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, DeadlinesRefsecu::class);
+    }
+}
+
+<?php
+// ==================================================================
+// FILE: src/Repository/Dashboard/DeadlinesSdriRepository.php
+// ==================================================================
+
+namespace App\Repository\Dashboard;
+
+use App\Entity\Dashboard\DeadlinesSdri;
+use Doctrine\Persistence\ManagerRegistry;
+
+final class DeadlinesSdriRepository extends AbstractViewRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, DeadlinesSdri::class);
+    }
+}
+
+<?php
+// ========================================================================
+// FILE: src/Repository/Dashboard/GardienPersonStepsRepository.php
+// ========================================================================
+
+namespace App\Repository\Dashboard;
+
+use App\Entity\Dashboard\GardienPersonSteps;
+use Doctrine\Persistence\ManagerRegistry;
+
+final class GardienPersonStepsRepository extends AbstractViewRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, GardienPersonSteps::class);
+    }
+}
+
+<?php
+// ======================================================================
+// FILE: src/Repository/Dashboard/PersonAdminStepsRepository.php
+// ======================================================================
+
+namespace App\Repository\Dashboard;
+
+use App\Entity\Dashboard\PersonAdminSteps;
+use Doctrine\Persistence\ManagerRegistry;
+
+final class PersonAdminStepsRepository extends AbstractViewRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, PersonAdminSteps::class);
+    }
+}
+
+<?php
+// ========================================================================
+// FILE: src/Repository/Dashboard/PersonRefsecuStepsRepository.php
+// ========================================================================
+
+namespace App\Repository\Dashboard;
+
+use App\Entity\Dashboard\PersonRefsecuSteps;
+use Doctrine\Persistence\ManagerRegistry;
+
+final class PersonRefsecuStepsRepository extends AbstractViewRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, PersonRefsecuSteps::class);
+    }
+}
+
+<?php
+// ==================================================================
+// FILE: src/Repository/Dashboard/PersonSdriStepsRepository.php
+// ==================================================================
+
+namespace App\Repository\Dashboard;
+
+use App\Entity\Dashboard\PersonSdriSteps;
+use Doctrine\Persistence\ManagerRegistry;
+
+final class PersonSdriStepsRepository extends AbstractViewRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, PersonSdriSteps::class);
+    }
+}
+
+<?php
+// ==================================================================
+// FILE: src/Repository/Dashboard/PersonUserStepsRepository.php
+// ==================================================================
+
+namespace App\Repository\Dashboard;
+
+use App\Entity\Dashboard\PersonUserSteps;
+use Doctrine\Persistence\ManagerRegistry;
+
+final class PersonUserStepsRepository extends AbstractViewRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, PersonUserSteps::class);
+    }
+}
+
+<?php
+// =================================================================================
+// FILE: src/Repository/Dashboard/RankingSdriValidationsRepository.php
+// =================================================================================
+
+namespace App\Repository\Dashboard;
+
+use App\Entity\Dashboard\RankingSdriValidations;
+use Doctrine\Persistence\ManagerRegistry;
+
+final class RankingSdriValidationsRepository extends AbstractViewRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, RankingSdriValidations::class);
+    }
+}
+
+<?php
+// ==================================================================================
+// FILE: src/Repository/Dashboard/RatioDocumentCompletenessRepository.php
+// ==================================================================================
+
+namespace App\Repository\Dashboard;
+
+use App\Entity\Dashboard\RatioDocumentCompleteness;
+use Doctrine\Persistence\ManagerRegistry;
+
+final class RatioDocumentCompletenessRepository extends AbstractViewRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, RatioDocumentCompleteness::class);
+    }
+}
+
+<?php
+// ======================================================================
+// FILE: src/Repository/Dashboard/RatioMonthlyApprovalRepository.php
+// ======================================================================
+
+namespace App\Repository\Dashboard;
+
+use App\Entity\Dashboard\RatioMonthlyApproval;
+use Doctrine\Persistence\ManagerRegistry;
+
+final class RatioMonthlyApprovalRepository extends AbstractViewRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, RatioMonthlyApproval::class);
+    }
+}
+
+<?php
+// =======================================================================
+// FILE: src/Repository/Dashboard/RatioUserActivityRepository.php
+// =======================================================================
+
+namespace App\Repository\Dashboard;
+
+use App\Entity\Dashboard\RatioUserActivity;
+use Doctrine\Persistence\ManagerRegistry;
+
+final class RatioUserActivityRepository extends AbstractViewRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, RatioUserActivity::class);
+    }
+}
+
+<?php
+// ==================================================================
+// FILE: src/Repository/Dashboard/TodoAdminRepository.php
+// ==================================================================
+
+namespace App\Repository\Dashboard;
+
+use App\Entity\Dashboard\TodoAdmin;
+use Doctrine\Persistence\ManagerRegistry;
+
+final class TodoAdminRepository extends AbstractViewRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, TodoAdmin::class);
+    }
+}
+
+<?php
+// =====================================================================
+// FILE: src/Repository/Dashboard/TodoRefsecuRepository.php
+// =====================================================================
+
+namespace App\Repository\Dashboard;
+
+use App\Entity\Dashboard\TodoRefsecu;
+use Doctrine\Persistence\ManagerRegistry;
+
+final class TodoRefsecuRepository extends AbstractViewRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, TodoRefsecu::class);
+    }
+}
+
+<?php
+// ==================================================================
+// FILE: src/Repository/Dashboard/TodoSdriRepository.php
+// ==================================================================
+
+namespace App\Repository\Dashboard;
+
+use App\Entity\Dashboard\TodoSdri;
+use Doctrine\Persistence\ManagerRegistry;
+
+final class TodoSdriRepository extends AbstractViewRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, TodoSdri::class);
+    }
+}

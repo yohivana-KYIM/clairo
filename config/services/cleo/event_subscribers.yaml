@@ -1,0 +1,13 @@
+# config/services.yaml
+services:
+  App\EventListener\UserListener:
+    arguments:
+      $encryptionService: '@App\Security\EncryptionService'
+    tags:
+      - { name: doctrine.orm.entity_listener }
+
+  App\Service\Workflow\EventListener\SubscriptionWorkflowSubscriber:
+    tags:
+      - { name: 'kernel.event_subscriber' }
+    arguments:
+      [ '@App\Service\Workflow\Interfaces\NotificationServiceInterface' ]

@@ -1,0 +1,8 @@
+{# templates/bundles/MultiStepBundle/modal/_card_place_form.html.twig #}
+{{ form_start(form, { attr: { 'data-controller': 'ajaxform', 'data-ajaxform-target': 'form' } }) }}
+  {{ form_row(form.card_place) }}
+<div class="mt-3 d-flex gap-2">
+    <button class="btn btn-primary" data-action="ajaxform#submit">Enregistrer</button>
+    <button type="button" class="btn btn-secondary" data-action="modal#close">Annuler</button>
+</div>
+{{ form_end(form) }}

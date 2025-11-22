@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+        {{ form_start(form) }}
+
+            {% for group, settings in groups %}
+                <div class="container">
+                    <div class="card p-4 shadow-sm">
+                        <fieldset class="mb-4">
+                            <legend class="text-khaki fw-semibold border-bottom pb-2 mb-3">{{ group|trans }}</legend>
+
+                            {% for setting in settings %}
+                                {% set field = attribute(form, setting.name) %}
+
+                                {% if setting.type in ['bool'] %}
+                                    <div class="form-check form-switch mb-3">
+                                        {{ form_widget(field, { attr: { class: 'form-check-input' } }) }}
+                                        {{ form_label(field, null, { label_attr: { class: 'form-check-label' } }) }}
+                                    </div>
+                                {% elseif setting.type in ['select', 'radio'] %}
+                                    <div class="mb-3">
+                                        {{ form_label(field, null, { label_attr: { class: 'form-label' } }) }}
+                                        {{ form_widget(field, { attr: { class: 'form-select' } }) }}
+                                    </div>
+                                {% else %}
+                                    <div class="mb-3">
+                                        {{ form_label(field, null, { label_attr: { class: 'form-label' } }) }}
+                                        {{ form_widget(field, { attr: { class: 'form-control' } }) }}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </fieldset>
+                        <div class="text-end">
+                            <a class="btn btn-danger" href="{{ path('app_home') }}">{{ 'Retour'|trans }}</a>
+                            <button type="submit" class="btn btn-cleo">{{ 'Enregistrer'|trans }}</button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+        {{ form_end(form) }}
+{% endblock %}

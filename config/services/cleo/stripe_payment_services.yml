@@ -1,0 +1,15 @@
+services:
+  Stripe\StripeClient:
+    arguments:
+      - '%env(STRIPE_API_KEY)%'
+
+  App\Service\Payment\Classes\StripePaymentProvider:
+    arguments:
+      $client: '@Stripe\StripeClient'
+
+  App\Service\Payment\Classes\StripeBasketManager:
+    arguments:
+      $paymentProvider: '@App\Service\Payment\Classes\StripePaymentProvider'
+      $domain: '%env(WEBSITE_DOMAIN)%'
+
+  App\Service\Payment\Interfaces\BasketManagerInterface: '@App\Service\Payment\Classes\StripeBasketManager'

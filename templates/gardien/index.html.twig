@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello GardienController!{% endblock %}
+
+{% block body %}
+<header>
+    <div class="container-fluid bg-cleo p-3 d-flex justify-content-center border-bottom border-bottom-dark shadow-sm">
+        <h2 class="titlesmartphone fw-bold text-center">Demande de création de titre de circulation pour les personnes pénétrant dans les installations portuaires de Lavera et de Fos exploitées par Fluxel SAS</h2>
+    </div>
+</header>
+    <body class="overflow-x-hidden">
+        <div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+            <div class="container">
+                <div class="text-center mt-5 mb-5 p-3 border border-dark-subtle rounded content">
+                    <div class="container text-center">
+                        <a class="btn btn-primary btn-lg m-3" href="{{ path('app_gardien_tableau') }}">Gestion des demandes de titre de circulation</a>
+                    </div>
+                    <div class="row d-flex justify-content-evenly">
+                    {% if app.user.hasRole('ROLE_GARDIEN') %}
+                        <a class="btn btn-secondary btn-lg m-3 col-3" href="{{ path('app_home') }}">Quitter le mode Gardien SDRI</a>
+                    {% endif %}
+                    </div>
+                </div>
+            {% if app.user %}
+                <div class="text-center">
+                    <h4>Vous êtes connecté en tant que {{ app.user.userIdentifier }}, <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover" href="{{ path('app_logout') }}">Déconnexion</a></h4>
+                    <h5>et vous êtes en mode <span class="fw-bold">Gardien SDRI</span></h5>
+                </div>
+            {% endif %}
+            </div>
+        </div>
+        <script src="{{ asset('js/indexstyle.js') }}"></script>
+    </body>
+</html>
+{% endblock %}

@@ -1,0 +1,231 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Vérification en deux étapes{% endblock %}
+
+{% block body %}
+
+    {# =============================
+       FLASH MESSAGES (Symfony + AJAX)
+       ============================= #}
+    <style>
+        #flash-container {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .25s ease-in-out;
+        }
+
+        #flash-container.active {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+    </style>
+
+    <div id="flash-container"
+         class="position-fixed top-0 start-50 translate-middle-x mt-3"
+         style="z-index:2000; width: 90%; max-width: 500px;">
+        {% set hasFlash = false %}
+        {% for label, messages in app.flashes %}
+            {% for msg in messages %}
+                {% set hasFlash = true %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show shadow mb-2" role="alert">
+                    {{ msg|raw }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        {# Activer le conteneur si des flashs existent (chargement serveur) #}
+        {% if hasFlash %}
+            <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.getElementById("flash-container").classList.add("active");
+                });
+            </script>
+        {% endif %}
+    </div>
+
+    <div class="container py-5" style="max-width: 520px;">
+
+        <div class="card shadow-lg p-4 border-0 mb-4">
+            <h3 class="text-center mb-3">🔐 Vérification en deux étapes</h3>
+
+            <p class="text-muted text-center">
+                {% if twoFactorProvider == 'email' %}
+                    Pour vérifier votre identité, un code vous a été envoyé par
+                    <strong class="text-primary">email</strong>.
+                    Ouvrez votre boîte de réception et entrez le code ci-dessous.
+
+                {% elseif twoFactorProvider in ['totp', 'google'] %}
+                    Pour confirmer que c’est bien vous, ouvrez votre
+                    <strong class="text-primary">application d’authentification</strong>
+                    (Google Authenticator, Authy…) et saisissez le code affiché.
+
+                {% elseif twoFactorProvider == 'sms' %}
+                    Un code de sécurité vous a été envoyé par
+                    <strong class="text-primary">SMS</strong>.
+                    Vérifiez vos messages sur votre téléphone et saisissez-le ici.
+
+                {% else %}
+                    Veuillez saisir le code de vérification correspondant :
+                    <strong class="text-primary">{{ twoFactorProvider|capitalize }}</strong>.
+                {% endif %}
+            </p>
+
+            {% if app.request.query.get('mfa_message') %}
+                <div class="alert alert-warning text-center">
+                    {{ app.request.query.get('mfa_message') }}
+                </div>
+            {% endif %}
+
+            {% if authenticationError %}
+                <div class="alert alert-danger text-center">
+                    {{ authenticationError|trans(authenticationErrorData, 'SchebTwoFactorBundle') }}
+                </div>
+            {% endif %}
+
+            <form class="mt-4"
+                  action="{{ checkPathUrl ? checkPathUrl : path(checkPathRoute) }}"
+                  method="post">
+
+                <label for="_auth_code" class="form-label fw-bold">Entrez votre code</label>
+
+                <input id="_auth_code"
+                       type="text"
+                       name="{{ authCodeParameterName }}"
+                       class="form-control form-control-lg text-center mb-3"
+                       autocomplete="one-time-code"
+                       autofocus
+                       inputmode="numeric"
+                       pattern="[0-9]*" />
+
+                {% if displayTrustedOption %}
+                    <div class="form-check my-2">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="_trusted"
+                               name="{{ trustedParameterName }}">
+                        <label class="form-check-label" for="_trusted">
+                            Se souvenir de cet appareil
+                        </label>
+                    </div>
+                {% endif %}
+
+                {% if isCsrfProtectionEnabled %}
+                    <input type="hidden"
+                           name="{{ csrfParameterName }}"
+                           value="{{ csrf_token(csrfTokenId) }}">
+                {% endif %}
+
+                <button class="btn btn-cleo w-100 mt-3 py-2 fs-5">Continuer</button>
+
+                <a href="{{ logoutPath }}" class="btn btn-danger w-100 mt-2">Annuler</a>
+            </form>
+
+            {% if twoFactorProvider == 'email' %}
+                <div class="text-center mt-4">
+                    <button id="resend-btn" class="btn btn-outline-primary w-100 py-2">
+                        Renvoyer le code
+                    </button>
+
+                    <small class="text-muted d-block mt-2">
+                        Vous recevrez un email avec un nouveau code.
+                    </small>
+                </div>
+            {% else %}
+                <div class="alert alert-info text-center mt-4">
+                    Cette méthode ne permet pas de renvoyer un code.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# =============================
+       JAVASCRIPT – FLASH + COOL DOWN + AJAX
+       ============================= #}
+    <script>
+        function toggleFlashContainer() {
+            const container = document.getElementById("flash-container");
+            container.classList.toggle("active", container.children.length > 0);
+        }
+
+        // ---- Ajouter un flash dynamique ----
+        function addFlash(type, message) {
+            const container = document.getElementById("flash-container");
+
+            // Activer le conteneur si un flash arrive
+            container.classList.add("active");
+
+            const div = document.createElement("div");
+            div.className = `alert alert-${type} alert-dismissible fade show shadow mb-2`;
+            div.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+
+            container.appendChild(div);
+
+            // Auto-disparition
+            setTimeout(() => {
+                div.classList.remove("show");
+                setTimeout(() => {
+                    div.remove();
+                    toggleFlashContainer();
+                }, 300);
+            }, 5000);
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            toggleFlashContainer();
+
+            const btn = document.getElementById("resend-btn");
+            if (!btn) return;
+
+            function startCooldown(seconds) {
+                btn.disabled = true;
+                let remaining = seconds;
+                btn.textContent = `Renvoyer dans ${remaining}s`;
+
+                const timer = setInterval(() => {
+                    remaining--;
+                    if (remaining <= 0) {
+                        clearInterval(timer);
+                        btn.disabled = false;
+                        btn.textContent = "Renvoyer le code";
+                        return;
+                    }
+                    btn.textContent = `Renvoyer dans ${remaining}s`;
+                }, 1000);
+            }
+
+            btn.addEventListener("click", function () {
+                fetch("{{ path('2fa_resend_code') }}", {
+                    method: "POST",
+                    headers: { "X-Requested-With": "XMLHttpRequest" }
+                })
+                    .then(resp => resp.json())
+                    .then(data => {
+
+                        if (data.blocked && data.type === "cooldown") {
+                            startCooldown(data.remaining);
+                            addFlash("warning", data.message);
+                            return;
+                        }
+
+                        if (data.blocked && data.type === "rate_limit") {
+                            addFlash("danger", data.message);
+                            return;
+                        }
+
+                        if (data.success) {
+                            startCooldown(60);
+                            addFlash("success", data.message);
+                        } else {
+                            addFlash("danger", data.message);
+                        }
+                    })
+                    .catch(() => addFlash("danger", "Erreur lors de la demande de renvoi."));
+            });
+        });
+    </script>
+
+{% endblock %}

@@ -1,0 +1,222 @@
+{# templates/items/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Items{% endblock %}
+
+{% block body %}
+    <div class="container mx-auto p-4">
+        <h1 class="text-2xl font-bold mb-4">Gestion des Items</h1>
+
+        {# --- Contrôles de filtrage et tri --- #}
+        <div id="controls" class="mb-6 space-y-4">
+            <div class="flex flex-wrap items-end space-x-4">
+                <div>
+                    <label class="block mb-1 text-sm font-medium" for="filter-field">Champ</label>
+                    <select id="filter-field" class="border p-2 rounded w-48">
+                        <option value="" disabled selected>Sélectionnez un champ</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block mb-1 text-sm font-medium" for="filter-op">Opérateur</label>
+                    <select id="filter-op" class="border p-2 rounded">
+                        <option value="eq">= (égal)</option>
+                        <option value="ne">≠ (différent)</option>
+                        <option value="gt">&gt; (supérieur)</option>
+                        <option value="lt">&lt; (inférieur)</option>
+                        <option value="ge">≥ (supérieur ou égal)</option>
+                        <option value="le">≤ (inférieur ou égal)</option>
+                        <option value="contains">contient</option>
+                        <option value="startswith">commence par</option>
+                        <option value="endswith">finit par</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block mb-1 text-sm font-medium" for="filter-val">Valeur</label>
+                    <input id="filter-val" type="text" placeholder="Valeur" class="border p-2 rounded w-48" />
+                </div>
+                <div>
+                    <button id="add-filter" class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded mt-6">
+                        Ajouter Filtre
+                    </button>
+                </div>
+            </div>
+
+            <div id="active-filters" class="flex flex-wrap space-x-2"></div>
+
+            <div class="flex items-center space-x-2">
+                <label for="sort-select" class="text-sm font-medium">Trier par :</label>
+                <select id="sort-select" class="border p-2 rounded">
+                    <option value="">Aucun</option>
+                    <option value="name">Name ↑</option>
+                    <option value="-name">Name ↓</option>
+                    <option value="created_at">Date ↑</option>
+                    <option value="-created_at">Date ↓</option>
+                </select>
+            </div>
+        </div>
+
+        {# --- Tableau des données --- #}
+        <div class="overflow-x-auto">
+            <table id="items-table" class="min-w-full bg-white shadow rounded">
+                <thead class="bg-gray-100">
+                <tr></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        {# --- Pagination --- #}
+        <div class="mt-4 flex items-center justify-between">
+            <button id="prev-page" class="px-4 py-2 border rounded hover:bg-gray-200">Précédent</button>
+            <span id="page-info" class="text-sm"></span>
+            <button id="next-page" class="px-4 py-2 border rounded hover:bg-gray-200">Suivant</button>
+        </div>
+
+        {# --- Debug / UX: affichage de la requête envoyée --- #}
+        <div class="mt-6">
+            <label class="block mb-1 text-sm font-medium">Requête envoyée :</label>
+            <pre id="last-request" class="bg-gray-100 p-2 rounded overflow-x-auto"></pre>
+        </div>
+    </div>
+
+    <script>
+        (() => {
+            let fields = [], headers = [], filters = [], sort = '';
+            const limit = 10;
+            let offset = 0, total = 0;
+
+            const table       = document.getElementById('items-table');
+            const theadRow    = table.querySelector('thead tr');
+            const tbody       = table.querySelector('tbody');
+            const fieldSelect = document.getElementById('filter-field');
+            const opSelect    = document.getElementById('filter-op');
+            const valInput    = document.getElementById('filter-val');
+            const activeDiv   = document.getElementById('active-filters');
+            const sortSelect  = document.getElementById('sort-select');
+            const prevBtn     = document.getElementById('prev-page');
+            const nextBtn     = document.getElementById('next-page');
+            const pageInfo    = document.getElementById('page-info');
+            const lastReq     = document.getElementById('last-request');
+
+            function buildQuery() {
+                const params = new URLSearchParams();
+                filters.forEach(f => params.append('filter', f));
+                if (sort) params.set('sort', sort);
+                params.set('limit', limit);
+                params.set('offset', offset);
+                return params.toString();
+            }
+
+            function renderHeader() {
+                theadRow.innerHTML = '';
+                headers.forEach(h => {
+                    const th = document.createElement('th');
+                    th.className = 'py-2 px-4';
+                    th.textContent = h;
+                    theadRow.appendChild(th);
+                });
+            }
+
+            function renderBody(data) {
+                tbody.innerHTML = '';
+                data.forEach(item => {
+                    const tr = document.createElement('tr');
+                    headers.forEach(h => {
+                        const td = document.createElement('td');
+                        td.className = 'py-2 px-4';
+                        td.textContent = item[h] ?? '';
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                });
+            }
+
+            function renderFilters() {
+                activeDiv.innerHTML = '';
+                filters.forEach((f, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'bg-red-200 text-red-800 px-2 py-1 rounded text-sm';
+                    btn.textContent = f + ' ×';
+                    btn.addEventListener('click', () => {
+                        filters.splice(i, 1);
+                        offset = 0;
+                        fetchData();
+                    });
+                    activeDiv.appendChild(btn);
+                });
+            }
+
+            function updatePageInfo() {
+                const cur = Math.floor(offset / limit) + 1;
+                const max = Math.ceil(total / limit) || 1;
+                pageInfo.textContent = `Page ${cur} / ${max}`;
+            }
+
+            function fetchData() {
+                const qs = buildQuery();
+                lastReq.textContent = `/items/data?${qs}`;
+                fetch(`/items/data?${qs}`)
+                    .then(r => r.json())
+                    .then(json => {
+                        total = json.meta.total;
+                        const data = json.data;
+
+                        // 1ère fois : on en déduit les entêtes & la liste des champs dispo
+                        if (!headers.length && data.length) {
+                            headers = Object.keys(data[0]);
+                            renderHeader();
+
+                            data.forEach(d => {
+                                Object.keys(d).forEach(k => {
+                                    if (!fields.includes(k)) fields.push(k);
+                                });
+                            });
+                            // peuple le <select> des champs filtrables
+                            fields.forEach(f => {
+                                const opt = document.createElement('option');
+                                opt.value = f;
+                                opt.textContent = f;
+                                fieldSelect.appendChild(opt);
+                            });
+                        }
+
+                        renderBody(data);
+                        renderFilters();
+                        updatePageInfo();
+                    })
+                    .catch(console.error);
+            }
+
+            document.getElementById('add-filter').addEventListener('click', () => {
+                const field = fieldSelect.value;
+                const op    = opSelect.value;
+                const val   = encodeURIComponent(valInput.value.trim());
+                if (field && val) {
+                    filters.push(`${field}:${op}:${val}`);
+                    offset = 0;
+                    fetchData();
+                }
+            });
+
+            sortSelect.addEventListener('change', e => {
+                sort = e.target.value;
+                offset = 0;
+                fetchData();
+            });
+
+            prevBtn.addEventListener('click', () => {
+                offset = Math.max(0, offset - limit);
+                fetchData();
+            });
+            nextBtn.addEventListener('click', () => {
+                if (offset + limit < total) {
+                    offset += limit;
+                    fetchData();
+                }
+            });
+
+            // Chargement initial
+            fetchData();
+        })();
+    </script>
+{% endblock %}

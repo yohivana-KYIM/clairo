@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Document Professionnel | Fluxel{% endblock %}
+
+{% block body %}
+
+    {{ include('document_professionnel/_form.html.twig', {'button_label': 'Suivant'}) }}
+
+    {# <a href="{{ path('app_document_professionnel_index') }}">back to list</a> #}
+
+    {# {{ include('document_professionnel/_delete_form.html.twig') }} #}
+{% endblock %}

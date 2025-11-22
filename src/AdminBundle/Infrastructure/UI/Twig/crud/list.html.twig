@@ -1,0 +1,60 @@
+{% import '@Admin/Sorting/sort_component.html.twig' as sortComponent %}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Manage {{ entity }}{% endblock %}
+
+{% block body %}
+    <h1>{{ entity }} List</h1>
+
+    <table>
+        <thead>
+        <tr>
+            {% for key in items[0] | keys %}
+                <th>
+                    {{ sortComponent.render_sort_header(key, entity, currentPage, sortColumns) }}
+                </th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in items %}
+            <tr>
+                {% for value in item %}
+                    <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div>
+        {% if currentPage > 1 %}
+            <a href="{{ path('admin_list', { entity: entity, page: currentPage, sort: sortColumns }) }}">Previous</a>
+        {% endif %}
+
+        Page {{ currentPage }} of {{ pagesCount }}
+
+        {% if currentPage < pagesCount %}
+            <a href="{{ path('admin_list', { entity: entity, page: currentPage + 1, sort: sortColumns }) }}">Next</a>
+        {% endif %}
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll("th a").forEach(link => {
+                link.addEventListener("click", function(event) {
+                    event.preventDefault();
+                    fetch(event.target.href, { headers: { "X-Requested-With": "XMLHttpRequest" } })
+                        .then(response => response.text())
+                        .then(html => {
+                            document.querySelector("tbody").innerHTML = new DOMParser()
+                                .parseFromString(html, "text/html")
+                                .querySelector("tbody").innerHTML;
+                        });
+                });
+            });
+        });
+    </script>
+
+{% endblock %}

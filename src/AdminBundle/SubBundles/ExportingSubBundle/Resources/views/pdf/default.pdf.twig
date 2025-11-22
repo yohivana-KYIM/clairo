@@ -1,0 +1,17 @@
+<h1>{{ title }}</h1>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Created At</th>
+    </tr>
+    {% for item in data %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.price }}</td>
+            <td>{{ item.created_at }}</td>
+        </tr>
+    {% endfor %}
+</table>

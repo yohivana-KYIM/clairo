@@ -1,0 +1,177 @@
+{# templates/fluxel/cards.html.twig #}
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Cartes Fluxel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* === Dimensions & palette === */
+        :root{
+            --w: 85.6mm;     /* ISO ID-1 */
+            --h: 54mm;
+            --r: 5.5mm;
+            --ink:#0b2e1d;
+            --g1:#c7f0d2; --g2:#8fd3ab; --g3:#2f9c68; /* verts */
+        }
+
+        /* A4: 2 cartes par ligne */
+        .sheet{
+            width:210mm; margin:0 auto; padding:10mm;
+            display:grid; grid-template-columns:repeat(2,var(--w));
+            gap:12mm 10mm; justify-content:space-between; background:#f4f5f6;
+        }
+
+        /* === Carte : fond + grille === */
+        .card{
+            position:relative; width:var(--w); height:var(--h);
+            border-radius:var(--r); overflow:hidden; color:var(--ink);
+            background:
+                    radial-gradient(120mm 60mm at 72% -8%, rgba(255,255,255,.85) 0%, rgba(255,255,255,0) 55%),
+                    linear-gradient(135deg, var(--g1) 0%, var(--g2) 52%, var(--g3) 100%);
+            box-shadow:0 .8mm 4mm rgba(0,0,0,.18);
+            print-color-adjust:exact; -webkit-print-color-adjust:exact;
+        }
+        .card::before{ /* micro-carrés */
+            content:""; position:absolute; inset:0; pointer-events:none; mix-blend-mode:overlay; opacity:.75;
+            background:
+                    linear-gradient(0deg,  rgba(255,255,255,.22) .18mm, rgba(255,255,255,0) .18mm) top/100% 1.9mm repeat-y,
+                    linear-gradient(90deg, rgba(255,255,255,.22) .18mm, rgba(255,255,255,0) .18mm) left/1.9mm 100% repeat-x,
+                    linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,0) 60%);
+        }
+        .card::after{ /* vignette douce */
+            content:""; position:absolute; inset:0; pointer-events:none;
+            background:radial-gradient(160% 100% at 50% 50%, rgba(0,0,0,0) 60%, rgba(0,0,0,.06) 100%);
+        }
+
+        /* Zones communes */
+        .inner{ position:relative; z-index:1; height:100%; padding:6mm 6mm 5mm 6mm; }
+        .logo{ display:flex; align-items:center; gap:4mm; }
+        .logo img{ height:10mm; width:auto; display:block; }
+        .logo .title{ font-weight:900; font-size:7mm; line-height:.9; letter-spacing:.1mm; }
+        .logo .sub{ font-weight:600; font-size:2.7mm; margin-top:.6mm; }
+
+        .identity{ display:grid; gap:1.6mm; }
+        .kv{ font-size:3.2mm; line-height:1.25; }
+        .kv b{ font-weight:900; }
+        .names{ margin-top:.5mm;
+            width: 44mm; }
+        .names .n{ font-size:3mm; font-weight:900; letter-spacing:.18mm; }
+
+        .recto-right .names {
+            grid-area: photo;
+            align-self: end;
+        }
+
+        .recto-left .names {
+            grid-area: photo;
+            align-self: end;
+        }
+
+        .photo{
+            width:27mm; border-radius:3mm; overflow:hidden;
+            box-shadow:inset 0 0 0 .4mm rgba(0,0,0,.08); background:#fff;
+        }
+        .photo img{ width:100%; height:100%; object-fit:cover; display:block; max-height: 100px; max-width: 100px; }
+
+        /* Footer */
+        .footer{
+            grid-column:1 / -1; display:flex; align-items:flex-end; gap:4mm;
+            margin-top:2mm; font-size:3mm;
+        }
+        .type{
+            font-size:4mm; font-weight:900;
+            padding-top:1.2mm; margin-right:auto; text-decoration: underline;
+        }
+        .footer .expiry, .footer .serial{ font-weight:700; white-space:nowrap; }
+
+        /* === Dispositions === */
+        /* Recto : photo à droite, logo+identité à gauche */
+        .recto-right .inner{
+            display:grid; grid-template-columns:1fr 27mm; grid-template-rows:auto 1fr auto;
+            column-gap:6mm; row-gap:2mm;
+            grid-template-areas:
+    "logo  photo"
+    "ident photo"
+    "foot  foot";
+        }
+        .recto-right .logo{ grid-area:logo; }
+        .recto-right .identity{ grid-area:ident; }
+        .recto-right .photo{ grid-area:photo; align-self:start; }
+        .recto-right .footer{ grid-area:foot; }
+
+        /* Recto : photo à gauche, logo+identité à droite */
+        .recto-left .inner{
+            display:grid; grid-template-columns:27mm 1fr; grid-template-rows:auto 1fr auto;
+            column-gap:6mm; row-gap:2mm;
+            grid-template-areas:
+    "photo logo"
+    "photo ident"
+    "foot  foot";
+        }
+        .recto-left .logo{ grid-area:logo; }
+        .recto-left .identity{ grid-area:ident; }
+        .recto-left .photo{ grid-area:photo; align-self:start; }
+        .recto-left .footer{ grid-area:foot; }
+
+        /* Verso simple (consignes + mentions) */
+        .verso .inner{ padding:7mm; display:grid; grid-template-rows:1fr auto; row-gap:3mm; }
+        .verso .rules{ align-self:start; font-size:3mm; line-height:1.35; font-weight:600; }
+        .verso .bottom{ align-self:end; display:flex; justify-content:space-between; gap:6mm; font-size:3mm; font-weight:700; }
+
+        /* Print */
+        @page{ size:A4; margin:10mm; }
+        @media print{ .card{ box-shadow:none; } }
+    </style>
+</head>
+<body>
+<section class="sheet">
+    {# Expect: each card has:
+     layout: 'recto-right' | 'recto-left' | 'verso'
+     site_title, site_code, omi, lastname, firstname, company,
+     card_type, expires_at, serial, logo_url?, photo_url?, rules?, contact?
+    #}
+
+    {% for c in cards %}
+        <article class="card {{ c.layout }}">
+            <div class="inner">
+
+                {% if c.layout starts with 'recto' %}
+
+                    <div class="logo">
+                        {% if c.logo_url %}<img src="{{ c.logo_url }}" alt="Fluxel">{% endif %}
+
+                    </div>
+
+                    <div class="identity">
+                        <div class="kv"><b>IP {{ c.site_title }}</b></div>
+                        <div class="kv"><b>N° :</b> {{ c.site_code }}</div>
+                        <div class="kv"><b>OMI :</b> {{ c.omi }}</div>
+                        <div class="type">{{ c.card_type }}</div>
+                    </div>
+
+                    <div class="photo">
+                        {% if c.photo_url %}<img src="{{ c.photo_url }}" alt="Photo">{% endif %}
+                    </div>
+
+                    <div class="names">
+                        <div class="n">{{ c.lastname }}</div>
+                        <div class="n">{{ c.firstname }}</div>
+                        <div class="n">{{ c.company }}</div>
+                    </div>
+
+                    <br/>
+
+                    <div class="footer">
+
+                        <div class="expiry">Date de fin de validité : <b>{{ c.expires_at }}</b></div>
+                        <div class="serial">N° carte : {{ c.serial }}</div>
+                    </div>
+                {% endif %}
+
+            </div>
+        </article>
+    {% endfor %}
+</section>
+</body>
+</html>

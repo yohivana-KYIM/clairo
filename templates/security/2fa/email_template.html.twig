@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Code d'authentification – Fluxel / Cléo</title>
+</head>
+
+<body style="margin:0; padding:0; background:#eef2f7; font-family:Arial, sans-serif;">
+
+<!-- WRAPPER -->
+<table align="center" width="100%" cellpadding="0" cellspacing="0"
+       style="max-width:620px; margin:auto; background:white; border-radius:10px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+
+    <!-- HEADER -->
+    <tr>
+        <td style="
+          padding:30px 20px;
+          background:linear-gradient(135deg, #001e3c 0%, #003d6e 100%);
+          color:white;
+          text-align:center;">
+
+            <img src="{{ app.request.schemeAndHttpHost ~ '/img/logo.png' }}"
+                 alt="Fluxel"
+                 style="max-width:130px; margin-bottom:15px;">
+
+            <h1 style="margin:0; font-size:20px; letter-spacing:0.5px; font-weight:400;">
+                Vérification en deux étapes
+            </h1>
+            <p style="margin:5px 0 0; opacity:0.9; font-size:14px;">
+                Sécurisation de votre accès à la plateforme Cléo
+            </p>
+        </td>
+    </tr>
+
+    <!-- BODY -->
+    <tr>
+        <td style="padding:35px 30px 25px; color:#1a1a1a; font-size:15px; line-height:1.6;">
+
+            <p>Bonjour,</p>
+
+            <p>
+                Pour poursuivre votre connexion sur <strong>Cléo</strong>, veuillez utiliser le code
+                de vérification ci-dessous&nbsp;:
+            </p>
+
+            <!-- CODE BLOCK PREMIUM -->
+            <div style="
+          margin:40px auto;
+          background:#f4f7fb;
+          border-left:5px solid #003d6e;
+          padding:20px 0;
+          text-align:center;
+          border-radius:6px;
+          font-size:36px;
+          font-weight:bold;
+          letter-spacing:6px;
+          color:#003d6e;">
+                {{ authenticationCode }}
+            </div>
+
+            <p style="color:#444; font-size:14px;">
+                Ce code est valable pendant <strong>5 minutes</strong>.
+                Si vous n’êtes pas à l’origine de cette demande, merci d’en informer immédiatement votre administrateur Fluxel.
+            </p>
+
+            <p style="margin-top:25px;">
+                Cordialement,<br>
+                <strong>L'équipe Cléo – Fluxel</strong>
+            </p>
+
+        </td>
+    </tr>
+
+    <!-- FOOTER -->
+    <tr>
+        <td style="padding:18px; background:#f6f7f9; text-align:center; color:#666; font-size:12px;">
+            Cet email a été envoyé automatiquement – merci de ne pas y répondre.<br>
+            © {{ "now"|date("Y") }} Fluxel. Tous droits réservés.
+        </td>
+    </tr>
+
+</table>
+</body>
+</html>

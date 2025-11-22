@@ -1,0 +1,12 @@
+services:
+  App\AdminBundle\Infrastructure\Config\AdminConfig:
+    arguments:
+      $config: '%admin_bundle.config%'
+
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  App\AdminBundle\:
+    resource: '../../*'
+    exclude: '../../{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'

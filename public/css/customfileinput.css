@@ -1,0 +1,21 @@
+label.label input[type="file"] {
+  position: absolute;
+  top: -1000px;
+}
+.label {
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 5px 15px;
+  margin: 5px;
+  background: rgb(255, 193, 7);
+  display: inline-block;
+}
+.label:hover {
+  background: rgba(255,193,7, 0.5);
+}
+/* .label:active {
+  background: rgb(255, 193, 7)
+} */
+.label:invalid + span {
+  color: #000000;
+}

@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Filiation{% endblock %}
+
+{% block body %}
+    <h1>Filiation</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ filiation.id }}</td>
+            </tr>
+            <tr>
+                <th>NomPere</th>
+                <td>{{ filiation.nomPere }}</td>
+            </tr>
+            <tr>
+                <th>PrenomPere</th>
+                <td>{{ filiation.prenomPere }}</td>
+            </tr>
+            <tr>
+                <th>NomMere</th>
+                <td>{{ filiation.nomMere }}</td>
+            </tr>
+            <tr>
+                <th>PrenomMere</th>
+                <td>{{ filiation.prenomMere }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_filiation_index') }}">back to list</a>
+
+    <a href="{{ path('app_filiation_edit', {'id': filiation.id}) }}">edit</a>
+
+    {{ include('filiation/_delete_form.html.twig') }}
+{% endblock %}

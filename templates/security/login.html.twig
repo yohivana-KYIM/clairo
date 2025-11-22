@@ -1,0 +1,65 @@
+{% import '_macros/flash_macros.html.twig' as flash_macros %}
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion | Fluxel{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ asset('css/loginstyle.css') }}">
+<link rel="stylesheet" href="{{ asset('css/main.css') }}">
+    {{ flash_macros.flash_messages() }}
+    <body class="overflow-hidden" id="bg-pattern">
+        <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+            <div class="border border-dark-subtle rounded wrapper">
+                <form class="pt-4 pb-4 ps-5 pe-5" method="post">
+                {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
+                    <h1 class="text-center pt-3 pb-5 fw-bold">Connexion</h1>
+                    <div class="form-floating mb-3">
+                        <input id="floatingInput1" type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control border-dark-subtle" autocomplete="email" placeholder="name@example.com" size="32" required autofocus>
+                        <label for="floatingInput1">Email</label>
+                    </div>
+                    <div class="mb-3 position-relative">
+                        <div class="form-floating">
+                            <input id="floatingInput2" type="password" name="password"
+                                   class="form-control border-dark-subtle"
+                                   placeholder="Mot de passe" required>
+                            <label for="floatingInput2">Mot de passe</label>
+                        </div>
+                        <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;">
+                            <img src="/img/eye-slash.png" alt="Afficher" class="toggle-password" data-toggle="#floatingInput2"  style="width: 20px; height: 20px;" />
+                        </span>
+
+                    </div>
+
+                    <div class="ps-1">
+                        <a class="link-body-emphasis link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover" id="account" href="{{ path('app_register_form') }}">Vous n'avez pas de compte?</a>
+                    </div>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                    <div class="text-center mt-4 mb-4">
+                        <button class="btn btn-lg btn-cleo mt-4 border border-dark-subtle" type="submit">Se connecter</button>
+                    </div>
+                    <div class="ps-1 mt-4 text-center">
+                        <p class="opacity-75 fs-6">Mot de passe oublié? <a class="link-body-emphasis link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover" href="{{ path('app_forgot_password_request') }}">Cliquez ici</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+{% endblock body %}
+{% block javascripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.toggle-password').forEach(function (icon) {
+            icon.addEventListener('click', function () {
+                const target = document.querySelector(this.getAttribute('data-toggle'));
+                const isPassword = target.type === "password";
+                target.type = isPassword ? "text" : "password";
+
+                // Switch image
+                this.src = isPassword ? "/img/eye.png" : "/img/eye-slash.png";
+            });
+        });
+    });
+</script>
+{% endblock %}

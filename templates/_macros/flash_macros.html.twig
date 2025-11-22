@@ -1,0 +1,8 @@
+{% import '_macros/flash_macros.html.twig' as flash_macros %}
+{% macro flash_messages() %}
+    {% for type, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ type }}">{{ message }}</div>
+        {% endfor %}
+    {% endfor %}
+{% endmacro %}

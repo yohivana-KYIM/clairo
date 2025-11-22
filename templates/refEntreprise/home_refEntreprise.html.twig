@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil | Fluxel{% endblock %}
+
+{% block container %}
+
+<header>
+    <div class="container-fluid bg-cleo p-3 d-flex justify-content-center border-bottom border-bottom-dark shadow-sm">
+        <h2 class="titlesmartphone fw-bold text-center">Demande de création de titre de circulation pour les personnes pénétrant dans les installations portuaires de Lavera et de Fos exploitées par Fluxel SAS</h2>
+    </div>
+</header>
+    <body class="overflow-hidden" id="">
+        <div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+            <div class="container">
+                <div class="text-center mt-5 mb-5 p-3 border border-dark-subtle rounded content" style="background: #f9f9f9; box-shadow: 0px 15px 20px rgba(0,0,0,0.1);">
+                <h2>Vous êtes le référent de l'entreprise  {{ entreprise }}</h2>
+                    <img class="img-fluid resizeimg pb-3 pt-3" src="/img/logo.png" alt="Logo">
+                    <div class="container text-center">
+                        <a class="btn btn-primary btn-lg m-3" href="{{ path('app_demande_entreprise') }}">Les demandes de mon entreprise</a>
+                        <a class="btn btn-cleo btn-lg m-3" href="{{ path('app_demande_titre_vehicule_index') }}">Demande d'acces vehicule</a>
+                        {% if app.user.hasRole('ROLE_REFSECU') %}
+                            <a class="btn btn-success btn-lg m-3" href="{{ path('app_mes_commandes') }}">Mes commandes</a>
+                        {% endif %}
+                    </div>
+                    <div class="row d-flex justify-content-center">
+                        {% if app.user.hasRole('ROLE_REFSECU') %}
+                            <a class="btn btn-secondary btn-lg m-3 col-3" href="{{ path('app_home') }}">Quitter le mode référent</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% if app.user %}
+                <div class="text-center">
+                    <h4>Vous êtes connecté en tant que {{ app.user.userIdentifier }}, <a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover" href="{{ path('app_logout') }}">Déconnexion</a></h4>
+                    <h5>et vous êtes en mode <span class="fw-bold">Référent Sécurité Entreprise</span></h5>
+                </div>
+            {% endif %}
+            </div>
+        </div>
+        <script src="{{ asset('js/indexstyle.js') }}"></script>
+    </body>
+</html>
+{% endblock %}

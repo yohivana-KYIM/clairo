@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Erreur de paiement de commande!{% endblock %}
+
+{% block body %}
+<header>
+    <div class="container-fluid fixed-top bg-cleo p-2 ps-4 text-center d-flex flex-wrap border-bottom border-bottom-dark shadow-sm">
+        <img class="" src="{{ asset('/img/logo.png') }}" alt="" width="120" height="60">
+    </div>
+</header>
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="container">
+        <h2 class="mb-4">Erreur de paiement</h2>
+        <p>
+            Bonjour <strong>{{ order.user.email }}</strong>, <br/>
+            Il semblerait que votre paiement est échoué pour votre commande n° <strong>{{order.reference }} </strong><br/>
+            Une confirmation d'erreurn vient de vous être envoyée par email à l'adresse <strong>{{ order.user.email }}</strong>.
+            <hr>
+            <div class="row mt-5">
+                <div class="col-12 p-0 d-flex justify-content-evenly">
+                    <a class="btn btn-danger btn-lg" href="{{ path('app_home') }}">
+                        <img src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32">
+                        Retour à l'accueil
+                    </a>
+                    <a class="btn btn-success btn-lg" href="{{ path('app_order') }}">Réessayer le paiement</a>
+                </div>
+            </div>
+        </p>
+    </div>
+</div>
+
+
+
+{% endblock %}

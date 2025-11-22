@@ -1,0 +1,26 @@
+services:
+  # Register all services in MultiStepBundle namespace
+  App\MultiStepBundle\:
+    resource: '../../*'
+    exclude: '../../{DependencyInjection,Entity,Migrations,Tests}'
+
+  # Workflow service with AutowireIterator
+  App\MultiStepBundle\Application\VehicleAccessWorkflowService:
+    arguments:
+      $stateManager: '@App\MultiStepBundle\Default\DefaultSessionStateManager'
+      $steps: !tagged_iterator { tag: vehicule.multi_step.workflow_step, default_index_method: 'getDefaultIndex' }
+      $logger: '@logger'
+  App\MultiStepBundle\Application\PersonAccessWorkflowService:
+    arguments:
+      $stateManager: '@App\MultiStepBundle\Default\DefaultSessionStateManager'
+      $steps: !tagged_iterator { tag: person.multi_step.workflow_step, default_index_method: 'getDefaultIndex'}
+      $logger: '@logger'
+
+  # Logger Middleware
+  App\MultiStepBundle\Middleware\WorkflowLoggerMiddleware:
+    arguments:
+      $logger: '@logger'
+
+  App\MultiStepBundle\Persistence\Repository\View\:
+    resource: '../../Persistence/Repository/View'
+    tags: [ 'doctrine.repository_service' ]

@@ -1,0 +1,29 @@
+@startuml
+state Remplissage {
+    [*] --> NouvelleRequete
+    NouvelleRequete --> SaisirInfos: redirection vers le formulaire de saisie d'informations
+    Inscription --> ValiderEmail : 1. Soumettre l'inscription
+
+    ValiderEmail --> EmailValide : 2. Email valide
+    ValiderEmail --> SaisirInfos : 2' Email invalide
+
+    EmailValide --> Accréditation : 3. Attente d'accréditation
+    EmailValide --> CréerIdentifiants : 4. Créer identifiants
+
+    state Accréditation {
+        [*] --> EnAttente
+        EnAttente --> Approuvé : 5. Approuvé par la sécurité
+        EnAttente -[#red,dashed]-> SaisirInfos : 5' Rejeté par la sécurité
+    }
+
+    state CréerIdentifiants {
+        [*] --> Vérification
+        Vérification --> IdentifiantsValides : 6. Identifiants valides
+        Vérification -[#red,dashed]-> SaisirInfos : 6' Identifiants invalides
+    }
+
+    Approuvé --> Finaliser : 7. Inscription réussie
+    IdentifiantsValides --> Finaliser : 8. Inscription réussie
+    Finaliser --> SaisirInfos : 9. Retour à la saisie
+}
+@enduml

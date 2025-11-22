@@ -1,0 +1,19 @@
+knp_snappy:
+    temporary_folder: '%kernel.cache_dir%/snappy'
+    pdf:
+        enabled:    true
+        binary:     '%env(WKHTMLTOPDF_PATH)%'
+        options:
+            enable-local-file-access: true
+            # viewport-size: 1920x1080
+            page-size: A4
+            encoding: UTF-8
+            # footer-center: text
+            margin-top: 2
+            # margin-bottom: 1
+            margin-left: 2
+            margin-right: 2
+    image:
+        enabled:    true
+        binary:     '%env(WKHTMLTOIMAGE_PATH)%'
+        options:    []

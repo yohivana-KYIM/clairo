@@ -1,0 +1,58 @@
+# See the configuration reference at https://symfony.com/bundles/SchebTwoFactorBundle/6.x/configuration.html
+scheb_two_factor:
+    totp:
+        enabled: true                  # If TOTP authentication should be enabled, default false
+        server_name: Cleo               # Server name used in QR code
+        issuer: Fluxel                  # Issuer name used in QR code
+        leeway: 15
+        parameters: # Additional parameters added in the QR code
+            image: '/img/logo.png'
+        template: security/2fa/form.html.twig   # Template used to render the authentication form
+    google:
+        enabled: true                  # If Google Authenticator should be enabled, default false
+        server_name: Cleo              # Server name used in QR code
+        issuer: Fluxel                 # Issuer name used in QR code
+        leeway: 15                      # Acceptable time drift in seconds, requires Spomky-Labs/otphp v11 to be used
+        # Must be less or equal than 30 seconds
+        # If configured, takes precedence over the "window" option
+        template: security/2fa/form.html.twig   # Template used to render the authentication form
+    email:
+        enabled: true
+        sender_email: cleo@fluxel.fr
+        sender_name: Cezar de Fluxel
+        #mailer: acme.custom_mailer_service  # Use alternative service to send the authentication code
+        #code_generator: acme.custom_code_generator_service  # Use alternative service to generate authentication code
+        digits: 6                        # plus robuste que 4
+        template: security/2fa/form.html.twig   # Template used to render the authentication form
+        mailer: app.fluxel_auth_code_mailer
+    trusted_device:
+        enabled: false                 # If the trusted device feature should be enabled
+        lifetime: 5184000              # Lifetime of the trusted device token
+        extend_lifetime: false         # Automatically extend lifetime of the trusted cookie on re-login
+        cookie_name: trusted_device    # Name of the trusted device cookie
+        cookie_secure: false           # Set the 'Secure' (HTTPS Only) flag on the trusted device cookie
+        cookie_same_site: "lax"        # The same-site option of the cookie, can be "lax" or "strict"
+        key: fluxelcc21ed8d4b2a28a1f14028428fd3b5e5
+        #cookie_domain: ".fluxel.fr"   Domain to use when setting the cookie, fallback to the request domain if not set
+        #cookie_path: "/"               # Path to use when setting the cookie
+
+    # Backup codes feature
+    backup_codes:
+        enabled: true                 # If the backup code feature should be enabled
+    #    manager: app.multifa.backup_code_manager  # Use a custom backup code manager
+
+    # The service which is used to persist data in the user object. By default Doctrine is used. If your entity is
+    # managed by something else (e.g. an API), you have to implement a custom persister
+    persister: scheb_two_factor.persister.doctrine
+
+    # If your Doctrine user object is managed by a model manager, which is not the default one, you have to
+    # set this option. Name of entity manager or null, which uses the default one.
+    model_manager_name: ~
+
+    security_tokens:
+        - Symfony\Component\Security\Http\Authenticator\Token\PostAuthenticationToken
+        - Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken
+
+    # A list of IP addresses, which will not trigger two-factor authentication
+    ip_whitelist:
+        - 127.0.0.2 # Used for testing

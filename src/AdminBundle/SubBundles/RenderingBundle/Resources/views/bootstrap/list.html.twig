@@ -1,0 +1,10 @@
+<table class="table">
+    <thead>
+    <tr>{% for key in items[0] | keys %}<th>{{ key }}</th>{% endfor %}</tr>
+    </thead>
+    <tbody>
+    {% for item in items %}
+        <tr>{% for value in item %}<td>{{ value }}</td>{% endfor %}</tr>
+    {% endfor %}
+    </tbody>
+</table>

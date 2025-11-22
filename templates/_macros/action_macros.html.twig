@@ -1,0 +1,8 @@
+{% macro action_buttons(entity, edit_path, show_path, delete_path) %}
+    <a href="{{ path(edit_path, {'id': entity.id}) }}" class="btn btn-primary">Edit</a>
+    <a href="{{ path(show_path, {'id': entity.id}) }}" class="btn btn-secondary">View</a>
+    <form method="post" action="{{ path(delete_path, {'id': entity.id}) }}" onsubmit="return confirm('Are you sure?');" style="display:inline;">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ entity.id) }}">
+        <button class="btn btn-danger">Delete</button>
+    </form>
+{% endmacro %}

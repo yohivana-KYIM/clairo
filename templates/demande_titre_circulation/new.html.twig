@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New DemandeTitreCirculation{% endblock %}
+
+{% block body %}
+    <h1>Create new DemandeTitreCirculation</h1>
+
+    {{ include('demande_titre_circulation/_form.html.twig') }}
+
+    <a href="{{ path('app_demande_titre_circulation_index') }}">back to list</a>
+{% endblock %}

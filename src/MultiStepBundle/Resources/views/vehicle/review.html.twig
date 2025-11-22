@@ -1,0 +1,150 @@
+{% extends '@MultiStepBundle/base.html.twig' %}
+
+{% block title %}Revue des Informations{% endblock %}
+{% block other_stylesheets %}
+.container {
+    top:100px;
+}
+{% endblock %}
+{% block container %}
+    <div class="container-title">Revue des Informations Fournies</div>
+
+    <div class="review-container">
+        <h1 class="review-section-title">Récapitulatif</h1>
+        {% for section, data in all_data %}
+            {%  if data %}
+                <div class="review-section">
+                <h2 class="review-section-title" data-i18n="{{ section }}">{{ section }}</h2>
+                {% for label, value in data %}
+                    <div class="review-item">
+                        <span class="review-item-label" data-i18n="{{ label }}">{{ label }}</span>:
+                        <span class="review-item-value" data-field="{{ label }}">
+                            {% if value is iterable %}
+                                <ul>
+                                    {% for subValue in value %}
+                                        {% if subValue is not iterable %}
+                                            <li data-i18n="{{ subValue }}">{{ subValue }}</li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            {% elseif value is same as(null) %}
+                                <em>Non renseigné</em>
+							{% elseif value ends with '.pdf' or value ends with '.jpg' or value ends with '.jpeg'
+                                or value ends with '.svg' or value ends with '.png' or value ends with '.webp' %}
+                                {# ✅ Extraire nom du fichier #}
+                                {% set fileName = value|split('/')|last %}
+
+                                {# ✅ Normaliser le chemin #}
+                                {% set normalizedBasePublicPath = basePublicPath|trim('/') %}
+                                {% set normalizedValue = value|replace({'\\':'/'}) %}
+
+                                {# ✅ Construire la clé de remplacement proprement #}
+                                {% set replaceKey = '/' ~ normalizedBasePublicPath %}
+
+                                {# ✅ Nettoyer le chemin #}
+                                {% set cleanPath = normalizedValue|replace({ (replaceKey): '' }) %}
+
+                                <a
+                                        data-basePublicPath="{{ basePublicPath }}"
+                                        data-normalizedBasePublicPath="{{ normalizedBasePublicPath }}"
+                                        data-originalValue="{{ value }}"
+                                        data-normalizedValue="{{ normalizedValue }}"
+                                        data-replaceKey="{{ replaceKey }}"
+                                        href="{{ cleanPath }}"
+                                        download="{{ fileName }}">
+									Télécharger
+								</a>
+                            {% else %}
+                                {{ value }}
+                            {% endif %}
+                        </span>
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        {% endfor %}
+
+        {% if hide_buttons is not defined %}
+            <div class="review-actions">
+                <a href="{{ path(review_back_link) }}" class="btn-action btn-cancel">Retour</a>
+                <form id="review-form" method="POST" action="{{ review_persist_link }}" style="display: inline-block">
+                    <input type="hidden" name="ending" id="ending" value="1" required>
+                    <button type="submit" class="btn-action mt-4 mb-4" id="terminateBtn">Terminer</button>
+                </form>
+                {% if step_id is defined %}
+                    <a href="{{ path(review_edit_link, { id: step_id }) }}" class="btn-action">Modifier</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            /** @type {HTMLButtonElement | null} */
+            const terminateBtn = document.getElementById('terminateBtn');
+            /** @type {HTMLElement | null} */
+            const namePrompt = document.getElementById('namePrompt');
+            /** @type {HTMLInputElement | null} */
+            const nameInput = document.getElementById('nameInput');
+            /** @type {HTMLInputElement | null} */
+            const finalName = document.getElementById('finalName');
+            /** @type {HTMLButtonElement | null} */
+            const confirmSaveBtn = document.getElementById('confirmSaveBtn');
+            /** @type {HTMLFormElement | null} */
+            const reviewForm = document.getElementById('review-form');
+
+            // Liste des noms existants à remplir dynamiquement depuis Twig
+            const existingNames = {{ existingNames|json_encode|raw }};
+            if (!existingNames) {
+                return;
+            }
+            if (!Array.isArray(existingNames)) {
+                console.warn('existingNames doit être un tableau.');
+                return;
+            }
+
+            let selectedNameExists = false;
+
+            if (nameInput) {
+                nameInput.addEventListener('input', function () {
+                    const value = nameInput.value.trim().toLowerCase();
+                    selectedNameExists = existingNames.includes(value);
+                    console.log('Nom existe ?', selectedNameExists);
+                });
+            }
+
+            if (terminateBtn && namePrompt) {
+                terminateBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    namePrompt.style.display = 'block';
+                });
+            }
+
+            if (confirmSaveBtn && nameInput && finalName && reviewForm) {
+                confirmSaveBtn.addEventListener('click', function () {
+                    const inputValue = nameInput.value.trim();
+                    if (!inputValue) {
+                        alert("Veuillez entrer un nom.");
+                        return;
+                    }
+
+                    if (existingNames.includes(inputValue.toLowerCase())) {
+                        if (!confirm("Ce nom existe déjà. Voulez-vous vraiment l’écraser ?")) {
+                            return;
+                        }
+                    }
+
+                    finalName.value = inputValue;
+
+                    // Vérification que reviewForm est bien un formulaire
+                    if (typeof reviewForm.submit === 'function') {
+                        reviewForm.submit();
+                    } else {
+                        console.error("reviewForm n'est pas un élément <form> valide.");
+                    }
+                });
+            } else {
+                console.warn('Certains éléments requis sont manquants.');
+            }
+        });
+    </script>
+{% endblock %}

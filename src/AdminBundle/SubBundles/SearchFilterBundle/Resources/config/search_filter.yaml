@@ -1,0 +1,11 @@
+search_filter_bundle:
+  search:
+    strategy: global # Options: global, column, fuzzy, fulltext, ai
+    encoding: utf-8  # Options: utf-8, base64, url
+    ignore_case: true
+    exact_match: false
+  filters:
+    date_range: true
+    boolean: true
+    multi_select: true
+    json_fields: true

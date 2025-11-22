@@ -1,0 +1,36 @@
+# see https://symfony.com/doc/current/reference/configuration/framework.html
+framework:
+    secret: '%env(APP_SECRET)%'
+    annotations: false
+    http_method_override: false
+    handle_all_throwables: true
+
+    cache:
+        pools:
+            doctrine.system_cache_pool:
+                adapter: cache.system
+            doctrine.result_cache_pool:
+                adapter: cache.adapter.redis        # query result cache
+                provider: '%env(REDIS_URL)%'
+            doctrine.second_level_cache_pool:
+                adapter: cache.adapter.redis        # entities collections cache (SLC)
+                provider: '%env(REDIS_URL)%'
+                default_lifetime: 3600
+
+    # Enables session support. Note that the session will ONLY be started if you read or write from it.
+    # Remove or comment this section to explicitly disable session support.
+    session:
+        handler_id: ~
+        cookie_secure: auto
+        cookie_samesite: lax
+        storage_factory_id: session.storage.factory.native
+    #esi: true
+    #fragments: true
+    php_errors:
+        log: true
+
+when@test:
+    framework:
+        test: true
+        session:
+            storage_factory_id: session.storage.factory.mock_file

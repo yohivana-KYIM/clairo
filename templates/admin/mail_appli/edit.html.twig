@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modification Mail Application{% endblock %}
+
+{% block body %}
+    {# <h1>Edit MailAppli</h1> #}
+
+    {{ include('admin/mail_appli/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+
+    {# <a href="{{ path('app_mail_appli_index') }}">back to list</a> #}
+
+    {# {{ include('admin/mail_appli/_delete_form.html.twig') }} #}
+{% endblock %}
+

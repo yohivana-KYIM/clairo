@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Entreprise | Fluxel{% endblock %}
+
+{% block body %}
+    {# <h1>Edit Entreprise</h1> #}
+
+    {{ include('sdri/entreprise/_form.html.twig', {'button_label': 'Suivant'}) }}
+
+    {# <a href="{{ path('app_entreprise_index') }}">back to list</a> #}
+
+    {# {{ include('entreprise/_delete_form.html.twig') }} #}
+{% endblock %}

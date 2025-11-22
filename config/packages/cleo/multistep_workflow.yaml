@@ -1,0 +1,169 @@
+framework:
+  workflows:
+    step_workflow:
+      type: 'state_machine'
+      marking_store:
+        type: 'method'
+        property: 'status'
+      supports:
+        - App\MultiStepBundle\Entity\StepData
+      places:
+        - draft
+        - deposit
+        - awaiting_reference
+        - pending
+        - awaiting_info
+        - provisioned
+        - approved
+        - refused
+        - awaiting_payment
+        - paid
+        - bad_firm
+        - card_edited
+        - card_delivered
+        - microcesame_ko
+        - investigation_ko
+        - cerbere_ko
+        - payment_doc_ko
+        - microcesame 
+        - enquete_prealable
+        - tc_temp_ok  
+        - cerbere_sent
+        - cerbere_ok
+
+      transitions:
+        submit:
+          from: draft
+          to: deposit
+          guard: "is_granted('ROLE_USER')"
+
+        await_reference:
+          from: deposit
+          to: awaiting_reference
+          guard: "is_granted('ROLE_USER')"
+
+        start_review:
+          from: awaiting_reference
+          to: pending
+          guard: "is_granted('ROLE_REFSECU') or is_granted('ROLE_SDRI')"
+
+        mark_bad_firm:
+          from: awaiting_reference
+          to: bad_firm
+          guard: "is_granted('ROLE_REFSECU') or is_granted('ROLE_SDRI')"
+
+        request_more_info:
+          from: pending
+          to: awaiting_info
+          guard: "is_granted('ROLE_SDRI')"
+
+        provide_temp_access:
+          from: pending
+          to: provisioned
+          guard: "is_granted('ROLE_SDRI') or is_granted('ROLE_ADMIN')"
+
+        approve:
+          from: [pending, awaiting_info]
+          to: approved
+          guard: "is_granted('ROLE_ADMIN') or is_granted('ROLE_SDRI')"
+
+        reopen_case:
+          from: approved
+          to: pending
+          guard: "is_granted('ROLE_ADMIN') or is_granted('ROLE_SDRI')"
+
+        needs_clarification:
+          from: approved
+          to: awaiting_info
+          guard: "is_granted('ROLE_ADMIN') or is_granted('ROLE_SDRI')"
+
+        reject:
+          from: [pending, awaiting_info]
+          to: refused
+          guard: "is_granted('ROLE_SDRI')"
+
+        # PHASE TECHNIQUE + KO
+
+        prepare_technical_record:
+          from: approved
+          to: microcesame
+          guard: "is_granted('ROLE_SDRI')"
+
+        microcesame_error:
+          from: microcesame
+          to: microcesame_ko
+          guard: "is_granted('ROLE_SDRI')"
+
+        correct_microcesame:
+          from: microcesame_ko
+          to: approved
+          guard: "is_granted('ROLE_SDRI')"
+
+        launch_preliminary_investigation:
+          from: microcesame
+          to: enquete_prealable
+          guard: "is_granted('ROLE_SDRI')"
+
+        investigation_rejected:
+          from: enquete_prealable
+          to: investigation_ko
+          guard: "is_granted('ROLE_SDRI')"
+
+        relaunch_investigation:
+          from: investigation_ko
+          to: pending
+          guard: "is_granted('ROLE_SDRI')"
+
+        validate_investigation:
+          from: enquete_prealable
+          to: tc_temp_ok
+          guard: "is_granted('ROLE_SDRI')"
+        reset_investigation:
+          from: enquete_prealable
+          to: enquete_prealable
+          guard: "is_granted('ROLE_SDRI')"
+
+        cerbere_sync:
+          from: tc_temp_ok
+          to: cerbere_sent
+          guard: "is_granted('ROLE_SDRI')"
+
+        cerbere_failure:
+          from: cerbere_sent
+          to: cerbere_ko
+          guard: "is_granted('ROLE_SDRI')"
+
+        retry_cerbere:
+          from: cerbere_ko
+          to: approved
+          guard: "is_granted('ROLE_SDRI')"
+
+        cerbere_return:
+          from: cerbere_sent
+          to: cerbere_ok
+          guard: "is_granted('ROLE_SDRI')"
+
+        request_payment:
+          from: cerbere_ok
+          to: awaiting_payment
+          guard: "is_granted('ROLE_SDRI') or is_granted('ROLE_ADMIN')"
+
+        reedit_card:
+          from: card_delivered
+          to: awaiting_payment
+          guard: "is_granted('ROLE_USER') or is_granted('ROLE_REFSECU') or is_granted('ROLE_ADMIN')"
+
+        confirm_payment:
+          from: awaiting_payment
+          to: paid
+          guard: "is_granted('ROLE_REFSEC')"
+
+        edit_card:
+          from: paid
+          to: card_edited
+          guard: "is_granted('ROLE_SDRI')"
+
+        deliver_card:
+          from: card_edited
+          to: card_delivered
+          guard: "is_granted('ROLE_GARDIEN')"

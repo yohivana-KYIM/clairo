@@ -1,0 +1,102 @@
+@startuml
+' Déclaration des acteurs
+actor sdri
+actor refsec
+participant cléofluxel as cléo
+actor intpref
+participant sneas
+actor ceberpref
+participant ceber
+participant microcesame
+
+actor entreprise
+
+' Interactions
+entreprise -> cléo : Demande d'habilitation ZAR
+cléo -> entreprise : Remplir champs obligatoires pour ceber
+
+' Options à la fin du formulaire
+alt Option 1 : Cléo génère fichier sneas
+    cléo -> sneas : Génération fichier sneas crypté en zed
+    sneas -> intpref : Envoi fichier crypté (email)
+else Option 2 : Sdri télécharge et envoie manuellement
+    cléo -> sdri : Téléchargement fichier sneas
+    sdri -> sdri : Cryptage fichier en zed
+    sdri -> intpref : Envoi manuel du fichier crypté
+    sdri -> sneas : Mise à jour du fichier sneas
+end
+
+' Envoi des données à microcesame en parallèle
+par Envoi API à microcesame
+    cléo -> microcesame : Envoi des données via API
+end
+
+' Intpref vérifie le fichier
+intpref -> intpref : Vérification du format
+
+alt Format correct
+    intpref -> sneas : Transmission pour enquête administrative
+    sneas -> sneas : Enquête administrative
+    ' Fenêtre temporelle de 5 à 15 jours
+    group Enquête dans un délai de 5 à 15 jours
+        note right of sneas : L'enquête est réalisée dans un délai de 5 à 15 jours
+    end
+else Format incorrect
+    intpref -> entreprise : Rejet de la demande
+end
+
+' Envoi des résultats de l'enquête administrative
+alt Résultat enquête
+    sneas -> intpref : Envoi des résultats de l'enquête (OK / KO / À compléter)
+    intpref -> sdri : Envoi des résultats par mail (OK => 0, KO => 1, À compléter => 5)
+end
+
+' Modification du fichier Excel par le sdri
+sdri -> sdri : Modification fichier Excel\nColoriage du workflow des demandes
+sdri -> refsec : Transmission des demandes mises à jour
+
+' Vérification des données par refsec
+refsec -> refsec : Vérification des données sur cléo\net validation de l'enquête (OK)
+alt Données valides
+    refsec -> cléo : Validation des données sur cléo
+    cléo -> cléo : Génération d'un fichier XML compatible avec Ceber
+
+    ' Options après génération du fichier XML
+    alt Option 1 : Téléchargement manuel et dépôt sur Ceber
+        refsec -> cléo : Téléchargement du fichier XML
+        refsec -> ceber : Dépôt manuel du fichier sur Ceber
+    else Option 2 : Paramétrage pour transfert automatique
+        refsec -> cléo : Paramétrage de cléo pour transfert automatique vers Ceber
+    end
+
+    ' Génération du tableau ceberpreftable
+    cléo -> cléo : Génération du tableau ceberpreftable (bloc de 30 demandes validées)
+
+    ' Options de transfert du tableau ceberpreftable
+    alt Envoi automatique
+        cléo -> ceberpref : Envoi automatique du tableau crypté par mail
+    else Envoi manuel (choix de sdri)
+        sdri -> sdri : Choix de l'option d'envoi (manuel ou automatique)
+        sdri -> cléo : Téléchargement du tableau ceberpreftable
+        sdri -> ceberpref : Envoi manuel du tableau crypté par mail
+    end
+
+    ' Mise à jour du fichier de suivi ZAR après envoi manuel
+    sdri -> sdri : Mise à jour du fichier de suivi ZAR
+
+    ' Enquête par ceberpref et dépôt du fichier ceberhabilitation
+    ceberpref -> ceber : Dépôt du fichier ceberhabilitation\n(Habilitation 5 ans, probatoire 1 an, ou refus)
+    ceber -> entreprise : Envoi d'une copie du fichier ceberhabilitation à l'entreprise
+
+    ' Refsec consulte ceber et imprime un titre de circulation si pas de refus
+    refsec -> ceber : Consultation des résultats de ceberhabilitation
+    alt Habilitation ou habilitation probatoire
+        refsec -> refsec : Impression d'un titre de circulation
+    else Refus
+        refsec -> sdri : Rejet du titre de circulation
+    end
+
+else Données invalides
+    refsec -> sdri : Rejet des données (si enquête KO ou données incorrectes)
+end
+@enduml

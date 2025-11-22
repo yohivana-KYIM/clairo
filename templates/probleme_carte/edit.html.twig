@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit ProblemeCarte{% endblock %}
+
+{% block body %}
+    {# <h1>Edit ProblemeCarte</h1> #}
+
+    {{ include('probleme_carte/_form.html.twig', {'button_label': 'Terminer'}) }}
+
+    {# <a href="{{ path('app_probleme_carte_index') }}">back to list</a> #}
+
+    {# {{ include('probleme_carte/_delete_form.html.twig') }} #}
+{% endblock %}

@@ -1,0 +1,545 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Document Personnel | Fluxel{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/bootstrap5.3.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/mainform.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/customfileinput.css') }}">
+    {{ encore_entry_link_tags('app') }}
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="container">
+            <nav class="d-flex justify-content-center" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    {% if intervention.id is defined %}
+                        <li class="breadcrumb-item active"><a class="link-underline link-underline-opacity-0" href="{{ path('app_intervention_edit', {'id': intervention.id}) }}">Intervention</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item active"><a class="link-underline link-underline-opacity-0">Intervention</a></li>
+                    {% endif %}
+
+                    {% if etatCivil.id is defined %}
+                        <li class="breadcrumb-item active"><a class="link-underline link-underline-opacity-0" href="{{ path('app_etat_civil_edit', {'id': etatCivil.id}) }}">Etat Civil</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item" aria-current="page"><a class="link-underline link-underline-opacity-0">Etat Civil</a></li>
+                    {% endif %}
+
+                    {% if filiation.id is defined %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0" href="{{ path('app_filiation_edit', {'id': filiation.id}) }}">Filiation</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0">Filiation</a></li>
+                    {% endif %}
+
+                    {% if adresse.id is defined and adresse.id is not null %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0" href="{{ path('app_adresse_edit', {'id': adresse.id}) }}">Adresse</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0">Adresse</a></li>
+                    {% endif %}
+
+                    {% if infoComplementaire.id is defined and infoComplementaire.id is not null %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0" href="{{ path('app_info_complementaire_edit', {'id': infoComplementaire.id}) }}">Information Complementaire</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0">Information Complementaire</a></li>
+                    {% endif %}
+
+                    {% if documentPersonnel.id is defined and documentPersonnel.id is not null %}
+                        <li class="breadcrumb-item"><a class="link-body-emphasis link-underline link-underline-opacity-0" href="{{ path('app_document_personnel_edit', {'id': documentPersonnel.id}) }}">Document Personnel</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item"><a class="link-body-emphasis link-underline link-underline-opacity-0">Document Personnel</a></li>
+                    {% endif %}
+
+                    {% if documentProfessionnel.id is defined and documentProfessionnel.id is not null %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0" href="{{ path('app_document_professionnel_edit', {'id': documentProfessionnel.id}) }}">Document professionnel</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0">Document professionnel</a></li>
+                    {% endif %}
+
+                    {% if intervention.id is defined and intervention.id is not null and etatCivil.id is defined and etatCivil.id is not null and filiation.id is defined and filiation.id is not null and  adresse.id is defined and adresse.id is not null and  infoComplementaire.id is defined and infoComplementaire.id is not null and documentPersonnel.id is defined and documentPersonnel.id is not null and documentProfessionnel.id is defined and documentProfessionnel.id is not null %}
+                        <li class="breadcrumb-item" aria-current="page"><a class="link-underline link-underline-opacity-0"  href="{{ path('app_demande_titre_circulation_edit', {'id': demande.id}) }}">Récapitulatif</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item" aria-current="page"><a class="link-underline link-underline-opacity-0">Récapitulatif</a></li>
+                    {% endif %}
+                </ol>
+            </nav>
+
+            <div class="border border-dark-subtle rounded-top info-form">
+                <div class="col-12 bg-cleo rounded-top p-0 m-0 h5">
+                    <p class="p-3">Document Personnel</p>
+                </div>
+                <div class="col-lg-12 col-md-12 p-3">
+                    {{ form_start(form) }}
+                        <div class="row p-3">
+                            <div class="col-sm-6">
+                                <label class="h5">CNI / Passeport :<span style="color:red">*</span></label>
+                                {% if documentPersonnel.identity is defined and documentPersonnel.identity is not null %}
+                                    <br>
+                                    <span class="fw-bold">Votre document enregistré : </span> {{ documentPersonnel.identity.originalName }}
+                                    <label class="label">
+                                        {{ form_widget(form.identity, {'attr': {'class': 'custom-file-input'}}) }}
+                                        <span>Modifier</span>
+                                    </label>
+                                    <br><p class="fw-bold" id="fileNameIdentity"></p>
+                                    <div class="mb-3"></div>
+                                {% else %}
+                                    {{ form_widget(form.identity, {'attr': {'class': 'form-control mb-4 identity is-invalid formvalidate', 'style': 'display:none;'}}) }}
+                                {% endif %}
+
+                                <label class="h5">Photo identité :<span style="color:red">*</span></label>
+                                {% if documentPersonnel.photo is defined and documentPersonnel.photo is not null %}
+                                    <br>
+                                    <span class="fw-bold">Votre document enregistré : </span> {{ documentPersonnel.photo.originalName }}
+                                    <label class="label">
+                                        {{ form_widget(form.Photo, {'attr': {'class': 'photo is-invalid custom-file-input', 'style': 'display:none;'}}) }}
+                                        <span>Modifier</span>
+                                    </label>
+                                    <br><p class="fw-bold" id="fileNamePhoto"></p>
+                                    <div class="mb-3"></div>
+                                {% else %}
+                                    {{ form_widget(form.Photo, {'attr': {'class': 'photo is-invalid mb-3 is-invalid formvalidate', 'style': 'display:none;'}}) }}
+                                {% endif %}
+
+                                <label class="h5 acte_naissance">Acte de naissance du pays d’origine (traduit en français) :<span style="color:red">*</span></label>
+                                {% if documentPersonnel.acteNaiss is defined and documentPersonnel.acteNaiss is not null %}
+                                    <span class="fw-bold">Votre document enregistré : </span> {{ documentPersonnel.acteNaiss.originalName }}
+                                    <label class="label">
+                                        {{ form_widget(form.acteNaiss, {'attr': {'class': 'form-control mb-4 acte_naissance is-invalid', 'style': 'display:none;'}}) }}
+                                        <span>Modifier</span>
+                                    </label>
+                                    <br><p class="fw-bold" id="fileNameActenaiss"></p>
+                                    <div class="mb-1"></div>
+                                {% else %}
+                                    {{ form_widget(form.acteNaiss, {'attr': {'class': 'form-control mb-4 acte_naissance is-invalid formvalidate', 'style': 'display:none;'}}) }}
+                                {% endif %}
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="h5 sejour">Titre de séjour :</label>
+                                    {% if documentPersonnel.sejour is defined and documentPersonnel.sejour is not null %}
+                                        <span class="fw-bold">Votre document enregistré : </span> {{ documentPersonnel.sejour.originalName }}
+                                        <label class="label">
+                                            {{ form_widget(form.sejour, {'attr': {'class': 'form-control mb-4 sejour border border-dark-subtle', 'style': 'display:none;'}}) }}
+                                            <span>Modifier</span>
+                                        </label>
+                                        <br><p class="fw-bold" id="fileNameSejour"></p>
+                                        <div class="mb-1"></div>
+                                    {% else %}
+                                        {{ form_widget(form.sejour, {'attr': {'class': 'form-control mb-4 sejour border border-dark-subtle', 'style': 'display:none;'}}) }}
+                                    {% endif %}
+
+                                <label class="h5 casier_judiciaire">Casier judiciaire de moins de 3 mois (traduit en français) :</label>
+                                    {% if documentPersonnel.Casier is defined and documentPersonnel.Casier is not null %}
+                                        <span class="fw-bold">Votre document enregistré : </span> {{ documentPersonnel.Casier.originalName }}
+                                        <label class="label">
+                                            {{ form_widget(form.Casier, {'attr': {'class': 'form-control mb-1 casier_judiciaire border border-dark-subtle', 'style': 'display:none;'}}) }}
+                                            <span>Modifier</span>
+                                        </label>
+                                        <br><p class="fw-bold" id="fileNameCasier"></p>
+                                        <div class="mb-1"></div>
+                                    {% else %}
+                                        {{ form_widget(form.Casier, {'attr': {'class': 'form-control mb-1 casier_judiciaire border border-dark-subtle', 'style': 'display:none;'}}) }}
+                                    {% endif %}
+                                    <p class="h6 ms-3 mb-5 casier_judiciaire"><span style="color: red;">*</span> si celle si vit dans un autre pays (différent de son pays d’origine), le casier judiciaire du pays étranger ou la personne vit est aussi requis.</p>
+                            </div>
+                            <div class="col-12">
+                                    {% if documentPersonnel.arrondissementNaissance is defined and documentPersonnel.arrondissementNaissance is not null %}
+                                            <label class="h5 arrondissement_naissance">Arrondissement du lieu de naissance pour France :(Modifier)<span style="color:red">*</span></label>
+                                            {{ form_widget(form.arrondissementNaissance, {'attr': {'class': 'form-control formvalidate arrondissement_naissance is-invalid', 'style': 'display:none;'}} ) }}
+                                        <div class="mb-1"></div>
+                                    {% else %}
+                                        <label class="h5 arrondissement_naissance">Arrondissement du lieu de naissance pour France :<span style="color:red">*</span></label>
+                                        {{ form_widget(form.arrondissementNaissance, {'attr': {'class': 'form-control formvalidate arrondissement_naissance is-invalid', 'style': 'display:none;'}} ) }}
+                                    {% endif %}
+                            </div>
+                            <div class="col-12">
+                                <label class="h5 domicile">Justificatif de domicile de moins de 3 mois (Facture Electricité, Facture Tel fixe, Facture eau) :</label>
+                                    {% if documentPersonnel.domicile is defined and documentPersonnel.domicile is not null %}
+                                        <span class="fw-bold">Votre document enregistré : </span> {{ documentPersonnel.domicile.originalName }}
+                                        <label class="label">
+                                            {{ form_widget(form.domicile, {'attr': {'class': 'form-control domicile is-invalid', 'style': 'display:none;'}}) }}
+                                            <span>Modifier</span>
+                                        </label>
+                                        <p class="h6 ms-3 mb-5 domicile"><span style="color: red;">*</span> si hébergé justificatif de domicile de l’hébergeant + attestation d'hébergement + Pièce identité de l’hébergeant</p>
+                                        <br><p class="fw-bold" id="fileNameDomicile"></p>
+                                        <div class="mb-1"></div>
+                                    {% else %}
+                                        {{ form_widget(form.domicile, {'attr': {'class': 'form-control mb-1 domicile is-invalid formvalidate', 'style': 'display:none;'}}) }}
+                                        <p class="h6 ms-3 mb-5 domicile"><span style="color: red;">*</span> si hébergé justificatif de domicile de l’hébergeant + attestation d'hébergement + Pièce identité de l’hébergeant</p>
+                                    {% endif %}
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="h5 hebergement">Attestation d'hébergement :</label>
+                                    {% if documentPersonnel.hebergement is not null %}
+                                        <span class="fw-bold">Votre document enregistré : </span> {{ documentPersonnel.hebergement.originalName }}
+                                        <label class="label">
+                                            {{ form_widget(form.hebergement, {'attr': {'class': 'form-control mb-1 hebergement border border-dark-subtle', 'style': 'display:none;'}}) }}
+                                            <span>Modifier</span>
+                                        </label>
+                                        <br><p class="fw-bold" id="fileNameHebergement"></p>
+                                        <div class="mb-1"></div>
+                                    {% else %}
+                                        {{ form_widget(form.hebergement, {'attr': {'class': 'form-control mb-1 hebergement border border-dark-subtle', 'style': 'display:none;'}}) }}
+                                    {% endif %}
+                                <p class="h6 ms-3 hebergement"><span style="color: red;">*</span> si hébergé</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="h5 ident_hebergent">Pièce identité de l’hébergeant :</label>
+                                    {% if documentPersonnel.IdentHebergent is not null %}
+                                        <span class="fw-bold">Votre document enregistré : </span> {{ documentPersonnel.IdentHebergent.originalName }}
+                                        <label class="label">
+                                            {{ form_widget(form.IdentHebergent, {'attr': {'class': 'form-control mb-1 ident_hebergent border border-dark-subtle', 'style': 'display:none;'}}) }}
+                                            <span>Modifier</span>
+                                        </label>
+                                        <br><p class="fw-bold" id="fileNameIdentHebergent"></p>
+                                        <div class="mb-1"></div>
+                                    {% else %}
+                                        {{ form_widget(form.IdentHebergent, {'attr': {'class': 'form-control mb-1 ident_hebergent border border-dark-subtle', 'style': 'display:none;'}}) }}
+                                    {% endif %}
+                                <p class="h6 ms-3 ident_hebergent"><span style="color: red;">*</span> si hébergé</p>
+                            </div>
+                        </div>
+                    <div class="row mt-4">
+                        <div class="col-12 p-0 d-flex justify-content-around">
+                            <a class="btn btn-danger btn-lg me-3" href="{{ path('app_info_complementaire_edit', {'id': infoComplementaire.id}) }}">
+                                <img src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32">
+                                Retour
+                            </a>
+                            <a href="{{ path('app_home') }}" class="btn btn-lg btn-cleo">
+                                Reprendre ultérieurement
+                            </a>
+                            <button class="btn btn-success btn-lg me-3">
+                                {{ button_label|default('Suivant') }}
+                                <img src="{{ asset('css/icons/arrow-right-short.svg') }}" width="32" height="32">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+const nationalite = "{{ nationalite }}";
+const duree = "{{ duree }}";
+
+document.addEventListener('DOMContentLoaded', function () {
+    const arrondissementNaissanceField = document.querySelectorAll('.arrondissement_naissance');
+    const identityField = document.querySelectorAll('.identity');
+    const PhotoField = document.querySelectorAll('.photo');
+    const CasierJudiciaireField = document.querySelectorAll('.casier_judiciaire');
+    const acteNaissanceField = document.querySelectorAll('.acte_naissance');
+    const domicileField = document.querySelectorAll('.domicile');
+    const hebergementField = document.querySelectorAll('.hebergement');
+    const IdentHebergentField = document.querySelectorAll('.ident_hebergent');
+    const sejourField = document.querySelectorAll('.sejour');
+
+        var currentURL = window.location.pathname;
+        if (currentURL.endsWith("/edit")) {
+            if (duree === 'permanent' && nationalite === 'etranger') {
+                arrondissementNaissanceField.forEach(arrondissementNaissanceField => {
+                    arrondissementNaissanceField.style.display = 'none';
+                    arrondissementNaissanceField.required = false;
+                });
+                identityField.forEach(identityField => {
+                    identityField.style.display = 'block';
+                    identityField.required = false;
+                });
+                PhotoField.forEach(PhotoField => {
+                    PhotoField.style.display = 'block';
+                    PhotoField.required = false;
+                });
+                CasierJudiciaireField.forEach(CasierJudiciaireField => {
+                    CasierJudiciaireField.style.display = 'block';
+                    CasierJudiciaireField.required = false;
+                });
+                acteNaissanceField.forEach(acteNaissanceField => {
+                    acteNaissanceField.style.display = 'block';
+                    acteNaissanceField.required = false;
+                });
+                domicileField.forEach(domicileField => {
+                    domicileField.style.display = 'block';
+                    domicileField.required = false;
+                });
+                hebergementField.forEach(hebergementField => {
+                    hebergementField.style.display = 'block';
+                    hebergementField.required = false;
+                });
+                IdentHebergentField.forEach(IdentHebergentField => {
+                    IdentHebergentField.style.display = 'block';
+                    IdentHebergentField.required = false;
+                });
+                sejourField.forEach(sejourField => {
+                    sejourField.style.display = 'block';
+                    sejourField.required = false;
+                });
+            } if (duree === 'permanent' && nationalite === 'francais') {
+                arrondissementNaissanceField.forEach(arrondissementNaissanceField => {
+                    arrondissementNaissanceField.style.display = 'none';
+                    arrondissementNaissanceField.required = false;
+                });
+                identityField.forEach(identityField => {
+                    identityField.style.display = 'block';
+                    identityField.required = false;
+                });
+                PhotoField.forEach(PhotoField => {
+                    PhotoField.style.display = 'block';
+                    PhotoField.required = false;
+                });
+                CasierJudiciaireField.forEach(CasierJudiciaireField => {
+                    CasierJudiciaireField.style.display = 'none';
+                    CasierJudiciaireField.required = false;
+                });
+                acteNaissanceField.forEach(acteNaissanceField => {
+                    acteNaissanceField.style.display = 'none';
+                    acteNaissanceField.required = false;
+                });
+                domicileField.forEach(domicileField => {
+                    domicileField.style.display = 'block';
+                    domicileField.required = false;
+                });
+                hebergementField.forEach(hebergementField => {
+                    hebergementField.style.display = 'block';
+                    hebergementField.required = false;
+                });
+                IdentHebergentField.forEach(IdentHebergentField => {
+                    IdentHebergentField.style.display = 'block';
+                    IdentHebergentField.required = false;
+                });
+                sejourField.forEach(sejourField => {
+                    sejourField.style.display = 'none';
+                    sejourField.required = false;
+                });
+            } if (duree === 'temporaire' && nationalite === 'etranger') {
+                arrondissementNaissanceField.forEach(arrondissementNaissanceField => {
+                    arrondissementNaissanceField.style.display = 'none';
+                    arrondissementNaissanceField.required = false;
+                });
+                identityField.forEach(identityField => {
+                    identityField.style.display = 'block';
+                    identityField.required = false;
+                });
+                PhotoField.forEach(PhotoField => {
+                    PhotoField.style.display = 'block';
+                    PhotoField.required = false;
+                });
+                CasierJudiciaireField.forEach(CasierJudiciaireField => {
+                    CasierJudiciaireField.style.display = 'none';
+                    CasierJudiciaireField.required = false;
+                });
+                acteNaissanceField.forEach(acteNaissanceField => {
+                    acteNaissanceField.style.display = 'none';
+                    acteNaissanceField.required = false;
+                });
+                domicileField.forEach(domicileField => {
+                    domicileField.style.display = 'none';
+                    domicileField.required = false;
+                });
+                hebergementField.forEach(hebergementField => {
+                    hebergementField.style.display = 'none';
+                    hebergementField.required = false;
+                });
+                IdentHebergentField.forEach(IdentHebergentField => {
+                    IdentHebergentField.style.display = 'none';
+                    IdentHebergentField.required = false;
+                });
+                sejourField.forEach(sejourField => {
+                    sejourField.style.display = 'block';
+                    sejourField.required = false;
+                });
+            } if (duree === 'temporaire' && nationalite === 'francais') {
+                arrondissementNaissanceField.forEach(arrondissementNaissanceField => {
+                    arrondissementNaissanceField.style.display = 'none';
+                    arrondissementNaissanceField.required = false;
+                });
+                identityField.forEach(identityField => {
+                    identityField.style.display = 'block';
+                    identityField.required = false;
+                });
+                PhotoField.forEach(PhotoField => {
+                    PhotoField.style.display = 'block';
+                    PhotoField.required = false;
+                });
+                CasierJudiciaireField.forEach(CasierJudiciaireField => {
+                    CasierJudiciaireField.style.display = 'none';
+                    CasierJudiciaireField.required = false;
+                });
+                acteNaissanceField.forEach(acteNaissanceField => {
+                    acteNaissanceField.style.display = 'none';
+                    acteNaissanceField.required = false;
+                });
+                domicileField.forEach(domicileField => {
+                    domicileField.style.display = 'none';
+                    domicileField.required = false;
+                });
+                hebergementField.forEach(hebergementField => {
+                    hebergementField.style.display = 'none';
+                    hebergementField.required = false;
+                });
+                IdentHebergentField.forEach(IdentHebergentField => {
+                    IdentHebergentField.style.display = 'none';
+                    IdentHebergentField.required = false;
+                });
+                sejourField.forEach(sejourField => {
+                    sejourField.style.display = 'none';
+                    sejourField.required = false;
+                });
+            }
+        } else {
+            if (duree === 'permanent' && nationalite === 'etranger') {
+                arrondissementNaissanceField.forEach(arrondissementNaissanceField => {
+                    arrondissementNaissanceField.style.display = 'none';
+                    arrondissementNaissanceField.required = false;
+                });
+                identityField.forEach(identityField => {
+                    identityField.style.display = 'block';
+                    identityField.required = true;
+                });
+                PhotoField.forEach(PhotoField => {
+                    PhotoField.style.display = 'block';
+                    PhotoField.required = true;
+                });
+                CasierJudiciaireField.forEach(CasierJudiciaireField => {
+                    CasierJudiciaireField.style.display = 'block';
+                    CasierJudiciaireField.required = false;
+                });
+                acteNaissanceField.forEach(acteNaissanceField => {
+                    acteNaissanceField.style.display = 'block';
+                    acteNaissanceField.required = true;
+                });
+                domicileField.forEach(domicileField => {
+                    domicileField.style.display = 'block';
+                    domicileField.required = true;
+                });
+                hebergementField.forEach(hebergementField => {
+                    hebergementField.style.display = 'block';
+                    hebergementField.required = false;
+                });
+                IdentHebergentField.forEach(IdentHebergentField => {
+                    IdentHebergentField.style.display = 'block';
+                    IdentHebergentField.required = false;
+                });
+                sejourField.forEach(sejourField => {
+                    sejourField.style.display = 'block';
+                    sejourField.required = false;
+                });
+            } if (duree === 'permanent' && nationalite === 'francais') {
+                arrondissementNaissanceField.forEach(arrondissementNaissanceField => {
+                    arrondissementNaissanceField.style.display = 'none';
+                    arrondissementNaissanceField.required = false;
+                });
+                identityField.forEach(identityField => {
+                    identityField.style.display = 'block';
+                    identityField.required = true;
+                });
+                PhotoField.forEach(PhotoField => {
+                    PhotoField.style.display = 'block';
+                    PhotoField.required = true;
+                });
+                CasierJudiciaireField.forEach(CasierJudiciaireField => {
+                    CasierJudiciaireField.style.display = 'none';
+                    CasierJudiciaireField.required = false;
+                });
+                acteNaissanceField.forEach(acteNaissanceField => {
+                    acteNaissanceField.style.display = 'none';
+                    acteNaissanceField.required = false;
+                });
+                domicileField.forEach(domicileField => {
+                    domicileField.style.display = 'block';
+                    domicileField.required = true;
+                });
+                hebergementField.forEach(hebergementField => {
+                    hebergementField.style.display = 'block';
+                    hebergementField.required = false;
+                });
+                IdentHebergentField.forEach(IdentHebergentField => {
+                    IdentHebergentField.style.display = 'block';
+                    IdentHebergentField.required = false;
+                });
+                sejourField.forEach(sejourField => {
+                    sejourField.style.display = 'none';
+                    sejourField.required = false;
+                });
+            } if (duree === 'temporaire' && nationalite === 'etranger') {
+                arrondissementNaissanceField.forEach(arrondissementNaissanceField => {
+                    arrondissementNaissanceField.style.display = 'none';
+                    arrondissementNaissanceField.required = false;
+                });
+                identityField.forEach(identityField => {
+                    identityField.style.display = 'block';
+                    identityField.required = true;
+                });
+                PhotoField.forEach(PhotoField => {
+                    PhotoField.style.display = 'block';
+                    PhotoField.required = true;
+                });
+                CasierJudiciaireField.forEach(CasierJudiciaireField => {
+                    CasierJudiciaireField.style.display = 'none';
+                    CasierJudiciaireField.required = false;
+                });
+                acteNaissanceField.forEach(acteNaissanceField => {
+                    acteNaissanceField.style.display = 'none';
+                    acteNaissanceField.required = false;
+                });
+                domicileField.forEach(domicileField => {
+                    domicileField.style.display = 'none';
+                    domicileField.required = false;
+                });
+                hebergementField.forEach(hebergementField => {
+                    hebergementField.style.display = 'none';
+                    hebergementField.required = false;
+                });
+                IdentHebergentField.forEach(IdentHebergentField => {
+                    IdentHebergentField.style.display = 'none';
+                    IdentHebergentField.required = false;
+                });
+                sejourField.forEach(sejourField => {
+                    sejourField.style.display = 'block';
+                    sejourField.required = false;
+                });
+            } if (duree === 'temporaire' && nationalite === 'francais') {
+                arrondissementNaissanceField.forEach(arrondissementNaissanceField => {
+                    arrondissementNaissanceField.style.display = 'none';
+                    arrondissementNaissanceField.required = false;
+                });
+                identityField.forEach(identityField => {
+                    identityField.style.display = 'block';
+                    identityField.required = true;
+                });
+                PhotoField.forEach(PhotoField => {
+                    PhotoField.style.display = 'block';
+                    PhotoField.required = true;
+                });
+                CasierJudiciaireField.forEach(CasierJudiciaireField => {
+                    CasierJudiciaireField.style.display = 'none';
+                    CasierJudiciaireField.required = false;
+                });
+                acteNaissanceField.forEach(acteNaissanceField => {
+                    acteNaissanceField.style.display = 'none';
+                    acteNaissanceField.required = false;
+                });
+                domicileField.forEach(domicileField => {
+                    domicileField.style.display = 'none';
+                    domicileField.required = false;
+                });
+                hebergementField.forEach(hebergementField => {
+                    hebergementField.style.display = 'none';
+                    hebergementField.required = false;
+                });
+                IdentHebergentField.forEach(IdentHebergentField => {
+                    IdentHebergentField.style.display = 'none';
+                    IdentHebergentField.required = false;
+                });
+                sejourField.forEach(sejourField => {
+                    sejourField.style.display = 'none';
+                    sejourField.required = false;
+                });
+            }
+        }
+});
+</script>
+<script src="{{ asset('js/validateFile.js') }}"></script>
+<script src="{{ asset('/js/filedocumentpersonnel.js') }}"></script>
+<script src="{{ asset('/js/formconfirmation.js') }}"></script>
+{% endblock %}
+

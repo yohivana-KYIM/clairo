@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confirmation de commande!{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="container-title">Confirmation de votre commande</div>
+        <p>
+            Bonjour <strong>{{ order.user.email|guess_name }}</strong>, <br/>
+            Nous vous remercions pour votre commande n° <strong>{{ order.reference }} </strong><br/>
+            Une confirmation vient de vous être envoyée par email à l'adresse <strong>{{ order.user.email }}</strong>.
+            <hr>
+            <div class="row mt-5">
+                <div class="col-12 p-0 d-flex justify-content-evenly">
+                {% if lastRoute == 'mescommandes' %}
+                    {% set targetRoute = 'app_mes_commandes' %}
+                    <a class="btn btn-success btn-lg" href="{{ path(targetRoute) }}">
+                        Terminer
+                        <img src="{{ asset('css/icons/check.svg') }}" width="32" height="32">
+                    </a>
+                {% else %}
+                    <a class="btn btn-success btn-lg" href="{{ path('app_home') }}">
+                        Terminer
+                        <img src="{{ asset('css/icons/check.svg') }}" width="32" height="32">
+                    </a>
+                {% endif %}
+                </div>
+            </div>
+        </p>
+    </div>
+{% endblock %}

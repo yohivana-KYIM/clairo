@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Erreur{% endblock %}
+
+{% block body %}
+    <h1>Une erreur s'est produite</h1>
+    <p>{{ error_message }}</p>
+    <a href="{{ path('vehicle_access_request') }}">Recommencer</a>
+{% endblock %}

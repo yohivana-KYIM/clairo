@@ -1,0 +1,161 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: iac/php/Dockerfile
+    image: symfony_php
+    container_name: symfony_php
+    ports:
+      - "9080:8000"
+      - "9004:9003"
+    volumes:
+      - .:/srv/app
+    env_file:
+      - .env.local
+    depends_on:
+      - mysql
+
+  mysql:
+    build:
+      context: .
+      dockerfile: iac/mysql/Dockerfile
+    image: symfony_mysql
+    ports:
+      - "3307:3306"
+    container_name: symfony_mysql
+    restart: always
+    env_file:
+      - .env.local
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./iac/scripts:/docker-entrypoint-initdb.d
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: symfony_phpmyadmin
+    ports:
+      - "9081:80"  # Accéder à phpMyAdmin via http://localhost:9081
+    environment:
+      PMA_HOST: mysql  # Nom du service MySQL
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    depends_on:
+      - mysql
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: symfony_mailhog
+    ports:
+      - "8025:8025" # MailHog UI
+      - "1025:1025" # SMTP server
+
+  sonar-db:
+    image: postgres:15
+    container_name: sonar-db
+    environment:
+      POSTGRES_DB: sonarqube
+      POSTGRES_USER: ${SONARQUBE_JDBC_USERNAME:-sonar}
+      POSTGRES_PASSWORD: ${SONARQUBE_JDBC_PASSWORD:-sonarpass}
+    volumes:
+      - sonar-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${SONARQUBE_JDBC_USERNAME:-sonar} -d sonarqube"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  redis:
+      image: redis:7-alpine
+      container_name: cleo-redis
+      command: >
+          sh -c 'exec redis-server --appendonly no --save "900 1" --save "300 10" --save "60 10000"'
+      ports:
+          - "6380:6379"
+      volumes:
+          - redis-data:/data
+      restart: unless-stopped
+
+    # (Optionnel) UI graphique pour Redis
+  redisinsight:
+      image: redis/redisinsight:latest
+      container_name: cleo-redisinsight
+      ports:
+          - "5541:5540"
+      depends_on:
+          - redis
+      restart: unless-stopped
+
+  sonarqube-allin:
+    # If you already built the image locally:
+#    image: cleo-sonar-allinone
+    # Or build on the fly:
+    build:
+      context: .
+      dockerfile: iac/sonarqube/Dockerfile
+
+    container_name: sonarqube-allin
+    depends_on:
+      sonar-db:
+        condition: service_healthy
+
+    # Persist SonarQube data & logs
+    volumes:
+      - sonar-data:/opt/sonarqube/data
+      - sonar-extensions:/opt/sonarqube/extensions
+      - sonar-logs:/opt/sonarqube/logs
+
+      # === Live-mount option (uncomment if you want to analyze your working tree without rebuilding the image) ===
+      # - .:/workspace
+
+    environment:
+      SONARQUBE_JDBC_URL: jdbc:postgresql://sonar-db:5432/sonarqube
+      SONARQUBE_JDBC_USERNAME: ${SONARQUBE_JDBC_USERNAME:-sonar}
+      SONARQUBE_JDBC_PASSWORD: ${SONARQUBE_JDBC_PASSWORD:-sonarpass}
+
+
+      # Bootstrap/scan variables — pass real values via .env or env vars at runtime
+      SONARQUBE_URL: http://localhost:9000
+      # Change admin password on first boot (DON'T hardcode in compose for prod)
+      SONARQUBE_ADMIN_NEW: ${SONARQUBE_ADMIN_NEW:-change_me_strong}
+      # Optional token name for the generated scanner token
+      SONARQUBE_TECH_TOKEN_NAME: ${SONARQUBE_TECH_TOKEN_NAME:-local-scanner-token}
+
+      # If you use live-mount above, point the scanner there:
+      # SCANNER_SOURCES: /workspace
+
+    ports:
+      - "9900:9000"
+
+    # Helpful limits; adjust if Docker Desktop complains
+    ulimits:
+      nofile: 65536
+      nproc: 4096
+
+    # (Healthcheck is already inside the image; keep container-local one)
+    # healthcheck:
+    #   test: ["CMD", "curl", "-fsS", "http://localhost:9000/api/system/health"]
+    #   interval: 15s
+    #   timeout: 5s
+    #   retries: 20
+
+  clamav:
+    image: clamav/clamav:latest
+    container_name: clamav
+    restart: always
+    ports:
+        - "3310:3310"
+    volumes:
+        - clamav_data:/var/lib/clamav
+    healthcheck:
+        test: ["CMD-SHELL", "nc -z localhost 3310 || exit 1"]
+        interval: 30s
+        timeout: 10s
+        retries: 4
+
+volumes:
+  sonar-db-data:
+  sonar-data:
+  sonar-extensions:
+  sonar-logs:
+  mysql_data:
+  redis-data:
+  clamav_data:

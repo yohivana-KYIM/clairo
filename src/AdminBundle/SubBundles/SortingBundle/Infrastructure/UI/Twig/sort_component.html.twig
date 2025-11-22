@@ -1,0 +1,19 @@
+{% macro render_sort_header(column, entity, currentPage, sortColumns) %}
+    {% set currentSort = sortColumns[column] ?? '' %}
+    {% set nextSort = '' %}
+
+    {% if currentSort == '' %}
+        {% set nextSort = 'ASC' %}
+    {% elseif currentSort == 'ASC' %}
+        {% set nextSort = 'DESC' %}
+    {% endif %}
+
+    <a href="{{ path('admin_list', { entity: entity, page: currentPage, sort: sortColumns|merge({ (column): nextSort }), sortColumn: column }) }}">
+        {{ column }}
+        {% if currentSort == 'ASC' %}
+            🔼
+        {% elseif currentSort == 'DESC' %}
+            🔽
+        {% endif %}
+    </a>
+{% endmacro %}

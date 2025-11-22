@@ -1,0 +1,501 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap');
+
+*, ::before, ::after {
+    margin: 0;
+    padding: 0;
+    outline: none;
+    box-sizing: border-box;
+    font-family: 'Poppins', Arial, sans-serif;
+}
+
+body {
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 60px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: #7eb5bd;
+}
+
+.content {
+    flex: 1;
+}
+
+footer {
+    padding: 0px;
+    position: relative;
+    left: 0;
+    bottom: 0;
+    width: 100vw;
+    clear: both;
+}
+
+@media screen and (min-width: 1200px) {
+    footer {
+        position: fixed;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    footer {
+        display: none;
+    }
+}
+
+.bg-cleo {
+    --bs-bg-opacity: 1;
+    background-color: #003366;
+    color: white;
+}
+
+.btn-cleo {
+    --bs-bg-opacity: 1;
+    background-color: #003366;
+    color: white;
+}
+
+/* Banner Styles */
+.basic-page-header {
+    position: fixed;
+    top: 100px;
+    left: 0;
+    width: 100%;
+    background-color: #003366; /* Petroleum Port Theme */
+    z-index: 1000; /* Ensures it stays on top */
+    padding: 10px 20px;
+    text-align: center;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Adds a slight shadow for better visibility */
+}
+
+.logo-banner .logo {
+    max-height: 30px;
+    max-width: 100%;
+    float: left;
+}
+
+.container-title {
+    position: relative;
+    margin-left: auto;
+    background-color: #003366;
+    color: #ffffff;
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    text-align: center;
+    top: -20px;
+}
+
+.container {
+    position: relative;
+    top: 80px;
+    max-width: calc(100% - 20px);
+    border-radius: 5px;
+    padding-bottom: 10px;
+}
+
+.big-container {
+    max-width: calc(min(100%, 2560px) - 10px);
+}
+
+.table-container {
+    max-width: calc(100% - 20px)!important;
+}
+
+.navbar-toggler:focus,
+.navbar-toggler:active {
+    box-shadow: none;
+    outline: none;
+}
+
+.text-khaki {
+    color: #E58F06;
+}
+
+.text-dark-khaki {
+    color: #A46A1F;
+}
+
+.nav-link:hover {
+    color: white;
+    background: linear-gradient(0deg, #A46A1F 10%, #E58F06 90%);
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.bg-khaki {
+    background: #ffffff 10%;
+}
+
+.navbar-toggler {
+    border-color: #F29400; /* Orange border */
+}
+
+.navbar-toggler-icon {
+    background-image: url('data:image/svg+xml;charset=UTF8,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="%23F29400" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3E%3Cpath d="M3 6h18M3 12h18M3 18h18"%3E%3C/path%3E%3Ccircle cx="6" cy="6" r="2" fill="%23F29400"%3E%3C/circle%3E%3Ccircle cx="18" cy="12" r="2" fill="%23F29400"%3E%3C/circle%3E%3Ccircle cx="6" cy="18" r="2" fill="%23F29400"%3E%3C/circle%3E%3C/svg%3E');
+    background-color: #003366; /* Navy Blue Background */
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.color-white {
+    color: white;
+}
+
+tr {
+    background: white;
+}
+
+.bg-cleo+div:not(#navbarNav) {
+    background: white;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 10px;
+}
+
+navbar.bg-khaki + nav.bg-cleo {
+    background: #E58F06;
+}
+.bg-khaki+div:not(#navbarNav) {
+    background: white;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 10px;
+}
+
+.bg-cleo > p{
+    margin-bottom: 0;
+}
+
+h1.bg-cleo, h2.bg-cleo {
+    margin-bottom: 0;
+}
+
+.btn-cleo {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    background-color: #003366;
+    color: white;
+}
+
+.btn-cleo:hover {
+    background-color: #19798a;
+}
+
+.float-right {
+    float: right;
+}
+
+.clearfix {
+    clear: both;
+}
+@media (max-width: 860px) {  /* Target small screens */
+    .navbar-nav {
+        text-align: center;  /* Center-align links */
+        background-color: #003366; /* Navy background */
+        padding: 10px 0;
+    }
+
+    .navbar-nav .nav-link {
+        color: #F29400 !important; /* Industrial Orange */
+        font-size: 18px;
+        font-weight: bold;
+        padding: 10px 15px; /* More padding for easy clicking */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Subtle separator */
+
+    }
+
+    .navbar-nav .nav-link:hover {
+        background-color: rgba(242, 148, 0, 0.2); /* Light orange hover effect */
+        color: white !important;
+    }
+
+    .navbar-toggler {
+        border: none;
+        padding: 8px 12px;
+    }
+
+    .navbar-toggler-icon {
+        width: 35px;
+        height: 35px;
+        background-color: #003366; /* Match brand color */
+        border-radius: 5px;
+    }
+
+    .navbar-collapse {
+        border-top: 2px solid #F29400; /* Orange separator */
+        padding-top: 10px;
+    }
+}
+
+.text-cleo {
+    color: #003366;
+}
+
+.card.shadow-sm img {
+    max-height: 300px;
+}
+
+.float-left.pagination-detail {
+    background: white;
+}
+
+.message-item {
+    background: #145b6a; /* Medium petroleum */
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    transition: 0.3s;
+}
+.message-item:hover {
+    background: #19798a; /* Lighter petroleum */
+}
+.message-link {
+    color: #d1e8e2;
+    text-decoration: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.message-link:hover {
+    color: #ffffff;
+}
+.message-info {
+    flex-grow: 1;
+}
+.message-item .time {
+    font-size: 0.85rem;
+    color: #b0c4c4;
+}
+.message-item .icon {
+    color: #ffffff;
+    font-size: 1.2rem;
+}
+
+.message-form {
+    background: rgba(255, 255, 255, 0.2); /* Medium petroleum */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: calc(100% - 20);
+    margin: auto;
+}
+.message-form label {
+    font-weight: bold;
+}
+
+.select2-results li {
+    background: white;
+    list-style-type: none;
+}
+
+#app_root {
+    background-color: #7eb5bd !important;
+}
+
+.flash-message {
+    padding: 15px 20px;
+    margin: 10px 0;
+    border-radius: 4px;
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 14px;
+    position: relative;
+    z-index: 1100;
+}
+
+.flash-message.success {
+    background-color: #28a745; /* green */
+}
+
+.flash-message.error {
+    background-color: #dc3545; /* red */
+}
+
+.flash-message.info {
+    background-color: #17a2b8; /* blue */
+}
+
+.flash-message::before {
+    content: 'ℹ️ ';
+}
+
+.flash-message.success::before {
+    content: '✅ ';
+}
+
+.flash-message.error::before {
+    content: '❌ ';
+}
+
+.flash-message.info::before {
+    content: 'ℹ️ ';
+}
+
+.flash-close {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 20px;
+    line-height: 20px;
+    cursor: pointer;
+}
+
+.flash-close:hover {
+    color: #F00;
+}
+
+.navbar.bg-cleo {
+    top: 0;
+    display: block;
+    position: absolute;
+    width: 100%;
+}
+
+.dropdown-menu {
+    z-index: 3000;
+}
+
+/* Optionnel : centrage du bloc empty-state */
+.empty-state {
+    text-align: center;
+    padding: 24px 12px;
+    border: 1px dashed #d0d7de;
+    border-radius: 12px;
+    background: #f9fbfd;
+    margin-top: 12px;
+}
+.empty-state .actions { margin-top: 12px; }
+/* Icônes de selects cliquables */
+.bootstrap-table .form-select { cursor: pointer; }
+
+/* Centrage parfait des actions */
+table[data-toggle="table"] td.actions-cell{
+    height: 100%;
+    /* optionnel: harmoniser le padding avec les autres cellules */
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+}
+
+/* supprime les marges par défaut du <form> inline dans la cellule */
+table[data-toggle="table"] td.actions-cell form{
+    margin: 0;
+}
+
+/* pour l'en-tête "Actions" */
+table[data-toggle="table"] thead th:has(.th-inner:contains('Actions')),
+table[data-toggle="table"] thead th:contains('Actions'){
+    text-align: center;
+}
+
+/* empêche la césure dans les boutons */
+.btn { white-space: nowrap; }
+/* Fixe une largeur minimale et empêche le retour à la ligne */
+table[data-toggle="table"] td.actions-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: .4rem;
+    white-space: nowrap;
+    min-width: 320px; /* largeur minimum pour éviter les sauts */
+}
+
+/* si tu veux que la cellule garde toujours la même hauteur */
+table[data-toggle="table"] td.actions-cell a.btn,
+table[data-toggle="table"] td.actions-cell button.btn {
+    flex-shrink: 0; /* évite le rétrécissement des boutons */
+    font-size: 0.9rem;
+    padding: .35rem .75rem;
+}
+table[data-toggle="table"] td.actions-cell {
+    flex-wrap: wrap;
+    max-width: 100%;
+}
+
+/* --- Pagination container --- */
+.autocomplete-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 8px;
+    padding: 8px 10px;
+    background: #fdfdfd;
+    border-top: 1px solid #e0e0e0;
+    font-size: 0.95em;
+    user-select: none;
+}
+
+/* --- Buttons --- */
+.autocomplete-pagination button {
+    background: #f4b183; /* orange Fluxel */
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    padding: 5px 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.autocomplete-pagination button:hover:not(:disabled) {
+    background: #e69138; /* orange foncé au survol */
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.autocomplete-pagination button:disabled {
+    background: #d8d8d8;
+    color: #888;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+    opacity: 0.8;
+}
+
+/* --- Input page --- */
+.autocomplete-page-input {
+    width: 48px;
+    text-align: center;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    padding: 3px 0;
+    font-size: 0.9em;
+    color: #173f66; /* bleu Fluxel */
+    font-weight: 600;
+    background-color: #fff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.autocomplete-page-input:focus {
+    outline: none;
+    border-color: #f4b183;
+    box-shadow: 0 0 0 2px rgba(244, 177, 131, 0.3);
+}
+
+/* --- Info texte --- */
+.autocomplete-page-info {
+    font-weight: 700;
+    color: #173f66;
+    margin: 0 2px;
+}
+
+/* --- Animation apparition de la liste --- */
+.autocomplete-list {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.autocomplete-list.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}

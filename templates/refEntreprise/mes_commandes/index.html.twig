@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes commmandes | Fluxel{% endblock %}
+
+{% block container %}
+<link rel="stylesheet" href="{{ asset('css/bootstrapTable.css') }}">
+<link rel="stylesheet" href="{{ asset('css/customContainer.css') }}">
+<link rel="stylesheet" href="{{ asset('css/tablefiltercontrol.css') }}">
+<link rel="stylesheet" href="{{ asset('css/demandeSDRI.css') }}">
+
+    <div class="container-title">Les commandes de mon Entreprise</div>
+        <table id="commande" class="table" data-pagination="true" data-toggle="table" data-filter-control="true" data-search="false" data-click-to-select="true">
+            <thead>
+                <tr>
+                    <th data-field="id" data-filter-control="input" data-sortable="true">Id</th>
+                    <th data-field="email" data-filter-control="input" data-sortable="true">Responsable de la commande</th>
+                    <th data-field="status" data-filter-control="select" data-sortable="true">Statut</th>
+                    <th data-field="passele" data-filter-control="input" data-sortable="true">Passée le</th>
+                    <th data-field="quantiter" data-filter-control="input" data-sortable="true">Quantité</th>
+                    <th data-field="total" data-filter-control="input" data-sortable="true">Total</th>
+                    <th data-field="reference" data-filter-control="input" data-sortable="true">Référence</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for orderDetails in paidOrderDetails %}
+                    <tr>
+                        <td>{{ orderDetails.order.id }}</td>
+                        <td>{{ orderDetails.order.getUser().getEmail() }}</td>
+                        <td>
+                            {% if orderDetails.order.getIsPaid() != 0 %}
+                                Payé
+                            {% else %}
+                                Non payé
+                            {% endif %}
+                        </td>
+                        <td>{{ orderDetails.order.getCreatedAt().format('d/m/Y') }}</td>
+                        <td>{{ orderDetails.totalQuantity }}</td>
+                        <td>{{((orderDetails.totalPrice) / 100)| number_format(2,',','.')}} €</td>
+                        <td>{{ orderDetails.order.getReference() }}</td>
+                        <td><a class="btn btn-cleo" href="{{ path('app_pdf_generate', {'id': orderDetails.order.id } )}}" target="_blank">Voir la facture</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="col-12 p-0 d-flex justify-content-center mt-4 mb-5">
+            <a class="btn btn-danger btn-lg" href="{{ path('app_home') }}">
+                <img src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32">
+                Retour à l'accueil
+            </a>
+        </div>
+<script src="{{ asset('js/tableDesc.js') }}"></script>
+<script src="{{ asset('js/bootstrap-table.min.js') }}"></script>
+<script src="{{ asset('js/bootstrap-table-filter-control.min.js') }}"></script>
+<script src="{{ asset('js/bootstrapTableFR.min.js') }}"></script>
+{% endblock %}
+

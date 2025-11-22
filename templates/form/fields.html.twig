@@ -1,0 +1,77 @@
+{# templates/form/fields.html.twig #}
+{%- block form_row -%}
+    {%- if block_prefixes is defined and 'autocomplete' in block_prefixes -%}
+    {# Render the separator without any wrapper #}
+        {{ block('autocomplete_widget') }}
+    {%- elseif block_prefixes is defined and 'separator' in block_prefixes -%}
+        {# Render the separator without any wrapper #}
+        {{ block('separator_widget') }}
+    {%- elseif block_prefixes is defined and 'choice' in block_prefixes and expanded -%}
+        {# only do the “expanded” radios/checkboxes here #}
+        {{ block('choice_widget_expanded') }}
+    {%- elseif block_prefixes is defined and 'choice' in block_prefixes and not expanded -%}
+        {# for a <select> you get the normal choice_widget #}
+        {{- form_label(form) -}}
+        {{ block('choice_widget') }}
+    {%- else -%}
+        {%- if compound is defined and compound -%}
+            {%- set element = 'fieldset' -%}
+        {%- endif -%}
+        {%- set widget_attr = {} -%}
+        {%- if help is not empty -%}
+            {%- set widget_attr = {attr: {'aria-describedby': id ~ "_help"}} -%}
+        {%- endif -%}
+        {%- set row_class = row_class|default(row_attr.class|default('mb-3')|trim) -%}
+        <{{ element|default('div') }}{% with {attr: row_attr|merge({class: row_class})} %}{{ block('attributes') }}{% endwith %}>
+        {%- if 'form-floating' in row_class -%}
+            {{- form_widget(form, widget_attr) -}}
+            {{- form_label(form) -}}
+        {%- else -%}
+            {{- form_label(form) -}}
+            {{- form_widget(form, widget_attr) -}}
+        {%- endif -%}
+        {{- form_help(form) -}}
+        {{- form_errors(form) -}}
+        </{{ element|default('div') }}>
+    {%- endif -%}
+{%- endblock form_row %}
+
+{% block separator_widget %}
+    <div class="form-separator">
+        <h3>{{ label }}</h3>
+    </div>
+{% endblock %}
+
+{% block autocomplete_widget %}
+    {# inject data-source-url, data-key-*, and data-target-* #}
+    {% set extra = {} %}
+    {% set data_keys = form.vars.data_keys|default({}) %}
+    {% set data_targets = form.vars.data_targets|default({}) %}
+    {% set data_source_url = form.vars.data_source_url %}
+    {% for key, path in data_keys %}
+        {% set extra = extra|merge({ ("data-key-" ~ key): path }) %}
+    {% endfor %}
+    {% for key, selector in data_targets %}
+        {% set extra = extra|merge({ ("data-target-" ~ key): selector }) %}
+    {% endfor %}
+    {% set attr = attr
+        |merge({ 'data-source-url': data_source_url })
+        |merge(extra)
+    %}
+    <div class="mb-3 autocomplete-container">
+        {{- form_label(form) -}}
+        {{ block('form_widget_simple') }}
+    </div>
+{% endblock %}
+
+{%- block choice_widget_expanded -%}
+    <div id="{{ id }}" class="form-check-group">
+        <div class="form-check-title">{{ label }}</div>
+        {%- for child in form -%}
+            <div class="form-check">
+                {{ form_widget(child, {attr: {class: 'form-check-input'}}) }}
+                {{ form_label(child, null, {label_attr: {class: 'form-check-label'}}) }}
+            </div>
+        {%- endfor -%}
+    </div>
+{%- endblock choice_widget_expanded %}

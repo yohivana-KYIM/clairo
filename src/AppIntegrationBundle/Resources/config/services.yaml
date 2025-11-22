@@ -1,0 +1,14 @@
+# src/AppIntegrationBundle/Resources/config/services.yaml
+
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  App\AppIntegrationBundle\Infrastructure\Symfony\Service\Adapters\:
+    resource: '../../Infrastructure/Symfony/Service/Adapters/*Adapter.php'
+    tags: ['app.autocomplete.adapter']
+
+  App\AppIntegrationBundle\Infrastructure\Symfony\Service\AutoComplete\AutoCompleteService:
+    arguments:
+      $adapters: !tagged_iterator app.autocomplete.adapter

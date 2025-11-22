@@ -1,0 +1,4 @@
+app_autocomplete_sirene:
+  path: /api/autocomplete
+  controller: App\AppIntegrationBundle\Infrastructure\Symfony\Controller\AutoCompleteController::getSuggestions
+  methods: [GET]

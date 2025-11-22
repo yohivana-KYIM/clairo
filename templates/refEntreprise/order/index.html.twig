@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Valider ma commande{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% set total = null %}
+    <div class="container-title">Récapitulatif de votre commande</div>
+    <p>Retrouvez le récapitulatif de vos produits</p>
+    <div class="order-summary">
+        {% for key,produit in cart %}
+        <div class="row {% if key > 0 %} mt-3 {% endif %}">
+            <div class="col-8 my-auto">
+                {{ produit.produit.name}} <br>
+                <small>{{ produit.produit.description }} de {{ produit.prenom }} {{ produit.nom }}</small>
+            </div>
+            <div class="col-2 my-auto">x {{ produit.quantity }}</div>
+        </div>
+        {% set total = total + (produit.produit.price * produit.quantity)%}
+        {% endfor %}
+        <hr><b>Total de mon panier : </b>{{ ((total) / 100) | number_format(2,',','.') }} €
+    </div>
+    <div class="row mt-5">
+        <div class="col-12 p-0 d-flex justify-content-evenly">
+            <a class="btn btn-danger btn-lg" href="{{ path('app_cart') }}">Retour</a>
+            {{ form_start(form) }}
+            {{ form_widget(form.submit) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

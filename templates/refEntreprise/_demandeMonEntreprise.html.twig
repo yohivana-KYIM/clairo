@@ -1,0 +1,102 @@
+{% import '_macros/table_macros.html.twig' as table_macros %}
+{% extends 'base.html.twig' %}
+
+{% block title %}Les demandes Entreprise | Fluxel{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ asset('css/bootstrapTable.css') }}">
+<link rel="stylesheet" href="{{ asset('css/customContainer.css') }}">
+<link rel="stylesheet" href="{{ asset('css/tablefiltercontrol.css') }}">
+<link rel="stylesheet" href="{{ asset('css/demandeSDRI.css') }}">
+<link rel="stylesheet" href="{{ asset('css/main.css') }}">
+
+<header>
+    <div class="container-fluid bg-khaki p-2 ps-4 text-center d-flex flex-wrap border-bottom border-bottom-dark shadow-sm w-100">
+        <div class="mt-2 me-5 ms-auto" width="70" height="70">
+            <a class="btn btn-lg btn-cleo position-relative" href="{{ path('app_cart') }}">
+                Panier
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-cart4" viewBox="0 0 16 16">
+                    <path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l.5 2H5V5H3.14zM6 5v2h2V5H6zm3 0v2h2V5H9zm3 0v2h1.36l.5-2H12zm1.11 3H12v2h.61l.5-2zM11 8H9v2h2V8zM8 8H6v2h2V8zM5 8H3.89l.5 2H5V8zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"/>
+                </svg>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {{ countPanier}}
+                </span>
+            </a>
+        </div>
+    </div>
+</header>
+<div class="container bg-light">
+    <div class="container-title">Les demandes de mon Entreprise :</div>
+    <div class="container-fluid p-3 border border-dark-subtle rounded shadow-sm">
+        <table class="table" data-pagination="true" data-toggle="table" data-filter-control="true" data-search="false" data-click-to-select="true">
+            <thead>
+                <tr>
+                    <th data-field="entreprise" data-filter-control="select" data-sortable="true">Entreprise</th>
+                    <th data-field="nom" data-filter-control="input" data-sortable="true">Nom</th>
+                    <th data-field="prenom" data-filter-control="input" data-sortable="true">Prénom</th>
+                    <th data-field="date" data-filter-control="select" data-sortable="true">Date de Demande</th>
+                    <th data-field="status" data-filter-control="select" data-sortable="true">Statut</th>
+                    <th>Actions</th>
+                    <th>L'utilisateur fait partie de l'entreprise ?</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for demandeEntreprise in demandeEntreprise %}
+                    {% if demandeEntreprise.getValidatedAt() is not null %}
+                    <tr>
+                        {% if demandeEntreprise.getEntreprise() is not null %}
+                            <td>{{ demandeEntreprise.getEntreprise().getNom() }}</td>
+                        {% else %}
+                            <td>Pas renseigné</td>
+                        {% endif %}
+                        <td>{{ demandeEntreprise.getEtatCivil().getNom() }}</td>
+                        <td>{{ demandeEntreprise.getEtatCivil().getPrenom() }}</td>
+                        <td>{{ demandeEntreprise.getCreatedAt().format('d/m/Y') }}</td>
+                            {% if demandeEntreprise.getEntreprise().isGratuit() == true %}
+                                <td>Gratuit</td>
+                            {% else %}
+                                <td>{{ demandeEntreprise.getStatus() }}</td>
+                            {% endif %}
+                        <td>
+                            <div class="d-flex justify-content-evenly">
+                                <a href="{{ path('app_recap_show', {'id': demandeEntreprise.id}) }}" class="btn btn-primary me-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                        <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                                        <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                                    </svg>
+                                </a>
+                                    {% set miseEnPanier = 'demandePanier' %}
+                                    <a {% if demandeEntreprise.getStatus() == constant('App\\Entity\\DemandeTitreCirculation::STATUS_PAID') or  demandeEntreprise.getStatus() == constant('App\\Entity\\DemandeTitreCirculation::STATUS_PROVISIONED') %} class="btn btn-cleo me-3"  {% elseif demandeEntreprise.getEntreprise().isGratuit() == false or demandeEntreprise.getIntervention().getMotif() == 'visite' %} class="btn btn-cleo me-3 disabled" {% endif %} href="{{ path('app_status_entreprise', {'id': demandeEntreprise.id, 'parametre': miseEnPanier}, true) }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-plus-fill" viewBox="0 0 16 16">
+                                            <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM9 5.5V7h1.5a.5.5 0 0 1 0 1H9v1.5a.5.5 0 0 1-1 0V8H6.5a.5.5 0 0 1 0-1H8V5.5a.5.5 0 0 1 1 0z"/>
+                                        </svg>
+                                    </a>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex justify-content-evenly">
+                                {% if demandeEntreprise.getStatus() != constant('App\\Entity\\DemandeTitreCirculation::STATUS_EMPLOYER_REFERENCE') %}
+                                    <a class="btn btn-cleo me-3 disabled" href="">Oui</a>
+                                    <a class="btn btn-danger disabled" href="">Non</a>
+                                {% else %}
+                                    {% set mauvaiseEntreprise = 'bonneEnt' %}
+                                    <a class="btn btn-cleo me-3" href="{{ path('app_status_entreprise', {'id': demandeEntreprise.id, 'parametre': mauvaiseEntreprise}, true) }}">Oui</a>
+                                    {% set mauvaiseEntreprise = 'mauvaisEnt' %}
+                                    <a class="btn btn-danger" href="{{ path('app_status_entreprise', {'id': demandeEntreprise.id, 'parametre': mauvaiseEntreprise}, true) }}">Non</a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        <a class="btn btn-danger btn-lg" href="{{ path('app_home') }}">Retour à l'accueil</a>
+        <a class="btn btn-cleo btn-lg" href="{{ path('app_entreprise_new') }}">Ajout d'entreprise</a>
+    </div>
+</div>
+
+<script src="{{ asset('js/bootstrap-table.min.js') }}"></script>
+<script src="{{ asset('js/bootstrap-table-filter-control.min.js') }}"></script>
+<script src="{{ asset('js/bootstrapTableFR.min.js') }}"></script>
+{% endblock %}

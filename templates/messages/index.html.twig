@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="container-title">Messages</div>
+        <ul class="list-unstyled">
+            {% for message in messages %}
+                <li class="message-item">
+                    <a href="{{ path('message_view', {'id': message.id}) }}" class="message-link">
+                        <div class="message-info">
+                            <strong>De:</strong> {{ message.sender ? message.sender.email : 'Système' }}
+                            - <strong>Message:</strong> {{ message.content|slice(0, 30) ~ '...' }}
+                            - <small>Recu le: {{ message.createdAt|date('d/m/Y') }}</small>
+                            {% if not message.isRead %}<span class="text-danger"><i class="fas fa-envelope"></i></span>{% endif %}
+                        </div>
+                    </a>
+                </li>
+            {% else %}
+                <p>Aucun message.</p>
+            {% endfor %}
+        </ul>
+        <div class="clearfix"><br/></div>
+        <div class="container-title">Notifications</div>
+        <ul class="list-unstyled">
+            {% for notification in notifications %}
+                <li class="message-item">
+                    <a href="{{ path('notification_mark_as_read', {'id': notification.id}) }}" class="message-link">
+                        <div class="message-info">
+                            <strong>{{ notification.content }}</strong>
+                            - <small>({{ notification.createdAt|date('d/m/Y') }})</small>
+                            {% if not notification.isRead %}
+                                <span class="text-danger"><i class="fas fa-envelope"></i></span>
+                            {% endif %}
+                        </div>
+                    </a>
+                </li>
+            {% else %}
+                <p>Aucune notification.</p>
+            {% endfor %}
+        </ul>
+        <div class="clearfix"><br/></div>
+        <div class="container-title underdev">Envoyer un Message</div>
+        <div class="message-form underdev">
+            <form action="{{ path('send_message') }}" method="POST">
+                <div class="row">
+                    <div class="col-12 mt-4">
+                        <label for="receiver_id">Destinataire :</label>
+                        <select name="receiver_id" id="receiver_id" class="select2" required>
+                            <option value="">Sélectionnez un utilisateur...</option>
+                            {% for user in users %}
+                                <option value="{{ user.id }}">{{ user.email }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 mt-4">
+                        <label for="content">Message :</label>
+                        <textarea id="content" name="content"  class="form-control" rows="4" required></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 mt-4">
+                        <button class="btn btn-cleo w-100" type="submit">Envoyer</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

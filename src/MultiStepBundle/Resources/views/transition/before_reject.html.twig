@@ -1,0 +1,12 @@
+{% extends '@MultiStepBundle/base.html.twig' %}
+
+{% block title %}Rejet de demandes{% endblock %}
+
+{% block container %}
+    <div class="container-title">Motif du rejet de la demande</div>
+    <form method="POST" action="{{ path('person_access_reject_reason') }}">
+        <textarea name="reject_reason" rows="10" cols="50">{{ reject_reason }}</textarea>
+        <input name="reject_demand_id" value="{{ demande }}" type="hidden" />
+        <button type="submit">Valider</button>
+    </form>
+{% endblock %}

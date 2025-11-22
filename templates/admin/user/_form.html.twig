@@ -1,0 +1,45 @@
+<header>
+    <div class="container-fluid fixed-top bg-cleo p-2 ps-4 text-center d-flex flex-wrap border-bottom border-bottom-dark shadow-sm">
+        <img class="" src="{{ asset('/img/logo.png') }}" alt="" width="120" height="60">
+    </div>
+</header>
+<link rel="stylesheet" href="{{ asset('css/mainform.css') }}">
+
+<div class="d-flex justify-content-center align-items-center">
+    <div class="container">
+        <div class="border border-dark-subtle info-form rounded-top">
+            <div class="col-12 bg-cleo rounded-top p-0 m-0 h5">
+                <p class="p-3">{{ user.email }}</p>
+            </div>
+            <div class="col-12">
+                {{ form_start(form) }}
+                    {{ form_widget(form.email, {'attr': {'style': 'display:none;'}}) }}
+                    {{ form_widget(form.roles) }}
+                    {{ form_widget(form.mfaStrategies) }}
+
+                    {{ form_widget(form.isVerified, {'attr': {'class': '', 'style': 'display:none;'}}) }}
+                    {% if is_granted('ROLE_REFSECU') or is_granted('ROLE_ADMIN') %}
+                        {{ form_widget(form.isReferentVerified, {'attr': {'class': '', 'style': 'display:none;'}}) }}
+                    {% endif %}
+
+                <div class="row mt-4">
+                    <div class="col-12 p-0 d-flex justify-content-around">
+                    {% if lastRoute == 'user' %}
+                        <a class="btn btn-danger btn-lg me-3" href="{{ path('app_user_index') }}">
+                            <img alt="" src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32" />
+                            Retour
+                        </a>
+                    {% elseif lastRoute == user.id %}
+                        <a class="btn btn-danger btn-lg me-3" href="{{ path('app_user_show', {'id': user.id}) }}">
+                            <img alt="" src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32" />
+                            Retour
+                        </a>
+                    {% endif %}
+                        <button class="btn btn-lg btn-success">{{ button_label|default('Save') }}</button>
+                    </div>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>

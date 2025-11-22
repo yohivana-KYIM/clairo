@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <!-- Utilisez uniquement Bootstrap, supprimez settings.css si possible -->
+    <link rel="stylesheet" href="{{ asset('css/settings.css') }}">
+{% endblock %}
+
+{% block title %}Paramètres généraux{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="container-title">Paramètres Généraux</div>
+
+        <form method="post" class="card p-4 shadow-sm">
+
+            <fieldset class="mb-4">
+                <legend class="text-khaki fw-semibold border-bottom pb-2 mb-3">Paramètres métier récurrents</legend>
+
+                <div class="mb-3">
+                    <label for="default_request_type" class="form-label">Type de demande par défaut :</label>
+                    <input type="text" class="form-control" id="default_request_type" name="default_request_type" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="access_duration" class="form-label">Validité par défaut des accès véhicules (en mois) :</label>
+                    <input type="number" class="form-control" id="access_duration" name="access_duration" min="1" max="12">
+                </div>
+
+                <div class="mb-3">
+                    <label for="max_processing_time" class="form-label">Délai maximal pour traiter une demande (jours ouvrés) :</label>
+                    <input type="number" class="form-control" id="max_processing_time" name="max_processing_time" value="10">
+                </div>
+            </fieldset>
+
+            <fieldset class="mb-4">
+                <legend class="text-khaki fw-semibold border-bottom pb-2 mb-3">Paramètres d'environnement</legend>
+
+                <div class="mb-3">
+                    <label for="system_email" class="form-label">Adresse email système :</label>
+                    <input type="email" class="form-control" id="system_email" name="system_email">
+                </div>
+
+                <div class="mb-3">
+                    <label for="notification_frequency" class="form-label">Fréquence des sauvegardes :</label>
+                    <select class="form-select" id="notification_frequency" name="notification_frequency">
+                        <option value="daily">Journalière</option>
+                        <option value="weekly">Hebdomadaire</option>
+                    </select>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="enable_system_notifications" name="enable_system_notifications" checked>
+                    <label class="form-check-label" for="enable_system_notifications">
+                        Activer les notifications système
+                    </label>
+                </div>
+            </fieldset>
+
+            <a class="btn btn-danger btn-lg me-3" href="{{ path('app_home') }}">{{ 'Retour'|trans }}</a>
+            <button type="submit" class="btn btn-cleo">Enregistrer</button>
+
+        </form>
+    </div>
+{% endblock %}

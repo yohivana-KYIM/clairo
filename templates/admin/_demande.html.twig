@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration | Fluxel{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ asset('css/bootstrapTable.css') }}">
+<link rel="stylesheet" href="{{ asset('css/customContainer.css') }}">
+<link rel="stylesheet" href="{{ asset('css/tablefiltercontrol.css') }}">
+<link rel="stylesheet" href="{{ asset('css/customNav.css') }}">
+
+
+<nav class="navbar navbar-expand-lg bg-khaki">
+    <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active ms-4 fs-5 mt-1" href="{{ path('app_user_index') }}">Utilisateurs</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active ms-4 fs-5 mt-1" href="{{ path('app_admin_dashboard_demande') }}">Demandes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active ms-4 fs-5 mt-1" href="{{ path('app_produit_index') }}">Produits</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active ms-4 fs-5 mt-1" href="{{ path('app_admin_dashboard_history') }}">Historique de connexion</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link active ms-4 fs-5 mt-1" href="{{ path('app_mail_appli_index') }}">Gestion des emails</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link active ms-4 fs-5 mt-1" href="{{ path('app_admin_dashboard') }}">Tableau de bord</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link active ms-4 fs-5 mt-1" href="{{ path('app_home') }}">Quitter la page d'administration</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="container-title">Demandes</div>
+    <div class="col-12">
+        <table class="table table-hover" data-pagination="true" data-toggle="table" data-filter-control="true" data-click-to-select="true" data-auto-refresh="true">
+            <thead>
+                <tr>
+                    <th data-field="email" data-filter-control="input" data-sortable="true">Email</th>
+                    <th data-field="creation" data-filter-control="input" data-sortable="true">Date de création</th>
+                    <th data-field="status" data-filter-control="select" data-sortable="true">Statut</th>
+                    <th data-field="ip" data-sortable="true">IP</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for demande in demande %}
+                    <tr>
+                        <td>{{ demande.getUser().getEmail() }}</td>
+                        <td>{{ demande.getCreatedAt().format('d/m/Y') }}</td>
+                        <td>{{ demande.getStatus() }}</td>
+                        <td>{{ demande.ip }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="{{ asset('js/jqueryTable.js') }}"></script>
+<script src="{{ asset('js/bootstrapTable.js') }}"></script>
+<script src="{{ asset('js/tableFiltreControl.js') }}"></script>
+<script src="{{ asset('js/bootstrap-table.min.js') }}"></script>
+<script src="{{ asset('js/bootstrap-table-filter-control.min.js') }}"></script>
+<script src="{{ asset('js/bootstrapTableFR.min.js') }}"></script>
+{% endblock %}

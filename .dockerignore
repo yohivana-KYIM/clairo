@@ -1,0 +1,29 @@
+# Ignore the Composer vendor directory
+/vendor
+
+# Ignore the Symfony cache and log directories
+/var/cache
+/var/log
+
+# Ignore the Symfony build directory
+/build
+
+# Ignore Node.js dependencies and build output (if using Node.js)
+node_modules
+npm-debug.log
+yarn-error.log
+/yarn.lock
+
+# Ignore IDE/editor configuration files
+/.idea
+/.vscode
+*.sublime-project
+*.sublime-workspace
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# NE PAS ignorer nos fichiers de build
+!iac/sonarqube/sonar.properties
+!iac/sonarqube/start-and-bootstrap.sh

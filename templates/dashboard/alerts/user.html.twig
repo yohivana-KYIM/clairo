@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+{% block container %}
+<div class="container-title">Points critiques pour {{ email }}</div>
+    <ul>
+        {% for alert in alerts %}
+            <li>
+                🔔  <a class="text text-danger" href="{{ path('person_access_edit', {id: alert.stepId}) }}">{{ alert.alertType }}</a> <span class="text-khaki">(statut : <span data-i18n="{{ alert.status }}">{{ alert.status }}</span>, date : {{ alert.requestDate ?? 'N/A' }})</span>
+            </li>
+        {% else %}
+            <li>Aucune alerte détectée.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

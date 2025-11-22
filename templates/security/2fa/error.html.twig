@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Erreur d’authentification 2FA{% endblock %}
+
+{% block body %}
+    <div class="container py-5" style="max-width: 520px;">
+
+        <div class="card shadow-lg p-4 border-0">
+
+            <div class="text-center mb-3">
+                <div class="display-4 text-danger">⚠️</div>
+                <h3 class="fw-bold mt-2">Échec de la vérification</h3>
+            </div>
+
+            <p class="text-muted text-center mb-4">
+                L’authentification à deux facteurs n’a pas pu être complétée.
+            </p>
+
+            {# MESSAGE D’ERREUR EXPLICITE #}
+            {% if error %}
+                <div class="alert alert-danger text-center fw-bold">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            {# ACTIONS POSSIBLES #}
+            <div class="d-grid gap-3 mt-4">
+
+                {# Réessayer : retourne à l’écran 2FA #}
+                <a href="{{ path('2fa_login') }}"
+                   class="btn btn-cleo py-2 fs-5">
+                    🔁 Réessayer
+                </a>
+
+                {# Si plusieurs providers existent, permettre de changer de méthode #}
+                {% if availableTwoFactorProviders is defined and availableTwoFactorProviders|length > 1 %}
+                    <a href="{{ path('2fa_login', {'preferProvider': null}) }}"
+                       class="btn btn-outline-primary py-2">
+                        🔄 Choisir une autre méthode
+                    </a>
+                {% endif %}
+
+                {# Déconnexion #}
+                <a href="{{ path('app_logout') }}"
+                   class="btn btn-danger py-2">
+                    🚪 Se déconnecter
+                </a>
+            </div>
+
+            {# Assistance / Help (optionnel, très pro) #}
+            <div class="text-center mt-4">
+                <small class="text-muted">
+                    Besoin d’aide ? Contactez le support sécurité.
+                </small>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

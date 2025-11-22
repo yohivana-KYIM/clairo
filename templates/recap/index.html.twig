@@ -1,0 +1,572 @@
+<link rel="stylesheet" href="{{ asset('css/bootstrap5.3.css') }}">
+<link rel="stylesheet" href="{{ asset('css/mainform.css') }}">
+{# <header>
+    <div class="container-fluid bg-cleo p-2 ps-4 text-center d-flex flex-wrap border-bottom border-bottom-dark shadow-sm">
+        <img class="" src="{{ asset('/img/logo.png') }}" alt="" width="120" height="60">
+    </div>
+</header> #}
+<body>
+    <h1 class="text-center pt-4 fw-bold pb-1">Récapitulatif des Informations</h1>
+        <div class="container mt-5">
+        {% if app.request.attributes.get('_route') != 'app_recap_show' %}
+            <nav class="d-flex justify-content-center " style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    {% if derniereIntervention.id is defined and derniereIntervention.id is not null %}
+                        <li class="breadcrumb-item active"><a class="link-underline link-underline-opacity-0" href="{{ path('app_intervention_edit', {'id': derniereIntervention.id}) }}">Intervention</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item active"><a class="link-underline link-underline-opacity-0">Intervention</a></li>
+                    {% endif %}
+
+                    {% if dernierEtatCivil.id is defined %}
+                        <li class="breadcrumb-item active"><a class="link-underline link-underline-opacity-0" href="{{ path('app_etat_civil_edit', {'id': dernierEtatCivil.id}) }}">Etat Civil</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item" aria-current="page"><a class="link-underline link-underline-opacity-0">Etat Civil</a></li>
+                    {% endif %}
+
+                    {% if derniereFiliation.id is defined %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0" href="{{ path('app_filiation_edit', {'id': derniereFiliation.id}) }}">Filiation</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0">Filiation</a></li>
+                    {% endif %}
+
+                    {% if derniereAdresse.id is defined %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0" href="{{ path('app_adresse_edit', {'id': derniereAdresse.id}) }}">Adresse</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0">Adresse</a></li>
+                    {% endif %}
+
+                    {% if derniereInfoComplementaire.id is defined %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0" href="{{ path('app_info_complementaire_edit', {'id': derniereInfoComplementaire.id}) }}">Information Complementaire</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0">Information Complementaire</a></li>
+                    {% endif %}
+
+                    {% if dernierDocPersonnel.id is defined %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0" href="{{ path('app_document_personnel_edit', {'id': dernierDocPersonnel.id}) }}">Document Personnel</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0">Document Personnel</a></li>
+                    {% endif %}
+
+                    {% if dernierDocProfessionnel.id is defined %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0" href="{{ path('app_document_professionnel_edit', {'id': dernierDocProfessionnel.id}) }}">Document professionnel</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0">Document professionnel</a></li>
+                    {% endif %}
+                    {% if derniereIntervention.id is defined and derniereIntervention.id is not null and dernierEtatCivil.id is defined and dernierEtatCivil.id is not null and  derniereFiliation.id is defined and derniereFiliation.id is not null and  derniereAdresse.id is defined and derniereAdresse.id is not null and  derniereInfoComplementaire.id is defined and derniereInfoComplementaire.id is not null and dernierDocPersonnel.id is defined and dernierDocPersonnel.id is not null and dernierDocProfessionnel.id is defined and dernierDocProfessionnel.id is not null %}
+                        <li class="breadcrumb-item" aria-current="page"><a class="link-body-emphasis link-underline link-underline-opacity-0"  href="{{ path('app_document_professionnel_edit', {'id': demandeTitreCirculation.id}) }}">Récapitulatif</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item" aria-current="page"><a class="link-body-emphasis link-underline link-underline-opacity-0">Récapitulatif</a></li>
+                    {% endif %}
+                </ol>
+            </nav>
+            {% endif %}
+            <div class="border border-dark-subtle rounded-top info-form">
+                <div class="col-12 bg-cleo rounded-top p-0 m-0 h5">
+                    <p class="p-3">Intervention</p>
+                </div>
+                <div class="col-12 p-3">
+                    {{ form_start(formIntervention) }}
+                    <div class="p-3 row">
+                        <label class="h5">Lieu de l'intervention :<span style="color: red;">*</span></label>
+                        <div class="form-check">
+                            {{ form_widget(formIntervention.batAdministration, {'attr': {'disabled': 'disabled'}}) }}
+                        </div>
+                        <div class="form-check">
+                            {{ form_widget(formIntervention.exploitationFos, {'attr': {'disabled': 'disabled'}}) }}
+                        </div>
+                        <div class="form-check">
+                            {{ form_widget(formIntervention.exploitationLavera, {'attr': {'disabled': 'disabled'}}) }}
+                        </div>
+                    </div>
+                    <div class="p-3 row">
+                            <label class="h5">Motif de l'intervention :<span style="color: red;">*</span></label>
+                            {{ form_widget(formIntervention.motif, {'attr': {'class': 'form-control motif_principal is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                        <div class="p-3 row">
+                            {{ form_widget(formIntervention.autre, {'attr': {'class': 'form-control autre_motif is-invalid formvalidate', 'style': 'display:none;',  'disabled': 'disabled'}}) }}
+                        </div>
+                    </div>
+                    <div class="p-3 row">
+                            <label for="" class="h5">Durée de l'intervention :<span style="color: red;">*</span></label>
+                            {{ form_widget(formIntervention.duree, {'attr': {'class': 'form-control duree_temporaire is-invalid formvalidate',  'disabled': 'disabled'}}) }}
+                        <div class="p-3 row">
+                            {{ form_widget(formIntervention.dateIntervention, {'attr': {'class': 'form-control date_temporaire is-invalid formvalidate', 'style': 'display:none;',  'disabled': 'disabled'}}) }}
+                            {{ form_widget(formIntervention.entreprise, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled', 'style': 'display:none;'}}) }}
+                        </div>
+                    </div>
+                    {{ form_end(formIntervention) }}
+                    <div class="row ps-3 pe-3 pb-3">
+                        <label class="h5">Entreprise :<span style="color: red;">*</span></label>
+                        <input type="text" value="{{ entreprise }}" class="form-control formvalidate" disabled="disabled">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container mt-5">
+            <div class="border border-dark-subtle rounded-top info-form">
+                <div class="col-12 bg-cleo rounded-top p-0 m-0 h5">
+                    <p class="p-3">Etat Civil</p>
+                </div>
+                {{ form_start(formEtatCivil) }}
+                <div class="row p-3">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="p-3 row">
+                            <label for="exampleSelect" class="h5">Titre :<span style="color: red;">*</span></label>
+                            {{ form_row(formEtatCivil.titre, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                        </div>
+                        <div class="p-3 row">
+                            <label for="" class="h5">Nom :<span style="color: red;">*</span></label>
+                            {{ form_row(formEtatCivil.Nom, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                        </div>
+                        <div class="p-3 row">
+                            <label for="" class="h5">Prénom :<span style="color: red;">*</span></label>
+                            {{ form_row(formEtatCivil.prenom, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                        </div>
+                        <div class="p-3 row">
+                            <label for="" class="h5">2ème Prénom :</label>
+                            {{ form_row(formEtatCivil.prenom2, {'attr': {'class': 'border border-dark-subtle', 'disabled': 'disabled'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="p-3 row">
+                            <label for="" class="h5">3ème Prénom :</label>
+                            {{ form_row(formEtatCivil.prenom3, {'attr': {'class': 'border border-dark-subtle', 'disabled': 'disabled'}}) }}
+                        </div>
+                        <div class="p-3 row">
+                            <label for="" class="h5">4ème Prénom :</label>
+                            {{ form_row(formEtatCivil.prenom4, {'attr': {'class': 'border border-dark-subtle', 'disabled': 'disabled'}}) }}
+                        </div>
+                        <div class="p-3 row">
+                            <label for="" class="h5">Né(e) le :<span style="color: red;">*</span></label>
+                            {{ form_row(formEtatCivil.dateNaissance, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                        </div>
+                        <div class="p-3 row">
+                            <label for="exampleSelect" class="h5">Pays de naissance :<span style="color: red;">*</span></label>
+                            {{ form_row(formEtatCivil.paysNaissance, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="p-3 row">
+                            <label for="" class="h5">Lieu de naissance :<span style="color: red;">*</span></label>
+                            {{ form_row(formEtatCivil.lieuNaissance, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                        </div>
+                        <div class="p-3 row">
+                            <label for="" class="h5">Code postal de naissance :<span style="color: red;">*</span></label>
+                            {{ form_row(formEtatCivil.cpNaissance, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                        </div>
+                        <div class="p-3 row">
+                            <label for="" class="h5">Arrondissement de naissance :</label>
+                            {{ form_row(formEtatCivil.arrondissementNaissance, {'attr': {'class': 'border border-dark-subtle', 'disabled': 'disabled'}}) }}
+                        </div>
+                        <div class="p-3 row">
+                            <label for="" class="h5">Nom marital :</label>
+                            {{ form_row(formEtatCivil.nomMarital, {'attr': {'class': 'border border-dark-subtle', 'disabled': 'disabled'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="p-3 row">
+                            <label for="" class="h5">Nationalité :<span style="color: red;">*</span></label>
+                            {{ form_row(formEtatCivil.nationalite, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                        </div>
+                    </div>
+                {{ form_end(formEtatCivil) }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-5">
+        <div class="border border-dark-subtle rounded-top info-form">
+            <div class="col-12 bg-cleo rounded-top p-0 m-0 h5">
+                <p class="p-3">Filiation</p>
+            </div>
+            {{ form_start(formFiliation) }}
+                <div class="row col-12 p-3">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="p-3 row">
+                            <label for="" class="h5">Nom du père :<span style="color: red;">*</span></label>
+                            {{ form_row(formFiliation.nomPere, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                        </div>
+                        <div class="p-3 row">
+                            <label for="" class="h5">Prénom du père :<span style="color: red;">*</span></label>
+                            {{ form_row(formFiliation.prenomPere, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <div class="p-3 row">
+                            <label for="" class="h5">Nom de jeune fille de la mère :<span style="color: red;">*</span></label>
+                            {{ form_row(formFiliation.nomMere, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                        </div>
+                    <div class="p-3 row">
+                            <label for="" class="h5">Prénom de la mère :<span style="color: red;">*</span></label>
+                            {{ form_row(formFiliation.prenomMere, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                    </div>
+                </div>
+            </div>
+            {{ form_end(formFiliation) }}
+        </div>
+    </div>
+    <div class="container mt-5">
+        <div class="border border-dark-subtle rounded-top info-form">
+            <div class="col-12 bg-cleo rounded-top p-0 m-0 h5">
+                <p class="p-3">Adresse</p>
+            </div>
+            {{ form_start(formAdresse) }}
+                <div class="row p-3">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="p-3 row">
+                            <label for="" class="h5">Tour, etc... :</label>
+                            {{ form_row(formAdresse.tourEtc, {'attr': {'class': 'border border-dark-subtle', 'disabled': 'disabled'}}) }}
+                        </div>
+                        <div class="p-3 row">
+                            <label for="" class="h5">Escalier, etc... :</label>
+                            {{ form_row(formAdresse.escalierEtc, {'attr': {'class': 'border border-dark-subtle', 'disabled': 'disabled'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="p-3 row">
+                            <label for="" class="h5">N° et voie :<span style="color: red;">*</span></label>
+                            {{ form_row(formAdresse.numVoie, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                        </div>
+                        <div class="p-3 row">
+                            <label for="" class="h5">Distribution :</label>
+                            {{ form_row(formAdresse.distribution, {'attr': {'class': 'border border-dark-subtle', 'disabled': 'disabled'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="p-3 row">
+                            <label for="" class="h5">Code postal :<span style="color: red;">*</span></label>
+                            {{ form_row(formAdresse.cp, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                        </div>
+                        <div class="p-3 row">
+                            <label for="" class="h5">Ville :<span style="color: red;">*</span></label>
+                            {{ form_row(formAdresse.ville, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="p-3 row">
+                            <label for="" class="h5">Pays :<span style="color: red;">*</span></label>
+                            {{ form_row(formAdresse.pays, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                        </div>
+                    </div>
+                {{ form_end(formAdresse) }}
+            </div>
+        </div>
+    </div>
+    <div class="container mt-5">
+        <div class="border border-dark-subtle rounded-top info-form">
+            <div class="col-12 bg-cleo rounded-top mb-0 h5 reset2">
+                <p class="p-3">Informations complémentaires</p>
+            </div>
+        {{ form_start(formInfoComplementaire) }}
+            <div class="row p-3">
+                <div class="col-lg-6 col-md-6 p-3">
+                    {# <div class="p-3 row"> #}
+                        <label class="h5">N° téléphone personnel :<span style="color: red;">*</span></label>
+                        {{ form_row(formInfoComplementaire.numTelephone, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                    {# </div> #}
+                </div>
+                <div class="col-lg-6 col-md-6 p-3">
+                    {# <div class="p-3 row"> #}
+                        <label class="h5">Courriel personnel :<span style="color: red;">*</span></label>
+                        {{ form_row(formInfoComplementaire.email, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                    {# </div> #}
+                </div>
+        {{ form_end(formInfoComplementaire) }}
+            </div>
+        </div>
+    </div>
+    <div class="container mt-5">
+        <div class="border border-dark-subtle rounded-top info-form">
+            <div class="col-12 bg-cleo rounded-top p-0 m-0 h5">
+                <p class="p-3">Document Personnel</p>
+            </div>
+            <div class="col-lg-12 col-md-12 p-3">
+                {{ form_start(formDocumentPerso) }}
+                    <div class="row p-3">
+                        <div class="col-sm-6">
+                                {% if dernierDocPersonnel.identity is not null %}
+                                    <label class="h5">CNI / Passeport :<span style="color:red">*</span></label>
+                                    <br>
+                                    <a class="fw-bold" href="{{ asset('uploads/documentPersonnel/' ~ dernierDocPersonnel.identity.name) }}" target="_blank">{{ dernierDocPersonnel.identity.originalName }}</a>
+                                    <br>
+                                    {{ form_widget(formDocumentPerso.identity, {'attr': {'class': '', 'style': 'display:none;'}}) }}
+                                {% else %}
+                                    {{ form_widget(formDocumentPerso.identity, {'attr': {'class': 'form-control mb-1 identity border border-dark-subtle', 'style': 'display:none;', 'disabled': 'disabled'}}) }}
+                                {% endif %}
+                            {# {{ form_widget(formDocumentPerso.identity, {'attr': {'class': 'form-control mb-4 identity is-invalid', 'style': 'display:none;', 'disabled': 'disabled'}}) }} #}
+                                {% if dernierDocPersonnel.Photo is not null %}
+                                    <label class="h5 mt-2">Photo identité :<span style="color:red">*</span></label>
+                                    <br>
+                                    <a class="fw-bold" href="{{ asset('uploads/documentPersonnel/' ~ dernierDocPersonnel.Photo.name) }}" target="__blank">{{ dernierDocPersonnel.Photo.originalName }}</a>
+                                    {{ form_widget(formDocumentPerso.Photo, {'attr': {'class': '', 'style': 'display:none;'}}) }}
+                                {% else %}
+                                    {{ form_widget(formDocumentPerso.Photo, {'attr': {'class': 'form-control mb-1 photo border border-dark-subtle', 'style': 'display:none;', 'disabled': 'disabled'}}) }}
+                                {% endif %}
+                                {% if dernierDocPersonnel.acteNaiss is not null %}
+                                    <label class="h5 mt-2 acte_naissance">Acte de naissance du pays d’origine (traduit en français) :<span style="color:red">*</span></label>
+                                    <a class="fw-bold" href="{{ asset('uploads/documentPersonnel/' ~ dernierDocPersonnel.acteNaiss.name) }}" target="__blank">{{ dernierDocPersonnel.acteNaiss.originalName }}</a>
+                                    {{ form_widget(formDocumentPerso.acteNaiss, {'attr': {'class': '', 'style': 'display:none;'}}) }}
+                                {% else %}
+                                    {{ form_widget(formDocumentPerso.acteNaiss, {'attr': {'class': 'form-control mb-1 acte_naissance border border-dark-subtle', 'style': 'display:none;', 'disabled': 'disabled'}}) }}
+                                {% endif %}
+                        </div>
+                        <div class="col-sm-6">
+                                {% if dernierDocPersonnel.sejour is not null %}
+                                    <label class="h5 sejour">Titre de séjour :</label>
+                                    <br>
+                                    <a class="fw-bold" href="{{ asset('uploads/documentPersonnel/' ~ dernierDocPersonnel.sejour.name) }}" target="__blank">{{ dernierDocPersonnel.sejour.originalName }}</a>
+                                    {{ form_widget(formDocumentPerso.sejour, {'attr': {'class': '', 'style': 'display:none;'}}) }}
+                                {% else %}
+                                    {{ form_widget(formDocumentPerso.sejour, {'attr': {'class': 'form-control mb-1 sejour border border-dark-subtle', 'style': 'display:none;', 'disabled': 'disabled'}}) }}
+                                {% endif %}
+                                {% if dernierDocPersonnel.Casier is not null %}
+                                    <label class="h5 mt-2 casier_judiciaire">Casier judiciaire de moins de 3 mois (traduit en français) :</label>
+                                    <a class="fw-bold" href="{{ asset('uploads/documentPersonnel/' ~ dernierDocPersonnel.Casier.name) }}" target="__blank">{{ dernierDocPersonnel.Casier.originalName }}</a>
+                                    {{ form_widget(formDocumentPerso.Casier, {'attr': {'class': '', 'style': 'display:none;'}}) }}
+                                    <p class="h6 mt-1 mb-4 casier_judiciaire"><span style="color: red;">*</span> si celle si vit dans un autre pays (différent de son pays d’origine), le casier judiciaire du pays étranger ou la personne vit est aussi requis.</p>
+                                {% else %}
+                                    {{ form_widget(formDocumentPerso.Casier, {'attr': {'class': 'form-control mb-1 casier_judiciaire border border-dark-subtle', 'style': 'display:none;', 'disabled': 'disabled'}}) }}
+                                {% endif %}
+                        </div>
+                        <div class="col-12">
+                            {% if dernierDocPersonnel.arrondissementNaissance is defined and dernierDocPersonnel.arrondissementNaissance is not null %}
+                                <label class="h5 mt-2 arrondissement_naissance">Arrondissement du lieu de naissance pour France :<span style="color:red">*</span></label>
+                                {{ form_widget(formDocumentPerso.arrondissementNaissance, {'attr': {'class': 'form-control formvalidate arrondissement_naissance is-invalid', 'disabled': 'disabled'}} ) }}
+                            {% else %}
+                                {{ form_widget(formDocumentPerso.arrondissementNaissance, {'attr': {'class': 'form-control formvalidate arrondissement_naissance is-invalid', 'style': 'display:none;', 'disabled': 'disabled'}} ) }}
+                            {% endif %}
+
+                        </div>
+                        <div class="col-12">
+                                {% if dernierDocPersonnel.domicile is defined and dernierDocPersonnel.domicile is not null %}
+                                    <label class="h5 domicile mt-2">Justificatif de domicile de moins de 3 mois (Facture Electricité, Facture Tel fixe, Facture eau) :</label>
+                                    <br>
+                                    <a class="fw-bold" href="{{ asset('uploads/documentPersonnel/' ~ dernierDocPersonnel.domicile.name) }}" target="_blank">{{ dernierDocPersonnel.domicile.originalName }}</a>
+                                    {{ form_widget(formDocumentPerso.domicile, {'attr': {'class': '', 'style': 'display:none;'}}) }}
+                                    <p class="h6 mt-1 mb-4 domicile"><span style="color: red;">*</span> si hébergé justificatif de domicile de l’hébergeant + attestation d'hébergement + Pièce identité de l’hébergeant</p>
+                                {% else %}
+                                    {{ form_widget(formDocumentPerso.domicile, {'attr': {'class': 'form-control mb-1 hebergement border border-dark-subtle', 'style': 'display:none;', 'disabled': 'disabled'}}) }}
+                                {% endif %}
+                        </div>
+                        <div class="col-sm-6">
+                                {% if dernierDocPersonnel.hebergement is not null %}
+                                    <label class="h5 hebergement">Attestation d'hébergement :</label>
+                                    <a class="fw-bold" href="{{ asset('uploads/documentPersonnel/' ~ dernierDocPersonnel.hebergement.name) }}" target="_blank">{{ dernierDocPersonnel.hebergement.originalName }}</a>
+                                    {{ form_widget(formDocumentPerso.hebergement, {'attr': {'class': '', 'style': 'display:none;'}}) }}
+                                    <p class="h6 mt-1 hebergement"><span style="color: red;">*</span> si hébergé</p>
+                                {% else %}
+                                    {{ form_widget(formDocumentPerso.hebergement, {'attr': {'class': 'form-control mb-1 hebergement border border-dark-subtle', 'style': 'display:none;', 'disabled': 'disabled'}}) }}
+                                {% endif %}
+                        </div>
+                        <div class="col-sm-6">
+                                {% if dernierDocPersonnel.IdentHebergent is not null %}
+                                    <label class="h5 ident_hebergent">Pièce identité de l’hébergeant :</label>
+                                    <a class="fw-bold" href="{{ asset('uploads/documentPersonnel/' ~ dernierDocPersonnel.IdentHebergent.name) }}" target="_blank">{{ dernierDocPersonnel.IdentHebergent.originalName }}</a>
+                                    {{ form_widget(formDocumentPerso.IdentHebergent, {'attr': {'class': '', 'style': 'display:none;'}}) }}
+                                    <p class="h6 mt-1 ident_hebergent"><span style="color: red;">*</span> si hébergé</p>
+                                {% else %}
+                                    {{ form_widget(formDocumentPerso.IdentHebergent, {'attr': {'class': 'form-control mb-1 ident_hebergent border border-dark-subtle', 'style': 'display:none;', 'disabled': 'disabled'}}) }}
+                                {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {{ form_end(formDocumentPerso) }}
+            </div>
+        </div>
+    </div>
+    {% if derniereIntervention.getMotif() == 'visite' or dernierDocProfessionnel is null %}
+
+    {% else %}
+    <div class="container mt-5 mb-5">
+        <div class="border border-dark-subtle rounded-top info-form">
+            <div class="col-12 bg-cleo rounded-top mb-0 h5">
+                <p class="p-3">Document professionnel</p>
+            </div>
+                {{ form_start(formDocumentPro) }}
+                <div class="col-lg-12 col-md-12 ps-3">
+                    <div class="row ps-3 pe-3 pb-3">
+                        <div class="col-6">
+                            <label class="h5">GIES 0 :<span style="color: red;">*</span></label>
+                            {% if dernierDocProfessionnel.gies0 is not null %}
+                                <br>
+                                <a class="fw-bold" href="{{ asset('uploads/documentProfesionnel/' ~ dernierDocProfessionnel.gies0.name) }}" target="_blank">{{ dernierDocProfessionnel.gies0.originalName }}</a>
+                                {{ form_widget(formDocumentPro.gies0, {'attr': {'class': '', 'style': 'display:none;'}}) }}
+                            {% else %}
+                                {{ form_widget(formDocumentPro.gies0, {'attr': {'class': 'form-control border border-dark-subtle', 'style': 'display:none;'}}) }}
+                            {% endif %}
+                        </div>
+                        <div class="col-6">
+                            <label class="h5">Date de fin (Gies 0) :<span style="color: red;">*</span></label>
+                            {{ form_widget(formDocumentPro.dateGies0Fin, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                        </div>
+                    </div>
+                    {# <div class="ps-3 pe-3 pb-3 row">
+                        <div class="col-6"> #}
+                            {# <label class="h5">Date de début (Gies 0) :<span style="color: red;">*</span></label> #}
+                            {{ form_widget(formDocumentPro.dateGies0Debut, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled', 'style': 'display:none;'}}) }}
+                        {# </div> #}
+                        {# <div class="col-6">
+                            <label class="h5">Date de fin (Gies 0) :<span style="color: red;">*</span></label>
+                            {{ form_widget(formDocumentPro.dateGies0Fin, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                        </div> #}
+                    {# </div> #}
+                    <div class="row ps-3 pe-3 pb-3">
+                        <div class="col-6">
+                            <label class="h5">GIES 1 :</label>
+                            {% if dernierDocProfessionnel.gies1 is not null %}
+                                <a class="fw-bold" href="{{ asset('uploads/documentProfesionnel/' ~ dernierDocProfessionnel.gies1.name) }}" target="_blank">{{ dernierDocProfessionnel.gies1.originalName }}</a>
+                                {{ form_widget(formDocumentPro.gies1, {'attr': {'class': '', 'style': 'display:none;'}}) }}
+                            {% else %}
+                                {{ form_widget(formDocumentPro.gies1, {'attr': {'class': 'form-control border border-dark-subtle', 'disabled': 'disabled'}}) }}
+                            {% endif %}
+                        </div>
+                        <div class="col-6">
+                            <label class="h5">Date de fin (Gies 1) :</label>
+                            {{ form_widget(formDocumentPro.date_gies1_fin, {'attr': {'class': 'border border-dark-subtle formvalidate', 'disabled': 'disabled'}}) }}
+                            {{ form_errors(formDocumentPro.date_gies1_fin) }}
+                        </div>
+                    </div>
+                    <div class="row ps-3 pe-3 pb-3">
+                        <div class="col-6">
+                            <label class="h5">GIES 2 :</label>
+                            {% if dernierDocProfessionnel.gies2 is not null %}
+                                <a class="fw-bold" href="{{ asset('uploads/documentProfesionnel/' ~ dernierDocProfessionnel.gies2.name) }}" target="_blank">{{ dernierDocProfessionnel.gies2.originalName }}</a>
+                                {{ form_widget(formDocumentPro.gies2, {'attr': {'class': '', 'style': 'display:none;'}}) }}
+                            {% else %}
+                                {{ form_widget(formDocumentPro.gies2, {'attr': {'class': 'form-control border border-dark-subtle', 'disabled': 'disabled'}}) }}
+                            {% endif %}
+                        </div>
+                        <div class="col-6">
+                            <label class="h5">Date de fin (Gies 2) :</label>
+                            {{ form_widget(formDocumentPro.date_gies2_fin, {'attr': {'class': 'border border-dark-subtle formvalidate', 'disabled': 'disabled'}}) }}
+                            {{ form_errors(formDocumentPro.date_gies2_fin) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12 ps-3">
+                    <div class="row ps-3 pe-3 pb-3">
+                        <div class="col-6">
+                            <label class="h5">ATEX 0 :<span style="color: red;">*</span></label>
+                            {% if dernierDocProfessionnel.atex0 is not null %}
+                                <br>
+                                <a class="fw-bold" href="{{ asset('uploads/documentProfesionnel/' ~ dernierDocProfessionnel.atex0.name) }}" target="_blank">{{ dernierDocProfessionnel.atex0.originalName }}</a>
+                                {{ form_widget(formDocumentPro.atex0, {'attr': {'class': '', 'style': 'display:none;'}}) }}
+                            {% else %}
+                                {{ form_widget(formDocumentPro.atex0, {'attr': {'class': 'form-control border border-dark-subtle', 'style': 'display:none;'}}) }}
+                            {% endif %}
+                        </div>
+                        <div class="col-6">
+                            <label for="atex" class="h5">Date de fin (Atex 0) :<span style="color: red;">*</span></label>
+                            {{ form_widget(formDocumentPro.dateAtex0Fin, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                        </div>
+                    </div>
+                    {# <div class="p-3 row">
+                        <div class="col-6"> #}
+                            {# <label class="h5">Date de début (Atex 0) :<span style="color: red;">*</span></label> #}
+                            {{ form_widget(formDocumentPro.dateAtex0Debut, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled', 'style': 'display:none;'}}) }}
+                        {# </div> #}
+                        {# <div class="col-6">
+                            <label for="atex" class="h5">Date de fin (Atex 0) :<span style="color: red;">*</span></label>
+                            {{ form_widget(formDocumentPro.dateAtex0Fin, {'attr': {'class': 'is-invalid formvalidate', 'disabled': 'disabled'}}) }}
+                        </div> #}
+                    {# </div> #}
+                    <div class="ps-3 pe-3 pb-5">
+                        <label class="h5" for="">Autre :</label>
+                        {% if dernierDocProfessionnel.autre is not null %}
+                            <a class="fw-bold" href="{{ asset('uploads/documentProfesionnel/' ~ dernierDocProfessionnel.autre.name) }}" target="_blank">{{ dernierDocProfessionnel.autre.originalName }}</a>
+                            {{ form_widget(formDocumentPro.autre, {'attr': {'class': '', 'style': 'display:none;'}}) }}
+                        {% else %}
+                            {{ form_widget(formDocumentPro.autre, {'attr': {'class': 'form-control border border-dark-subtle', 'disabled': 'disabled'}}) }}
+                        {% endif %}
+                    </div>
+                </div>
+            {{ form_end(formDocumentPro) }}
+            {% endif %}
+        </div>
+    </div>
+    <div class="row mt-5 mb-5">
+        <div class="col-12 p-0 d-flex justify-content-around">
+        {% if app.request.attributes.get('_route') == 'app_recap_show' %}
+            {# {% if derniereIntervention.getMotif() == 'visite' %}
+                    <a class="btn btn-danger btn-lg me-3" href="{{ path('app_document_professionnel_new') }}">
+                        <img src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32">
+                        Retour
+                    </a>
+            {% else %}
+                <a class="btn btn-danger btn-lg me-3" style="display: none;" href="{{ path('app_document_professionnel_edit', {'id': dernierDocProfessionnel.id}) }}">
+                    <img src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32">
+                    Retour
+                </a>
+            {% endif %} #}
+            {% if lastRoute == 'demandesdri' %}
+                {% set targetRoute = 'app_demande_sdri' %}
+                <a class="btn btn-success btn-lg me-3" href="{{ path(targetRoute) }}">
+                    Terminer
+                    <img src="{{ asset('css/icons/check.svg') }}" width="32" height="32">
+                </a>
+            {% elseif lastRoute == 'mesdemandes' %}
+                {% set targetRoute = 'app_mes_demandes' %}
+                <a class="btn btn-success btn-lg me-3" href="{{ path(targetRoute) }}">
+                    Terminer
+                    <img src="{{ asset('css/icons/check.svg') }}" width="32" height="32">
+                </a>
+            {% endif %}
+            {% if lastRoute == 'monentreprise' %}
+                {% set targetRoute = 'app_demande_entreprise' %}
+                <a class="btn btn-success btn-lg me-3" href="{{ path(targetRoute) }}">
+                    Terminer
+                    <img src="{{ asset('css/icons/check.svg') }}" width="32" height="32">
+                </a>
+            {% endif %}
+        {% elseif demandeTitreCirculation.getValidatedAt() != NULL %}
+            {% if derniereIntervention.getMotif() == 'visite' %}
+                {% set targetRoute = 'app_recap_update' %}
+                <a class="btn btn-danger btn-lg me-3" href="{{ path('app_document_professionnel_edit', {'id': dernierDocProfessionnel.id}) }}">
+                    <img src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32">
+                    Retour
+                </a>
+                <a class="btn btn-success btn-lg me-3" href="{{ path(targetRoute) }}">
+                    Terminer
+                    <img src="{{ asset('css/icons/check.svg') }}" width="32" height="32">
+                </a>
+            {% else %}
+                {% set targetRoute = 'app_recap_update' %}
+                <a class="btn btn-danger btn-lg me-3" href="{{ path('app_document_professionnel_edit', {'id': dernierDocProfessionnel.id}) }}">
+                    <img src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32">
+                    Retour
+                </a>
+                <a class="btn btn-success btn-lg me-3" href="{{ path(targetRoute) }}">
+                    Terminer
+                    <img src="{{ asset('css/icons/check.svg') }}" width="32" height="32">
+                </a>
+            {% endif %}
+        {% else %}
+            {% if derniereIntervention.getMotif() == 'visite' %}
+                <a class="btn btn-danger btn-lg me-3" href="{{ path('app_document_professionnel_edit', {'id': dernierDocProfessionnel.id}) }}">
+                    <img src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32">
+                    Retour
+                </a>
+                <a class="btn btn-success btn-lg me-3" href="{{ path('app_demande_titre_circulation_recap') }}">
+                    Terminer
+                    <img src="{{ asset('css/icons/check.svg') }}" width="32" height="32">
+                </a>
+            {% else %}
+                <a class="btn btn-danger btn-lg me-3" href="{{ path('app_document_professionnel_edit', {'id': dernierDocProfessionnel.id}) }}">
+                    <img src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32">
+                    Retour
+                </a>
+                <a class="btn btn-success btn-lg me-3" href="{{ path('app_demande_titre_circulation_recap') }}">
+                    Terminer
+                    <img src="{{ asset('css/icons/check.svg') }}" width="32" height="32">
+                </a>
+            {% endif %}
+        {% endif %}
+    </div>
+</body>
+<script src="{{ asset('/js/etatcivil.js') }}"></script>
+<script src="{{ asset('/js/intervention.js') }}"></script>
+<script src="{{ asset('/js/bootstrap5.3.js') }}"></script>
+<script src="{{ asset('/js/documentpersonnel.js') }}"></script>
+<script src="{{ asset('/js/formconfirmation.js') }}"></script>
+
+
+

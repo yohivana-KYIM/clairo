@@ -1,0 +1,141 @@
+ <div class="container">
+        <div class="container-title">Identification (entreprise)</div>
+        {{ form_start(form) }}
+        <div class="row p-3">
+            <div class="row">
+                {{ form_widget(form.gratuit) }}
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="p-3 row">
+                    <label for="" class="h5">Nom :<span style="color: red;">*</span></label>
+                    {{ form_widget(form.nom, {'attr': {'class': 'form-control is-invalid formvalidate'}}) }}
+                </div>
+                <div class="p-3 row">
+                    <label for="" class="h5">Complément nom :</label>
+                    {{ form_widget(form.complementNom) }}
+                </div>
+                <div class="p-3 row">
+                    <label for="" class="h5">Statut :</label>
+                    {{ form_widget(form.statut) }}
+                </div>
+                <div class="p-3 row">
+                    <label for="" class="h5">N° Siret :<span style="color: red;">*</span></label>
+                    {% if form_errors(form.siret) %}
+                        {{ form_widget(form.siret, {'attr': {'class': 'form-control is-invalid'}}) }}
+                        {{ form_errors(form.siret) }}
+                    {% else %}
+                        {{ form_widget(form.siret, {'attr': {'class': 'form-control is-invalid formvalidate'}}) }}
+                    {% endif %}
+                </div>
+                <div class="pt-3 ps-3 pe-3 row">
+                    <label for="exampleSelect" class="h5">N° Siren :</label>
+                    {{ form_widget(form.siren) }}
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="p-3 row">
+                    <label for="" class="h5">Code APE :</label>
+                    {{ form_widget(form.codeAPE) }}
+                </div>
+                <div class="p-3 row">
+                    <label for="" class="h5">N° de TVA intracommunautaire :<span style="color: red;">*</span></label>
+                    {{ form_widget(form.tvaIntraCommunautaire, {'attr': {'class': 'form-control is-invalid formvalidate'}}) }}
+                </div>
+                <div class="p-3 row">
+                    <label for="" class="h5">Type :</label>
+                    {{ form_widget(form.type, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="p-3 row">
+                    <label for="" class="h5">N° Téléphone :<span style="color: red;">*</span></label>
+                    {% if form_errors(form.numTelephone) %}
+                        {{ form_widget(form.numTelephone, {'attr': {'class': 'form-control is-invalid'}}) }}
+                        {{ form_errors(form.numTelephone) }}
+                    {% else %}
+                        {{ form_widget(form.numTelephone, {'attr': {'class': 'form-control is-invalid formvalidate'}}) }}
+                    {% endif %}
+                </div>
+                <div class="pt-3 ps-3 pe-3 row">
+                    <label for="" class="h5">N° NAF :</label>
+                    {{ form_widget(form.naf) }}
+                </div>
+            </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="p-3 row">
+                <label for="" class="h5">Signe :</label>
+                {{ form_widget(form.signe) }}
+            </div>
+            <div class="p-3 row">
+                <label for="" class="h5">Secteur :</label>
+                {{ form_widget(form.secteur) }}
+            </div>
+            <div class="p-3 row">
+                <label for="" class="h5">Nature :</label>
+                {{ form_widget(form.nature) }}
+            </div>
+            <div class="p-3 row">
+                <label for="" class="h5">Nom du responsable :</label>
+                {{ form_widget(form.nomResponsable, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="p-3 row">
+                <label for="" class="h5">Nationalité de l'entreprise :</label>
+                {{ form_widget(form.nationalite, {'attr': {'class': 'form-control is-invalid formvalidate'}}) }}
+            </div>
+        </div>
+            <div class="col-12">
+                <div class="p-3 row">
+                    <label for="" class="h5">Email Référent sureté / sécurité :<span style="color: red;">*</span></label>
+                        {{ form_widget(form.emailReferent, {'attr': {'class': 'form-control is-invalid formvalidate'}}) }}
+                        {{ form_errors(form.emailReferent) }}
+                    {# {{ form_widget(form.emailReferent, {'attr': {'class': 'form-control is-invalid'}}) }} #}
+                </div>
+            </div>
+                <div class="col-6 pt-2">
+                    <label for="" class="h5">Suppleant 1 du référent sureté / sécurité :</label>
+                    {{ form_widget(form.suppleant1, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="col-6 pt-2">
+                    <label for="" class="h5">Suppleant 2 du référent sureté / sécurité :</label>
+                    {{ form_widget(form.suppleant2, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="col-6 pt-2">
+                    <label for="" class="h5">Entreprise mère</label>
+                    {{ form_widget(form.entrepriseMere, {'attr': {'class': 'form-control'}}) }}
+                </div>
+        {{ form_end(form) }}
+            <div class="row mt-4">
+                <div class="col-12 p-0 dcenter d-flex justify-content-around margin-bottom-spacing">
+                    {# <a class="btn btn-danger btn-lg me-3 bsmall" href="{{ path('app_demande_sdri') }}">
+                        <img src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32">
+                        Retour
+                    </a> #}
+                    {% if app.request.attributes.get('_route') == 'app_entreprise_edit' or app.request.attributes.get('_route') == 'app_entreprise_new' or app.request.attributes.get('_route') == 'app_entreprise_missing'%}
+                        {% set targetRoute = 'app_demande_sdri' %}
+                        <a class="btn btn-danger btn-lg me-3" href="{{ path(targetRoute) }}">
+                            <img src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32">
+                            Retour
+                        </a>
+                    {% else %}
+                        {% if lastRoute == 'sdri' %}
+                            {% set targetRoute = 'app_sdri' %}
+                            <a class="btn btn-danger btn-lg me-3" href="{{ path(targetRoute) }}">
+                                <img src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32">
+                                Retour
+                            </a>
+                        {% elseif lastRoute == 'demandesdri' %}
+                            {% set targetRoute = 'app_demande_sdri' %}
+                            <a class="btn btn-danger btn-lg me-3" href="{{ path(targetRoute) }}">
+                                <img src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32">
+                                Retour
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                    <button class="btn btn-cleo btn-lg me-3">
+                        {{ button_label|default('Suivant') }}
+                        <img src="{{ asset('css/icons/arrow-right-short.svg') }}" width="32" height="32" alt="icon arrow right"/>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{# <script src="{{ asset('/js/numphoneEntreprise.js') }}"></script> #}
+<script src="{{ asset('/js/formconfirmation.js') }}"></script>

@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Personnalisation{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="container-title">Personnalisation de l'Interface</div>
+
+        <form method="post" class="card p-4 shadow-sm">
+
+            <fieldset class="mb-4">
+                <legend class="text-khaki fw-semibold border-bottom pb-2 mb-3">Préférences d'affichage</legend>
+
+                <div class="mb-3">
+                    <label for="items_per_page" class="form-label">Nombre d'éléments par page</label>
+                    <select id="items_per_page" name="items_per_page" class="form-select">
+                        <option value="10">10 éléments</option>
+                        <option value="20">20 éléments</option>
+                        <option value="50">50 éléments</option>
+                        <option value="100">100 éléments</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="default_sorting" class="form-label">Ordre par défaut des colonnes</label>
+                    <select id="default_sorting" name="default_sorting" class="form-select">
+                        <option value="date_asc">Date croissante</option>
+                        <option value="date_desc">Date décroissante</option>
+                        <option value="status">Par statut</option>
+                    </select>
+                </div>
+            </fieldset>
+
+            <fieldset class="mb-4">
+                <legend class="text-khaki fw-semibold border-bottom pb-2 mb-3">Apparence de l'interface</legend>
+
+                <div class="mb-3">
+                    <label class="form-label">Thème de couleur</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="color_theme" id="theme_light" value="light" checked>
+                        <label class="form-check-label" for="theme_light">Mode clair</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="color_theme" id="theme_dark" value="dark">
+                        <label class="form-check-label" for="theme_dark">Mode sombre</label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="interface_font_size" class="form-label">Taille de police</label>
+                    <select id="interface_font_size" name="interface_font_size" class="form-select">
+                        <option value="normal">Normale</option>
+                        <option value="large">Grande</option>
+                        <option value="extra-large">Très grande</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Disposition des tableaux</label>
+                    <select id="table_layout" name="table_layout" class="form-select">
+                        <option value="table">Tableau classique</option>
+                        <option value="card">Affichage sous forme de cartes</option>
+                    </select>
+                </div>
+            </fieldset>
+
+            <fieldset class="mb-4">
+                <legend class="text-khaki fw-semibold border-bottom pb-2 mb-3">Notifications utilisateur</legend>
+
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="email_notifications" name="email_notifications" checked>
+                    <label class="form-check-label" for="email_notifications">Notifications par email</label>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="push_notifications" name="push_notifications">
+                    <label class="form-check-label" for="push_notifications">Notifications push</label>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="deadline_reminders" name="deadline_reminders" checked>
+                    <label class="form-check-label" for="deadline_reminders">Rappels d'échéances</label>
+                </div>
+            </fieldset>
+
+            <button type="submit" class="btn btn-cleo">Sauvegarder les paramètres</button>
+        </form>
+    </div>
+{% endblock %}

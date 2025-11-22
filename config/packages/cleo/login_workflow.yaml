@@ -1,0 +1,44 @@
+framework:
+  workflows:
+    subscription_workflow:
+      type: 'state_machine'
+      marking_store:
+        type: 'method'
+        property: 'status'
+      supports: ['App\Entity\User']
+      places:
+        - request
+        - inscription
+        - validated_mail
+        - notification_ui
+        - notification_email
+        - validated_user
+        - subscribed
+      transitions:
+        begin_subscription:
+          from: request
+          to: inscription
+        validation_mail_ok:
+          from: inscription
+          to: validated_mail
+        validation_mail_ko:
+          from: inscription
+          to: notification_ui
+        validation_resp_ok:
+          from: inscription
+          to: validated_user
+        validation_resp_ko:
+          from: inscription
+          to: notification_email
+        notification_email_rollback:
+          from: notification_email
+          to: inscription
+        notification_ui_rollback:
+          from: notification_ui
+          to: inscription
+        subscription_confirmed_by_refsec:
+          from: validated_mail  # Correct this typo from `validated_email`
+          to: subscribed
+        subscription_confirmed_by_user:
+          from: validated_user
+          to: subscribed

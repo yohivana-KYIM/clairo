@@ -1,0 +1,9 @@
+# config/packages/prod/monolog.yaml
+monolog:
+    channels: ['deprecation']
+    handlers:
+        deprecation:
+            type: stream
+            path: "php://stderr"
+            level: error      # ou "warning" pour en voir moins
+            channels: ["deprecation"]

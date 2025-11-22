@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration | Fluxel{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{{ asset('css/history.css') }}">
+<link rel="stylesheet" href="{{ asset('css/bootstrapTable.css') }}">
+<link rel="stylesheet" href="{{ asset('css/customNav.css') }}">
+<nav class="navbar navbar-expand-lg bg-khaki">
+    <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active ms-4 fs-5 mt-1" href="{{ path('app_user_index') }}">Utilisateurs</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active ms-4 fs-5 mt-1" href="{{ path('app_admin_dashboard_demande') }}">Demandes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active ms-4 fs-5 mt-1" href="{{ path('app_produit_index') }}">Produits</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active ms-4 fs-5 mt-1" href="{{ path('app_admin_dashboard_history') }}">Historique de connexion</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link active ms-4 fs-5 mt-1" href="{{ path('app_mail_appli_index') }}">Gestion des emails</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link active ms-4 fs-5 mt-1" href="{{ path('app_admin_dashboard') }}">Tableau de bord</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link active ms-4 fs-5 mt-1" href="{{ path('app_home') }}">Quitter la page d'administration</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+  <div class="container">
+    <div class="row mt-5">
+      <div class="col-4 row">
+        <div class="card text-bg-cleo border rounded border-warning-subtle" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title h4 d-flex justify-content-center text-center">Demandes en cours</h5>
+            <h1 class="card-text d-flex justify-content-center fw-bold">{{ countInvalidated }}</h1>
+          </div>
+        </div>
+      </div>
+      <div class="col-4 row">
+          <div class="card text-bg-primary border rounded border-primary-subtle" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title h4 d-flex justify-content-center text-center">Total des utilisateurs</h5>
+              <h1 class="card-text d-flex justify-content-center fw-bold">{{ userCount }}</h1>
+            </div>
+          </div>
+      </div>
+      <div class="col-4 row">
+          <div class="card text-bg-success border rounded border-success-subtle" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title h4 d-flex justify-content-center text-center">Demandes complètes</h5>
+              <h1 class="card-text d-flex justify-content-center fw-bold">{{ countValidated }}</h1>
+            </div>
+          </div>
+      </div>
+      <div class="col-4 row mt-5">
+        <div class="card text-bg-secondary border rounded border-secondary-subtle" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title h4 d-flex justify-content-center text-center">Total des entreprises</h5>
+                <h1 class="card-text d-flex justify-content-center fw-bold">{{ entrepriseCount }}</h1>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script src="{{ asset('js/jqueryTable.js') }}"></script>
+<script src="{{ asset('js/bootstrapTable.js') }}"></script>
+<script src="{{ asset('js/tableFiltreControl.js') }}"></script>
+<script>
+$(function() {
+  $('#sidebarCollapse').on('click', function() {
+    $('#sidebar, #content').toggleClass('active');
+  });
+});
+</script>
+{% endblock %}

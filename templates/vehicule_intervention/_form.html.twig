@@ -1,0 +1,135 @@
+<link rel="stylesheet" href="{{ asset('css/mainform.css') }}">
+<body>
+    {# <header>
+        <div class="container-fluid fixed-top bg-cleo p-2 ps-4 text-center d-flex flex-wrap border-bottom border-bottom-dark shadow-sm">
+            <img class="" src="{{ asset('/img/logo.png') }}" alt="" width="120" height="60">
+        </div>
+    </header> #}
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="container">
+            <nav class="d-flex justify-content-center" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    {% if intervention.id is defined and intervention.id is not null %}
+                        <li class="breadcrumb-item active"><a class="link-body-emphasis link-underline link-underline-opacity-0" href="{{ path('app_intervention_edit', {'id': intervention.id}) }}">Intervention</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item active"><a class="link-body-emphasis link-underline link-underline-opacity-0">Intervention</a></li>
+                    {% endif %}
+
+                    {% if adresse.id is defined %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0" href="{{ path('app_adresse_edit', {'id': adresse.id}) }}">Adresse</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0">Adresse</a></li>+
+                    {% endif %}
+
+                    {% if infoComplementaire.id is defined %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0" href="{{ path('app_info_complementaire_edit', {'id': infoComplementaire.id}) }}">Information Complementaire</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0">Information Complementaire</a></li>
+                    {% endif %}
+
+                    {% if documentProfessionnel.id is defined %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0" href="{{ path('app_document_professionnel_edit', {'id': documentProfessionnel.id}) }}">Document professionnel</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0">Document professionnel</a></li>
+                    {% endif %}
+                    {% if intervention.id is defined and intervention.id is not null and etatCivil.id is defined and etatCivil.id is not null and  filiation.id is defined and filiation.id is not null and  adresse.id is defined and adresse.id is not null and  infoComplementaire.id is defined and infoComplementaire.id is not null and documentPersonnel.id is defined and documentPersonnel.id is not null and documentProfessionnel.id is defined and documentProfessionnel.id is not null %}
+                        <li class="breadcrumb-item" aria-current="page"><a class="link-underline link-underline-opacity-0"  href="{{ path('app_demande_titre_circulation_edit', {'id': demande.id}) }}">Récapitulatif</a></li>
+                    {% else %}
+                        <li class="breadcrumb-item" aria-current="page"><a class="link-underline link-underline-opacity-0">Récapitulatif</a></li>
+                    {% endif %}
+                </ol>
+            </nav>
+            <div class="border border-dark-subtle rounded-top info-form">
+                <div class="col-12 bg-cleo rounded-top p-0 m-0 h5">
+                    <p class="p-3">Intervention</p>
+                </div>
+                <div class="col-12 p-3">
+                    {{ form_start(form) }}
+                    <div class="p-3 row">
+                        <label class="h5">Lieu de l'intervention :<span style="color: red;">*</span></label>
+                        <div class="form-check">
+                            {{ form_widget(form.exploitationFos) }}
+                        </div>
+                        <div class="form-check">
+                            {{ form_widget(form.exploitationLavera) }}
+                        </div>
+                    </div>
+                    <div class="p-3 row">
+                            <label class="h5">Motif de l'intervention :<span style="color: red;">*</span></label>
+                            {{ form_widget(form.motif, {'attr': {'class': 'form-control motif_principal is-invalid formvalidate'}}) }}
+                        <div class="p-3">
+                            {{ form_widget(form.autre, {'attr': {'class': 'form-control autre_motif is-invalid', 'id': 'floatingTextarea2', 'placeholder': 'Veuillez saisir un motif'}}) }}
+                        </div>
+                    </div>
+                    <div class="p-3 row">
+                            <label for="" class="h5">Durée de l'intervention :<span style="color: red;">*</span></label>
+                            {{ form_widget(form.duree, {'attr': {'class': 'form-control duree_temporaire is-invalid formvalidate'}}) }}
+                        <div class="p-3">
+                            {{ form_widget(form.dateIntervention, {'attr': {'class': 'form-control date_temporaire', 'style': 'display:none;'}}) }}
+                            {{ form_errors(form.dateIntervention, {'attr': {'class': 'form-control date_temporaire', 'style': 'display:none;'}}) }}
+                        </div>
+                    </div>
+
+                    <div class="row p-3">
+                        <div class="col-12">
+                            <label class="h5">Entreprise :<span style="color: red;">*</span></label>
+                            <a type="button" class="link-body-emphasis link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover1" data-bs-toggle="modal" data-bs-target="#createModal{{ demande.id }}">Je ne trouve pas mon entreprise</a>
+                        </div>
+                        {{ form_widget(form.entreprise, {'attr': {'class': 'is-invalid formvalidate'} }) }}
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12 p-0 d-flex justify-content-around">
+                            <a class="btn btn-danger btn-lg me-3" href="{{ path('app_home') }}">
+                                <img src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32">
+                                Reprendre ultérieurement
+                            </a>
+                            <button class="btn btn-success btn-lg me-3">
+                                {{ button_label|default('Suivant') }}
+                                <img src="{{ asset('css/icons/arrow-right-short.svg') }}" width="32" height="32">
+                            </button>
+                        </div>
+                    </div>
+                {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="modal fade" id="createModal{{ demande.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 fw-bold mb-2" id="exampleModalLabel">Demande d'ajout entreprise</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{{ path('app_intervention_sendEmail', {'id': demande.id}, true) }}">
+                    <div class="form-floating">
+                        <input type="text" class="form-control mb-3" placeholder="Message 1" name="message1" required></input>
+                        <label for="message1">Nom de l'entreprise</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="text" class="form-control mb-3" placeholder="Message 4" name="message4" required></textarea>
+                        <label for="message4">Nom du référent de l'entreprise</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="text" class="form-control mb-3" placeholder="Message 2" name="message2" required></textarea>
+                        <label for="message2">Siret</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="text" class="form-control mb-3" placeholder="Message 3" name="message3" required></textarea>
+                        <label for="message3">Numero téléphone de l'entreprise</label>
+                    </div>
+                    <div class="modal-footer col-12 d-flex justify-content-around">
+                        <button type="button" class="btn btn-danger btn-lg" data-bs-dismiss="modal">Fermer</button>
+                        <button type="submit" class="btn btn-cleo btn-lg">Envoyer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="{{ asset('/js/formconfirmation.js') }}"></script>
+<script src="{{ asset('/js/intervention.js') }}"></script>

@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}AdresseEntreprise index{% endblock %}
+
+{% block body %}
+    <h1>AdresseEntreprise index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>NumVoie</th>
+                <th>Distribution</th>
+                <th>Ville</th>
+                <th>TourEtc</th>
+                <th>Cp</th>
+                <th>NumTelephone</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for adresse_entreprise in adresse_entreprises %}
+            <tr>
+                <td>{{ adresse_entreprise.id }}</td>
+                <td>{{ adresse_entreprise.numVoie }}</td>
+                <td>{{ adresse_entreprise.distribution }}</td>
+                <td>{{ adresse_entreprise.ville }}</td>
+                <td>{{ adresse_entreprise.tourEtc }}</td>
+                <td>{{ adresse_entreprise.cp }}</td>
+                <td>{{ adresse_entreprise.numTelephone }}</td>
+                <td>
+                    <a href="{{ path('app_adresse_entreprise_show', {'id': adresse_entreprise.id}) }}">show</a>
+                    <a href="{{ path('app_adresse_entreprise_edit', {'id': adresse_entreprise.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_adresse_entreprise_new') }}">Create new</a>
+{% endblock %}

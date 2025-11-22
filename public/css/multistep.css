@@ -1,0 +1,747 @@
+/* General Body Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #7eb5bd;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+#app_root {
+    background-color: #7eb5bd !important;
+}
+/* Container Styling */
+.container {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    color: #333;
+    text-align: center;
+    border: 2px solid #003366;
+    height: max-content;
+}
+
+.container-title {
+    position: relative;
+    top: -20px;
+    margin-left: auto;
+    background-color: #003366;
+    color: #ffffff;
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+
+/* Header Styling */
+.container h1 {
+    font-size: 26px;
+    color: #003366;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #003366;
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+/* Progress Bar Styling */
+.progress-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    counter-reset: step;
+}
+
+.progress-bar div {
+    position: relative;
+    flex: 1;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+}
+
+.progress-bar div::before {
+    content: counter(step);
+    counter-increment: step;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    display: inline-block;
+    border: 2px solid #ccc;
+    background-color: #ffffff;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    color: #999;
+}
+
+.progress-bar div.completed::before {
+    border-color: #003366;
+    background-color: #003366;
+    color: #ffffff;
+}
+
+.progress-bar div::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: #ccc;
+    top: 15px;
+    left: 50%;
+    z-index: -1;
+}
+
+.progress-bar div:last-child::after {
+    display: none;
+}
+
+.progress-bar div.completed + div::after {
+    background-color: #003366;
+}
+
+/* Form Styling */
+.form-label {
+    font-size: 14px;
+    color: #003366;
+    margin-bottom: 8px;
+    display: block;
+    text-align: left;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+.form-control:focus {
+    border-color: #003366;
+    box-shadow: 0 0 8px rgba(0, 51, 102, 0.3);
+    outline: none;
+}
+
+/* Button Styling */
+button {
+    font-size: 16px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button[type="submit"],
+button.next,
+button.previous {
+    background: #003366;
+    color: #ffffff;
+    width: 100%;
+    max-width: 200px;
+    margin: 10px auto;
+    display: block;
+}
+
+button[type="submit"]:hover,
+button.next:hover,
+button.previous:hover {
+    background: #002244;
+}
+
+button.previous {
+    background: #cccccc;
+    color: #333;
+}
+
+button.previous:hover {
+    background: #aaaaaa;
+}
+
+/* Review Step Styling */
+.review-section {
+    text-align: left;
+    background: #07060714;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.review-section h2 {
+    color: #003366;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.review-section p {
+    margin: 5px 0;
+}
+
+/* Checkbox and Terms Styling */
+.terms-container {
+    text-align: left;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.terms-container label {
+    font-size: 14px;
+    color: #333;
+}
+
+.terms-container input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+/* Success Message */
+.success-message {
+    color: #003366;
+    font-size: 18px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Error Styling */
+input:required {
+    border-left: 5px solid #81919B;
+}
+
+input:invalid {
+    border-color: #81919B;
+}
+
+form>div>div.mb-3 {
+    width: calc(50% - 10px);
+    display: inline-block;
+    margin-right: 5px;
+    margin-left: 5px;
+    margin-bottom: 10px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 932px) {
+    .container {
+        width: 100%;
+        height: 100vh; /* Full viewport height */
+        margin: 0; /* Remove margins */
+        padding: 20px; /* Adjust padding for better spacing */
+        border-radius: 0; /* Remove rounded corners */
+        box-shadow: none; /* Remove shadow for a clean look */
+    }
+
+    .progress-bar div::after {
+        width: calc(100% - 20px);
+        left: 10px;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    .multi-step-header {
+        position: static; /* Prevent overlapping */
+    }
+}
+
+/* Banner Styles */
+.multi-step-header {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    background-color: whitesmoke; /* Petroleum Port Theme */
+    z-index: 1000; /* Ensures it stays on top */
+    padding: 10px 20px;
+    text-align: center;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Adds a slight shadow for better visibility */
+}
+
+.logo-banner .logo {
+    max-height: 30px;
+    max-width: 100%;
+}
+
+.step-trail {
+    font-size: 14px;
+    color: #003366;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.step-trail strong {
+    font-weight: bold;
+}
+
+.form-separator {
+    color: #81919B;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: center; /* Center-align the buttons */
+    gap: 15px; /* Space between buttons */
+    margin-top: 20px;
+}
+
+.btn-action {
+    display: inline-block;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 20px;
+    background-color: #003366;
+    min-width: 140px; /* 🔥 important pour uniformité */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-height: 40px;
+}
+
+.btn-action:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translateY(-3px); /* Slightly raise on hover */
+}
+
+.btn-action:active {
+    background-color: #004494; /* Even darker blue when clicked */
+    transform: translateY(0); /* Reset position when clicked */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn-action:focus {
+    outline: none;
+    box-shadow: 0 0 5px 2px rgba(0, 123, 255, 0.7); /* Focus ring */
+}
+
+.btn-action[disabled] {
+    background-color: #CCCCCC; /* Gray for disabled state */
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.form-actions .btn-previous {
+    background-color: #F23600; /* Secondary button color (gray) */
+}
+
+.form-actions .btn-previous:hover {
+    background-color: #F20000; /* Darker gray on hover */
+}
+
+.form-actions .btn-next {
+    background-color: #28A745; /* Success button color (green) */
+}
+
+.form-actions .btn-next:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+.form-actions .btn-persist {
+    background-color: #005B99;
+}
+
+.form-actions .btn-persist:hover {
+    background-color: #00487a;
+}
+
+/* Multi-step form container */
+.form-check-group {
+    display: inline-block;
+    width: calc(50% - 10px);
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+/* Title styling */
+.form-check-title {
+    font-size: 14px;
+    color: #003366;
+    margin-bottom: 8px;
+    display: block;
+    text-align: left;
+}
+
+/* Form-check inline container */
+.form-check-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Space between form-check elements */
+}
+
+/* Each form-check */
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between input and label */
+}
+
+/* Input field */
+.form-check-input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* Label styling */
+.form-check-label {
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+#vehicle_access_step_six_form>div.mb-3 {
+    width: 790px;
+    display: inline-block;
+    margin: 10px 5px;
+}
+#person_access_step_six_form>div.mb-3:nth-child(1), #person_access_step_six_form>div.mb-3:nth-child(2), #person_access_step_six_form>div.mb-3:nth-child(3) {
+    width: 790px;
+    display: inline-block;
+    margin: 10px 5px;
+}
+
+.terms-and-conditions {
+    background: #A8C0C4;
+    height: 500px;
+}
+
+.logo-banner {
+    float: left;
+}
+
+/* General Mobile Styles */
+@media (max-width: 932px) {
+    /* Reset Body and HTML */
+    body, html {
+        margin: 0;
+        padding: 0;
+        overflow: hidden; /* Disable scrolling */
+        height: 100%; /* Full viewport height */
+    }
+
+    /* Full-Screen Container */
+    .container {
+        width: 100vw; /* Full width of the viewport */
+        height: 100vh; /* Full height of the viewport */
+        margin: 0;
+        padding: 20px; /* Internal padding */
+        box-sizing: border-box; /* Include padding in dimensions */
+        background-color: #ffffff; /* Neutral background */
+        display: flex; /* Flexbox for layout */
+        flex-direction: column; /* Stack items vertically */
+        justify-content: center; /* Center items vertically */
+        align-items: center; /* Center items horizontally */
+    }
+
+    /* Buttons */
+    button {
+        width: 90%; /* Full-width with padding */
+        max-width: 300px; /* Limit button size */
+        font-size: 16px; /* Readable font size */
+        padding: 12px 15px; /* Comfortable padding */
+        border: none;
+        border-radius: 5px; /* Rounded corners */
+        background-color: #0078ff; /* Primary color */
+        color: #ffffff; /* Button text color */
+        text-align: center;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056cc; /* Slightly darker hover color */
+    }
+
+    /* Form Controls */
+    .form-control {
+        width: 90%; /* Full-width with padding */
+        max-width: 400px; /* Limit input size */
+        font-size: 16px;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 5px; /* Rounded corners */
+        background-color: #f9f9f9; /* Light input background */
+        color: #333; /* Text color */
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #0078ff; /* Highlight color on focus */
+        box-shadow: 0 0 5px rgba(0, 120, 255, 0.5); /* Glow effect */
+    }
+
+    /* Labels */
+    .form-label {
+        font-size: 14px;
+        margin-bottom: 10px;
+        text-align: left;
+        width: 90%; /* Align with inputs */
+        max-width: 400px;
+        color: #333;
+    }
+
+    /* Success Message */
+    .success-message {
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 20px;
+        color: #0078ff; /* Accent color for success */
+    }
+}
+
+/* Portrait Mode */
+@media (max-width: 932px) and (orientation: portrait) {
+    .container {
+        flex-direction: column; /* Stack elements vertically */
+        padding: 20px; /* Ensure adequate padding */
+        position: absolute;
+    }
+}
+
+/* Landscape Mode */
+@media (max-width: 932px) and (orientation: landscape) {
+    .container {
+        flex-direction: row; /* Align items side-by-side */
+        justify-content: space-evenly; /* Space items evenly */
+        padding: 15px; /* Adjust padding for landscape */
+    }
+
+    button {
+        max-width: 200px; /* Constrain button width */
+    }
+
+    .form-control {
+        max-width: 300px; /* Constrain input width */
+    }
+}
+
+/* Dark Mode */
+@media (max-width: 932px) and (prefers-color-scheme: dark) {
+    body {
+        background-color: #121212; /* Dark background */
+        color: #e0e0e0; /* Light text */
+    }
+
+    .container {
+        background-color: #1e1e1e; /* Dark container background */
+        color: #e0e0e0;
+    }
+
+    button {
+        background-color: #333;
+        color: #fff;
+    }
+
+    button:hover {
+        background-color: #555; /* Lighter hover */
+    }
+
+    .form-control {
+        background-color: #2a2a2a;
+        color: #e0e0e0;
+        border: 1px solid #555;
+    }
+}
+
+/* Forced Colors Mode */
+@media (max-width: 932px) and (forced-colors: active) {
+    body {
+        background-color: Window;
+        color: WindowText;
+    }
+
+    .container {
+        background-color: Window;
+        border: 2px solid WindowText;
+        color: WindowText;
+    }
+
+    button {
+        background-color: ButtonFace;
+        color: ButtonText;
+        border: 2px solid WindowText;
+    }
+
+    .form-control {
+        background-color: ButtonFace;
+        color: ButtonText;
+        border: 2px solid WindowText;
+    }
+}
+
+/* High Contrast Mode */
+@media (max-width: 932px) and (prefers-contrast: high) {
+    body {
+        background-color: #ffffff;
+        color: #000;
+    }
+
+    .container {
+        background-color: #ffffff;
+        border: 2px solid #000;
+    }
+
+    button {
+        background-color: #000;
+        color: #fff;
+        border: 2px solid #000;
+    }
+
+    .form-control {
+        border: 2px solid #000;
+        color: #000;
+    }
+}
+
+/* Vision Blurry Mode */
+@media (max-width: 932px) and (prefers-reduced-motion: reduce) {
+    body {
+        font-size: 18px;
+        line-height: 1.8;
+    }
+
+    .container {
+        padding: 20px;
+        font-size: 18px;
+        line-height: 1.8;
+    }
+
+    .form-control {
+        font-size: 18px;
+        padding: 12px;
+    }
+
+    button {
+        font-size: 18px;
+        padding: 15px 20px;
+    }
+
+    .form-label {
+        font-size: 18px;
+        font-weight: bold;
+    }
+}
+
+.review-item-label {
+   font-weight: bold;
+}
+
+.micro {
+    font-size: 0.8em;
+    color: #555;
+    vertical-align: super;
+}
+
+.invalid-feedback {
+    color: red;
+}
+
+.warning-message {
+    font-size: 0.85em;
+    margin-top: 5px;
+}
+
+.warning-message.warning {
+    font-weight: bold;
+}
+
+.warning-message.expired {
+    color: orange;
+}
+
+.warning-message.soon {
+    color: goldenrod;
+}
+
+/* Style général pour toutes les radios et checkboxes */
+input[type="radio"],
+input[type="checkbox"] {
+    appearance: none;         /* Supprimer l'apparence native */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 1.2em;
+    height: 1.2em;
+    border: 2px solid #004080; /* Couleur bordure */
+    border-radius: 50%;        /* Pour les radios => rond */
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    margin-right: 0.5em;
+    vertical-align: middle;
+}
+
+/* Pour les checkboxes : carrés */
+input[type="checkbox"] {
+    border-radius: 4px;  /* coins carrés */
+}
+
+/* Style du "checked" */
+input[type="radio"]:checked::before,
+input[type="checkbox"]:checked::before {
+    content: "";
+    display: block;
+    width: 60%;
+    height: 60%;
+    background: #004080;  /* couleur du check */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+}
+
+/* Pour les checkboxes => check carré */
+input[type="checkbox"]:checked::before {
+    border-radius: 2px;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5em;
+}
+
+.form-check label {
+    margin-left: 0.5em;
+    cursor: pointer;
+}
+
+/* Messages d'erreur (rouge) */
+.error-message {
+    color: red;
+    font-size: 0.85em;
+    transition: opacity 0.4s ease;
+}
+.error-message.visible { opacity: 1; }
+.error-message.fade-out { opacity: 0; }
+
+/* Messages de succès (vert) */
+.success-message {
+    color: green;
+    font-size: 0.8em;
+    transition: opacity 0.4s ease;
+}
+.success-message.visible { opacity: 1; }
+.success-message.fade-out { opacity: 0; }
+
+/* Bordures visuelles */
+input.valid,
+select.valid,
+textarea.valid {
+    border: 1px solid #28a745 !important; /* vert */
+}
+input.invalid,
+select.invalid,
+textarea.invalid {
+    border: 1px solid red !important;
+}

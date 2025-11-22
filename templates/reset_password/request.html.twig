@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reset your password{% endblock %}
+
+{% block body %}
+    <link rel="stylesheet" href="{{ asset('css/registerstyle.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+
+    {% for flash_error in app.flashes('reset_password_error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    <body class="overflow-hidden" id="bg-pattern">
+        <div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+            <div class="border border-dark-subtle rounded wrapper">
+                <h1 class="text-center pt-5 fw-bold">Réinitialiser votre mot de passe</h1>
+                {{ form_start(requestForm, {'attr': {'class': 'm-5'}}) }}
+                    <div>
+                        <p class="fs-5">Saisissez votre adresse e-mail,
+                            et nous vous enverrons un lien pour réinitialiser votre mot de passe.
+                        </p>
+                    </div>
+                    <div class="form-floating mb-5">
+                        {{ form_widget(requestForm.email, {'attr': {'class': 'form-control border-dark-subtle', 'id': 'floatingInput', 'placeholder': 'name@example.com'}}) }}
+                        <label for="floatingInput">Email</label>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <a class="btn btn-lg btn-danger me-3" href="{{ path('app_login') }}">Retour</a>
+                        <button class="btn btn-lg btn-cleo">Réinitialiser</button>
+                    </div>
+                {{ form_end(requestForm) }}
+            </div>
+        </div>
+    </body>
+
+{% endblock %}

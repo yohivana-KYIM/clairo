@@ -1,0 +1,45 @@
+#myButton:hover::before {
+    content: attr(data-bs-title);
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    display: block;
+    white-space: nowrap;
+    margin-top: -110px;
+    margin-left: 35%;
+    left: 50%;
+}
+
+#myButton2:hover::before {
+    content: attr(data-bs-title);
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    display: block;
+    white-space: nowrap;
+    margin-top: -0;
+    margin-left: -0%;
+    left: 150%;
+}
+
+#myButton3:hover::before {
+    content: attr(data-bs-title);
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    display: block;
+    white-space: nowrap;
+    margin-top: -46px;
+    margin-left: 42%;
+    left: 50%;
+}
+
+table tr td button {
+    position: relative;
+}

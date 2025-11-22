@@ -1,0 +1,256 @@
+<link rel="stylesheet" href="{{ asset('css/mainform.css') }}">
+<link rel="stylesheet" href="{{ asset('css/customfileinput.css') }}">
+
+{# <header>
+    <div class="container-fluid bg-cleo p-2 ps-4 text-center d-flex flex-wrap border-bottom border-bottom-dark shadow-sm">
+        <img class="" src="{{ asset('/img/logo.png') }}" alt="" width="120" height="60">
+    </div>
+</header> #}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="container">
+        <nav class="d-flex justify-content-center" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                {% if intervention.id is defined %}
+                    <li class="breadcrumb-item active"><a class="link-underline link-underline-opacity-0" href="{{ path('app_intervention_edit', {'id': intervention.id}) }}">Intervention</a></li>
+                {% else %}
+                    <li class="breadcrumb-item active"><a class="link-underline link-underline-opacity-0">Intervention</a></li>
+                {% endif %}
+
+                {% if etatCivil.id is defined %}
+                    <li class="breadcrumb-item active"><a class="link-underline link-underline-opacity-0" href="{{ path('app_etat_civil_edit', {'id': etatCivil.id}) }}">Etat Civil</a></li>
+                {% else %}
+                    <li class="breadcrumb-item" aria-current="page"><a class="link-underline link-underline-opacity-0">Etat Civil</a></li>
+                {% endif %}
+
+                {% if filiation.id is defined %}
+                    <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0" href="{{ path('app_filiation_edit', {'id': filiation.id}) }}">Filiation</a></li>
+                {% else %}
+                    <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0">Filiation</a></li>
+                {% endif %}
+
+                {% if adresse.id is defined and adresse.id is not null %}
+                    <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0" href="{{ path('app_adresse_edit', {'id': adresse.id}) }}">Adresse</a></li>
+                {% else %}
+                    <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0">Adresse</a></li>
+                {% endif %}
+
+                {% if infoComplementaire.id is defined and infoComplementaire.id is not null %}
+                    <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0" href="{{ path('app_info_complementaire_edit', {'id': infoComplementaire.id}) }}">Information Complementaire</a></li>
+                {% else %}
+                    <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0">Information Complementaire</a></li>
+                {% endif %}
+
+                {% if documentPersonnel.id is defined and documentPersonnel.id is not null %}
+                    <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0" href="{{ path('app_document_personnel_edit', {'id': documentPersonnel.id}) }}">Document Personnel</a></li>
+                {% else %}
+                    <li class="breadcrumb-item"><a class="link-underline link-underline-opacity-0">Document Personnel</a></li>
+                {% endif %}
+
+                {% if documentProfessionnel.id is defined and documentProfessionnel.id is not null %}
+                    <li class="breadcrumb-item"><a class="link-body-emphasis link-underline link-underline-opacity-0" href="{{ path('app_document_professionnel_edit', {'id': documentProfessionnel.id}) }}">Document professionnel</a></li>
+                {% else %}
+                    <li class="breadcrumb-item"><a class="link-body-emphasis link-underline link-underline-opacity-0">Document professionnel</a></li>
+                {% endif %}
+                {% if intervention.id is defined and intervention.id is not null and etatCivil.id is defined and etatCivil.id is not null and filiation.id is defined and filiation.id is not null and  adresse.id is defined and adresse.id is not null and  infoComplementaire.id is defined and infoComplementaire.id is not null and documentPersonnel.id is defined and documentPersonnel.id is not null and documentProfessionnel.id is defined and documentProfessionnel.id is not null %}
+                    <li class="breadcrumb-item" aria-current="page"><a class="link-underline link-underline-opacity-0"  href="{{ path('app_demande_titre_circulation_edit', {'id': demande.id}) }}">Récapitulatif</a></li>
+                {% else %}
+                    <li class="breadcrumb-item" aria-current="page"><a class="link-underline link-underline-opacity-0">Récapitulatif</a></li>
+                {% endif %}
+            </ol>
+        </nav>
+        <div class="border border-dark-subtle rounded-top info-form">
+            <div class="col-12 bg-cleo rounded-top mb-0 h5">
+                <p class="p-3">Document professionnel</p>
+            </div>
+            <div class="col-lg-12 col-md-12 p-3">
+                <div class="row ps-3 pe-3 mb-3">
+                {% if intervention.getMotif() == 'visite'%}
+                    <div class="row d-flex justify-content-center fs-5 m-5">
+                        Vous n'avez aucun document professionnel à fournir pour une visite
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12 p-0 d-flex justify-content-around">
+                            <a class="btn btn-danger btn-lg me-3" href="{{ path('app_document_personnel_edit', {'id': documentPersonnel.id}) }}">
+                                <img src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32">
+                                Retour
+                            </a>
+                            <a href="{{ path('app_home') }}" class="btn btn-lg btn-cleo">
+                                Reprendre ultérieurement
+                            </a>
+                            <a class="btn btn-success btn-lg me-3" href="{{ path('app_recap') }}">
+                                Suivant
+                                <img src="{{ asset('css/icons/arrow-right-short.svg') }}" width="32" height="32">
+                            </a>
+                        </div>
+                    </div>
+                    {{ form_start(form, {'attr': {'class': '', 'style': 'display:none;', 'required': false}}) }}
+                    {{ form_widget(form, {'attr': {'required': false}}) }}
+                    {{ form_end(form) }}
+                {% else %}
+            {{ form_start(form) }}
+                <div class="row ps-3 pe-3 mb-3">
+                    <div class="col-6">
+                        <label class="h5">GIES 0 :<span style="color: red;">*</span></label>
+                        {% if documentProfessionnel.gies0 is defined and documentProfessionnel.gies0 is not null %}
+                            <br>
+                            <span class="fw-bold">Votre document enregistré :</span> {{ documentProfessionnel.gies0.originalName }}
+                            <label class="label">
+                                {{ form_widget(form.gies0, {'attr': {'class': 'gies0','required': false}}) }}
+                                <span>Modifier</span>
+                            </label>
+                            <br><p class="fw-bold" id="fileNameGies0"></p>
+                        {% else %}
+                        <a class="link-body-emphasis link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover1" target="_blank"  href="https://gies.intranet-fluxel.fr/login">Vous n'avez pas de gies 0 ?</a>
+                            {{ form_widget(form.gies0, {'attr': {'class': 'is-invalid formvalidate gies0', 'required': true}}) }}
+                        {% endif %}
+                    </div>
+                    <div class="col-6">
+                        {% if documentProfessionnel.dateGies0Fin is defined and documentProfessionnel.dateGies0Fin is not null %}
+                            <label class="h5">(modifier) Date de fin de validité (Gies 0) :<span style="color: red;">*</span></label>
+                                {{ form_widget(form.dateGies0Fin, {'attr': {'class': 'is-invalid dateFinGies0 formvalidate', 'required': false}}) }}
+                                {{ form_errors(form.dateGies0Fin) }}
+                        {% else %}
+                            <label class="h5">Date de fin de validité (Gies 0) :<span style="color:red">*</span></label>
+                                {{ form_widget(form.dateGies0Fin, {'attr': {'class': 'is-invalid dateFinGies0 formvalidate', 'required': true}}) }}
+                                {{ form_errors(form.dateGies0Fin) }}
+                        {% endif %}
+                    </div>
+                </div>
+                {# <div class="ps-3 pe-3 pb-3 row">
+                    <div class="col-6"> #}
+                        {# {% if documentProfessionnel.dateGies0Debut is defined and documentProfessionnel.dateGies0Debut is not null %} #}
+                            {# <label class="h5">(modifier) Date de début (Gies 0) :<span style="color: red;">*</span></label> #}
+                                {# {{ form_widget(form.dateGies0Debut, {'attr': {'class': 'is-invalid dateDebutGies0', 'style': 'display:none;'}}) }}
+                                {{ form_errors(form.dateGies0Debut, {'attr': {'class': 'is-invalid dateDebutGies0', 'style': 'display:none;'}}) }} #}
+                        {# {% else %} #}
+                            {# <label class="h5">Date de début (Gies 0) :<span style="color:red">*</span></label> #}
+                                {{ form_widget(form.dateGies0Debut, {'attr': {'class': 'is-invalid', 'style': 'display:none;'}}) }}
+                                {{ form_errors(form.dateGies0Debut, {'attr': {'class': 'is-invalid', 'style': 'display:none;'}}) }}
+                        {# {% endif %} #}
+                    {# </div>
+                </div> #}
+                <div class="row ps-3 pe-3 mb-3">
+                    <div class="col-6">
+                        <label class="h5">GIES 1 :</label>
+                        {% if documentProfessionnel.gies1 is defined and documentProfessionnel.gies1 is not null %}
+                            <br>
+                            <span class="fw-bold">Votre document enregistré :</span> {{ documentProfessionnel.gies1.originalName }}
+                            <label class="label">
+                                {{ form_widget(form.gies1) }}
+                                <span>Modifier</span>
+                            </label>
+                            <br><p class="fw-bold" id="fileNameGies1"></p>
+                        {% else %}
+                            {{ form_widget(form.gies1) }}
+                        {% endif %}
+                        {# {{ form_widget(form.gies1) }} #}
+                    </div>
+                    <div class="col-6">
+                        <label class="h5">Date de fin (Gies 1) : </label>
+                        {{ form_widget(form.date_gies1_fin) }}
+                        {{ form_errors(form.date_gies1_fin) }}
+                        </div>
+                </div>
+                <div class="row ps-3 pe-3">
+                    <div class="col-6">
+                        <label class="h5">GIES 2 :</label>
+                        {% if documentProfessionnel.gies2 is defined and documentProfessionnel.gies2 is not null %}
+                            <br>
+                            <span class="fw-bold">Votre document enregistré :</span> {{ documentProfessionnel.gies2.originalName }}
+                            <label class="label">
+                                {{ form_widget(form.gies2) }}
+                                <span>Modifier</span>
+                            </label>
+                            <br><p class="fw-bold" id="fileNameGies2"></p>
+                            <div class="mb-1"></div>
+                        {% else %}
+                            {{ form_widget(form.gies2) }}
+                        {% endif %}
+                    </div>
+                    <div class="col-6">
+                        <label class="h5">Date de fin (Gies 2) :</label>
+                        {{ form_widget(form.date_gies2_fin) }}
+                        {{ form_errors(form.date_gies2_fin) }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12 col-md-12 ps-3 pe-3 pb-3">
+                <div class="row ps-3 pe-3">
+                    <div class="col-6">
+                        <label class="h5">ATEX 0 :<span style="color: red;">*</span></label>
+                        {% if documentProfessionnel.atex0 is defined and documentProfessionnel.atex0 is not null %}
+                            <br>
+                            <span class="fw-bold">Votre document enregistré :</span> {{ documentProfessionnel.atex0.originalName }}
+                            <label class="label">
+                                {{ form_widget(form.atex0, {'attr': {'class': 'atex0', 'required': false}}) }}
+                                <span>Modifier</span>
+                            </label>
+                            <br><p class="fw-bold" id="fileNameAtex0"></p>
+                            <div class="mb-1"></div>
+                        {% else %}
+                            {{ form_widget(form.atex0, {'attr': {'class': 'is-invalid formvalidate atex0', 'required': true}}) }}
+                        {% endif %}
+                    </div>
+                    <div class="col-6">
+                        {% if documentProfessionnel.dateAtex0Fin is defined and documentProfessionnel.dateAtex0Fin is not null %}
+                            <label class="h5">(modifier) Date de fin de validité (Atex 0) :<span style="color: red;">*</span></label>
+                                {{ form_widget(form.dateAtex0Fin, {'attr': {'class': 'is-invalid dateFinAtex0 formvalidate', 'required': false}}) }}
+                                {{ form_errors(form.dateAtex0Fin) }}
+                        {% else %}
+                            <label class="h5">Date de fin de validité (Atex 0) :<span style="color: red;">*</span></label>
+                            {{ form_widget(form.dateAtex0Fin, {'attr': {'class': 'is-invalid dateFinAtex0 formvalidate', 'required': true}}) }}
+                            {{ form_errors(form.dateAtex0Fin) }}
+                        {% endif %}
+                    </div>
+                </div>
+                {# <div class="p-3 row"> #}
+                    {# <div class="col-6"> #}
+                        {# {% if documentProfessionnel.dateAtex0Debut is defined and documentProfessionnel.dateAtex0Debut is not null %} #}
+                            {# <label class="h5">(modifier) Date de début (Atex 0) :<span style="color: red;">*</span></label> #}
+                                {# {{ form_widget(form.dateAtex0Debut, {'attr': {'class': 'is-invalid dateDebutAtex0'}}) }}
+                                {{ form_errors(form.dateAtex0Debut) }} #}
+                        {# {% else %} #}
+                            {# <label class="h5">Date de début (Atex 0) :<span style="color: red;">*</span></label> #}
+                            {{ form_widget(form.dateAtex0Debut, {'attr': {'class': 'is-invalid', 'style': 'display:none;'}}) }}
+                            {{ form_errors(form.dateAtex0Debut) }}
+                        {# {% endif %} #}
+                    {# </div> #}
+                {# </div> #}
+                <div class="p-3">
+                    <label class="h5">Autre :</label>
+                    {% if documentProfessionnel.autre is defined and documentProfessionnel.autre is not null %}
+                        <br>
+                        <span class="fw-bold">Autre :</span> {{ documentProfessionnel.autre.originalName }}
+                        <label class="label">
+                            {{ form_widget(form.autre) }}
+                            <span>Modifier</span>
+                        </label>
+                        <br><p class="fw-bold" id="fileNameAutre"></p>
+                    {% else %}
+                        {{ form_widget(form.autre) }}
+                    {% endif %}
+                </div>
+                <div class="row mt-4">
+                    <div class="col-12 p-0 d-flex justify-content-around">
+                        <a class="btn btn-danger btn-lg me-3" href="{{ path('app_document_personnel_edit', {'id': documentPersonnel.id}) }}">
+                            <img src="{{ asset('css/icons/arrow-left-short.svg') }}" width="32" height="32">
+                            Retour
+                        </a>
+                        <a href="{{ path('app_home') }}" class="btn btn-lg btn-cleo">
+                            Reprendre ultérieurement
+                        </a>
+                        <button class="btn btn-success btn-lg me-3">
+                            {{ button_label|default('Suivant') }}
+                            <img src="{{ asset('css/icons/arrow-right-short.svg') }}" width="32" height="32">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        {{ form_end(form) }}
+        {% endif %}
+    </div>
+</div>
+{# <script src="{{ asset('/js/documentprofessionnel.js') }}"></script> #}
+<script src="{{ asset('/js/formconfirmation.js') }}"></script>
+<script src="{{ asset('/js/filedocumentprofessionnel.js') }}"></script>
+

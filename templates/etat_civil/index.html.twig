@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EtatCivil index{% endblock %}
+
+{% block body %}
+    <h1>EtatCivil index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Titre</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Prenom2</th>
+                <th>Prenom3</th>
+                <th>Prenom4</th>
+                <th>DateNaissance</th>
+                <th>PaysNaissance</th>
+                <th>LieuNaissance</th>
+                <th>CpNaissance</th>
+                <th>ArrondissementNaissance</th>
+                <th>NomMarital</th>
+                <th>Nationalite</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for etat_civil in etat_civils %}
+            <tr>
+                <td>{{ etat_civil.id }}</td>
+                <td>{{ etat_civil.titre }}</td>
+                <td>{{ etat_civil.Nom }}</td>
+                <td>{{ etat_civil.prenom }}</td>
+                <td>{{ etat_civil.prenom2 }}</td>
+                <td>{{ etat_civil.prenom3 }}</td>
+                <td>{{ etat_civil.prenom4 }}</td>
+                <td>{{ etat_civil.dateNaissance ? etat_civil.dateNaissance|date('Y-m-d') : '' }}</td>
+                <td>{{ etat_civil.paysNaissance }}</td>
+                <td>{{ etat_civil.lieuNaissance }}</td>
+                <td>{{ etat_civil.cpNaissance }}</td>
+                <td>{{ etat_civil.arrondissementNaissance }}</td>
+                <td>{{ etat_civil.nomMarital }}</td>
+                <td>{{ etat_civil.nationalite }}</td>
+                <td>
+                    <a href="{{ path('app_etat_civil_show', {'id': etat_civil.id}) }}">show</a>
+                    <a href="{{ path('app_etat_civil_edit', {'id': etat_civil.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="15">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_etat_civil_new') }}">Create new</a>
+{% endblock %}

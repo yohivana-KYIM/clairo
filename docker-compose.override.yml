@@ -1,0 +1,52 @@
+services:
+  php:
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"     # max 2 vCPU
+          memory: 4G      # limite mémoire (peut monter à 8G si besoin)
+        reservations:
+          cpus: "1.0"
+          memory: 1G
+    volumes:
+      - ./iac/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+
+  mysql:
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 2G
+        reservations:
+          cpus: "0.5"
+          memory: 512M
+
+  phpmyadmin:
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+
+  mailhog:
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+
+  sonarqube-allin:
+    environment:
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+    deploy:
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: 3G
+
+  sonar-db:
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 2G

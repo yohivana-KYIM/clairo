@@ -1,0 +1,49 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+    app.locales: [en, fr]
+    base_url: '%env(BASE_URL)%'
+    encryption_key: '%env(ENCRYPTION_KEY)%'
+    gmap_api_key: '%env(GOOGLE_MAPS_API_KEY)%'
+    document_personnel_directory: '%kernel.project_dir%/public/uploads/documentPersonnel'
+    document_professionnel_directory: '%kernel.project_dir%/public/uploads/documentProfessionnel'
+    public_directory: '%kernel.project_dir%/public/'
+    app.base_path: '%env(APP_BASE_PATH)%'
+    app.public_path: '%env(APP_PUBLIC_PATH)%'
+    doctrine_server_version: '%env(DOCTRINE_SERVER_VERSION)%'
+    app.enable_lazy_ghost: '%env(bool:ENABLE_LAZY_GHOST_OBJECTS)%'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            $allowedTypes: '%file_security.allowed_types%'
+            $defaultPassword: '%env(DEFAULT_USER_PASSWORD)%'
+            $domain: '%env(WEBSITE_DOMAIN)%'
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+
+    # add more service definitions when explicit configuration is needed
+    App\Service\Validator\Classes\CompositePassValidator:
+        arguments:
+            - !tagged_iterator validator.strategy
+    # please note that last definitions always *replace* previous ones
+
+    # config/services.yaml
+    App\EventSubscriber\RedirectIfNotVerifiedSubscriber:
+        tags: [ 'kernel.event_subscriber' ]
+#
+imports:
+    - { resource: 'services/cleo/event_subscribers.yaml' }
+    - { resource: 'services/cleo/file_security_services.yml' }
+    - { resource: 'services/cleo/password_strategy.services.yml' }
+    - { resource: 'services/cleo/stripe_payment_services.yml' }
+    - { resource: 'packages/cleo/file_security.yaml' }
